@@ -1,0 +1,23 @@
+import React from "react";
+
+interface MenuContentsProps {
+  id: string;
+  activeTabId: string;
+  children: React.ReactNode;
+}
+
+const MenuPanel = ({ id, activeTabId, children }: MenuContentsProps) => {
+  const isVisible = id === activeTabId;
+  return (
+    <div
+      role="tabpanel"
+      id={`panel-${id}`}
+      aria-labelledby={`tab-${id}`}
+      hidden={!isVisible}
+    >
+      {isVisible && children}
+    </div>
+  );
+};
+
+export default MenuPanel;
