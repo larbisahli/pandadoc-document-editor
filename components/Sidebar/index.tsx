@@ -1,22 +1,40 @@
 "use client";
-import { useState } from "react";
-import classNames from "classnames";
-import MenuTab, { menuListsData } from "./MenuTab";
+
+import { useCallback, useState } from "react";
+import clsx from "clsx";
+import MenuTab from "./MenuTab";
 import MenuPanel from "./MenuPanel";
-import ContentLibraryPanel from "./MenuPanel/ContentLibraryPanel";
-import ContentPanel from "./MenuPanel/ContentPanel";
-import DesignPanel from "./MenuPanel/DesignPanel";
-import AttachmentsPanel from "./MenuPanel/AttachmentsPanel";
+import { menuListsData } from "./sidebarData";
 
 const SidebarComponent = () => {
   const [activeTabId, setActiveTabId] = useState(menuListsData[0]?.id);
+  const [displayPanel, setDisplayPanel] = useState(true);
 
-  const handleTabClick = (id: string) => {
+  const handleTabClick = useCallback((id: string) => {
     setActiveTabId(id);
-  };
+    setDisplayPanel(true);
+  }, []);
+
+  const handleDisplayPanelToggle = useCallback(() => {
+    setDisplayPanel((prevValue) => !prevValue);
+  }, []);
+
+  const sideBarContainer = clsx(
+    "border-primary relative z-[2] h-full soverflow-hidden border-l",
+    {
+      "w-[330px] min-w-[330px]": displayPanel,
+      "w-[48px] min-w-[48px]": !displayPanel,
+    },
+  );
+
+  const sidePanelContainer = clsx(
+    "absolute top-0 right-0 z-[1] overflow-hidden",
+    "border-primary border-l bg-white h-full w-[282px]",
+    { hidden: !displayPanel },
+  );
 
   return (
-    <div className="border-primary relative z-[2] h-full w-[330px] min-w-[330px] overflow-hidden border-l shadow">
+    <div className={sideBarContainer}>
       <nav role="tablist" aria-orientation="vertical" className="h-full">
         {menuListsData?.map((item) => (
           <MenuTab
@@ -27,19 +45,12 @@ const SidebarComponent = () => {
           />
         ))}
       </nav>
-      <section className="border-primary absolute top-0 right-0 z-[1] h-full w-[282px] overflow-hidden border-l bg-white">
-        <MenuPanel id="menu-content" activeTabId={activeTabId}>
-          <ContentLibraryPanel />
-        </MenuPanel>
-        <MenuPanel id="menu-content-library" activeTabId={activeTabId}>
-          <ContentPanel />
-        </MenuPanel>
-        <MenuPanel id="menu-design" activeTabId={activeTabId}>
-          <DesignPanel />
-        </MenuPanel>
-        <MenuPanel id="menu-attachments" activeTabId={activeTabId}>
-          <AttachmentsPanel />
-        </MenuPanel>
+      <section className={sidePanelContainer}>
+        {menuListsData.map(({ id, component: Component }) => (
+          <MenuPanel key={id} id={id} activeTabId={activeTabId}>
+            <Component handleDisplayPanelToggle={handleDisplayPanelToggle} />
+          </MenuPanel>
+        ))}
       </section>
     </div>
   );

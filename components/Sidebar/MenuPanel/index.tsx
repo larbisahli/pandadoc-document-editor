@@ -1,12 +1,12 @@
-import React from "react";
+import React, { memo } from "react";
 
-interface MenuContentsProps {
+interface Props {
   id: string;
   activeTabId: string;
   children: React.ReactNode;
 }
 
-const MenuPanel = ({ id, activeTabId, children }: MenuContentsProps) => {
+const MenuPanel = ({ id, activeTabId, children }: Props) => {
   const isVisible = id === activeTabId;
   return (
     <div
@@ -20,4 +20,4 @@ const MenuPanel = ({ id, activeTabId, children }: MenuContentsProps) => {
   );
 };
 
-export default MenuPanel;
+export default memo(MenuPanel);
