@@ -1,42 +1,100 @@
 "use client";
 
-import { Check } from "lucide-react";
+import {
+  AlignJustify,
+  Check,
+  ChevronDown,
+  CircleQuestionMark,
+  Ellipsis,
+  Folder,
+} from "lucide-react";
 import Link from "next/link";
+import { useRef, useState } from "react";
+import Tooltip from "../ui/Tooltip";
+import GithubIcon from "../ui/icons/github";
 
 const Header = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [documentName, setDocumentName] = useState("");
+
+  const handleInput = () => {
+    if (ref.current) {
+      setDocumentName(ref.current.innerText);
+    }
+  };
+
   return (
-    <nav className="border-primary flex h-15 items-center justify-between border-b px-4">
-      <div className="">
-        <div className="flex items-center">
-          <div
-            contentEditable
-            className="rounded-[4px] border border-transparent px-1 outline-none focus:border focus:border-green-500"
-          >
-            <span className="font-semibold">Sample invoice</span>
-          </div>
-          <div className="ml-5">
-            <div className="rounded-[2px] bg-[#9fa1a7] px-[4px] py-[2px] text-[9px] font-semibold text-white uppercase">
-              documents
+    <nav className="border-primary flex h-15 items-center justify-between border-b">
+      <div className="flex h-full w-full items-center">
+        <div className="h-15 w-15">
+          <button className="hover:bg-hover flex h-full w-full items-center justify-center">
+            <AlignJustify size={20} />
+          </button>
+        </div>
+        <div className="ml-2 flex-1">
+          <div className="flex items-center">
+            <div
+              ref={ref}
+              contentEditable
+              suppressContentEditableWarning
+              onInput={handleInput}
+              className="rounded-[4px] border border-transparent px-1 outline-none focus:border focus:border-green-500"
+            >
+              <span className="text-[15px] font-semibold text-gray-800">
+                Sample invoice
+              </span>
+            </div>
+            <div className="ml-5">
+              <div className="rounded-[2px] bg-[#9fa1a7] px-[4px] py-[2px] text-[9px] font-semibold text-white uppercase">
+                documents
+              </div>
             </div>
           </div>
+
+          <div className="flex items-center">
+            <Tooltip content="Open folder" placement="bottom">
+              <button className="text-muted hover:text-green-primary flex items-center px-1">
+                <Folder size={16} />
+                <div className="mx-1 text-xs">All documents</div>
+              </button>
+            </Tooltip>
+            <div className="text-muted font-sm">•</div>
+            <Tooltip content="Version history" placement="bottom">
+              <button className="text-muted hover:text-green-primary relative flex items-center px-1">
+                <Check size={16} />
+                <div className="mx-1 text-xs">Updated 2 minutes ago</div>
+              </button>
+            </Tooltip>
+          </div>
         </div>
-        <div className="flex items-center px-1">
-          <Check className="text-muted" size={16} />
-          <div className="text-muted mx-1 text-xs">Updated 2 minutes ago</div>
+        <div className="flex items-center">
+          <button className="bg-green-primary flex items-center rounded-[4px] px-3 py-[5px] text-white">
+            <span className="text-sm font-medium">Send</span>
+            <ChevronDown className="ml-2" size={20} />
+          </button>
+          <button className="hover:bg-hover text-muted ml-3 flex items-center rounded-[4px] px-1 py-[5px]">
+            <Ellipsis className="rotate-90" size={20} />
+          </button>
         </div>
       </div>
-      <div>
+      <div className="bg-hover mx-3 h-[50%] w-[1px]"></div>
+      <div className="flex pr-4">
+        <div className="mr-5 flex text-nowrap">
+          <button className="text-green-primary flex cursor-pointer items-center">
+            <CircleQuestionMark size={18} className="mx-2" />
+            <span className="text-sm font-semibold">Need help</span>
+          </button>
+        </div>
         <Link
           aria-label="GitHub repository"
           target="_blank"
           href="https://github.com/larbisahli"
         >
-          <svg
-            viewBox="0 0 20 20"
+          <GithubIcon
             className="size-6 fill-black hover:fill-black/60"
-          >
-            <path d="M10 0C4.475 0 0 4.475 0 10a9.994 9.994 0 006.838 9.488c.5.087.687-.213.687-.476 0-.237-.013-1.024-.013-1.862-2.512.463-3.162-.612-3.362-1.175-.113-.287-.6-1.175-1.025-1.412-.35-.188-.85-.65-.013-.663.788-.013 1.35.725 1.538 1.025.9 1.512 2.337 1.087 2.912.825.088-.65.35-1.088.638-1.338-2.225-.25-4.55-1.112-4.55-4.937 0-1.088.387-1.987 1.025-2.688-.1-.25-.45-1.274.1-2.65 0 0 .837-.262 2.75 1.026a9.28 9.28 0 012.5-.338c.85 0 1.7.112 2.5.337 1.912-1.3 2.75-1.024 2.75-1.024.55 1.375.2 2.4.1 2.65.637.7 1.025 1.587 1.025 2.687 0 3.838-2.337 4.688-4.562 4.938.362.312.675.912.675 1.85 0 1.337-.013 2.412-.013 2.75 0 .262.188.574.688.474A10.016 10.016 0 0020 10c0-5.525-4.475-10-10-10z"></path>
-          </svg>
+            width={24}
+            height={24}
+          />
         </Link>
       </div>
     </nav>

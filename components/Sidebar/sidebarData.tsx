@@ -1,21 +1,17 @@
-import {
-  CirclePlus,
-  LucideIcon,
-  Palette,
-  Paperclip,
-  Shapes,
-} from "lucide-react";
+import { CirclePlus, Palette, Shapes } from "lucide-react";
 import React from "react";
 import ContentPanel from "./MenuPanel/ContentPanel";
 import ContentLibraryPanel from "./MenuPanel/ContentLibraryPanel";
 import DesignPanel from "./MenuPanel/DesignPanel";
-import AttachmentsPanel from "./MenuPanel/AttachmentsPanel";
+import VariablesPanel from "./MenuPanel/VariablesPanel";
+import VariablesIcon from "../ui/icons/variables";
+import { CustomSvgProps } from "@/interfaces";
 
 export interface SidebarItem {
   id: string;
   label: string;
-  icon: (props: React.ComponentProps<LucideIcon>) => React.JSX.Element;
-  component: React.FC<{ handleDisplayPanelToggle: () => void }>;
+  icon: (props: CustomSvgProps) => React.JSX.Element;
+  component: React.FC<unknown>;
 }
 
 export const menuListsData: SidebarItem[] = [
@@ -38,9 +34,9 @@ export const menuListsData: SidebarItem[] = [
     component: DesignPanel,
   },
   {
-    id: "menu-attachments",
-    label: "Attachments",
-    icon: (props) => <Paperclip {...props} />,
-    component: AttachmentsPanel,
+    id: "menu-variables",
+    label: "Variables",
+    icon: (props: CustomSvgProps) => <VariablesIcon {...props} />,
+    component: VariablesPanel,
   },
 ];

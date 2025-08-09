@@ -1,5 +1,5 @@
-import EditorComponent from "@/components/Editor";
-import SidebarComponent from "@/components/Sidebar";
+import EditorShell from "@/components/editor/EditorShell";
+import SidebarComponent from "@/components/sidebar";
 
 export default function Home() {
   return (
@@ -7,7 +7,7 @@ export default function Home() {
       <div className="editor-wrapper h-full">
         <div className="root-container flex h-full w-full">
           <section className="content-container relative w-full overflow-hidden">
-            <EditorComponent />
+            <EditorShell />
           </section>
           <aside className="sidebar-container relative h-full">
             <SidebarComponent />

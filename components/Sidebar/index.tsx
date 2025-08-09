@@ -1,26 +1,52 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 import clsx from "clsx";
 import MenuTab from "./MenuTab";
 import MenuPanel from "./MenuPanel";
 import { menuListsData } from "./sidebarData";
 
+type SidebarContextType = {
+  activeTabId: string;
+  handlePanelToggle: () => void;
+  handleActiveTab: (id: string) => void;
+};
+
+const SidebarCtx = createContext<SidebarContextType | null>(null);
+
+export const useSideMenu = () => {
+  const ctx = useContext(SidebarCtx);
+  if (!ctx)
+    throw new Error("useSideMenu must be used within <SidebarComponent>");
+  return ctx;
+};
+
 const SidebarComponent = () => {
   const [activeTabId, setActiveTabId] = useState(menuListsData[0]?.id);
   const [displayPanel, setDisplayPanel] = useState(true);
 
-  const handleTabClick = useCallback((id: string) => {
+  const handleActiveTab = useCallback((id: string) => {
     setActiveTabId(id);
     setDisplayPanel(true);
   }, []);
 
-  const handleDisplayPanelToggle = useCallback(() => {
+  const handlePanelToggle = useCallback(() => {
     setDisplayPanel((prevValue) => !prevValue);
   }, []);
 
+  const ctx = useMemo(
+    () => ({ activeTabId, handlePanelToggle, handleActiveTab }),
+    [activeTabId, handlePanelToggle, handleActiveTab],
+  );
+
   const sideBarContainer = clsx(
-    "border-primary relative z-[2] h-full soverflow-hidden border-l",
+    "border-primary relative z-[2] h-full border-l",
     {
       "w-[330px] min-w-[330px]": displayPanel,
       "w-[48px] min-w-[48px]": !displayPanel,
@@ -34,25 +60,22 @@ const SidebarComponent = () => {
   );
 
   return (
-    <div className={sideBarContainer}>
-      <nav role="tablist" aria-orientation="vertical" className="h-full">
-        {menuListsData?.map((item) => (
-          <MenuTab
-            key={item.id}
-            activeTabId={activeTabId}
-            handleTabClick={handleTabClick}
-            item={item}
-          />
-        ))}
-      </nav>
-      <section className={sidePanelContainer}>
-        {menuListsData.map(({ id, component: Component }) => (
-          <MenuPanel key={id} id={id} activeTabId={activeTabId}>
-            <Component handleDisplayPanelToggle={handleDisplayPanelToggle} />
-          </MenuPanel>
-        ))}
-      </section>
-    </div>
+    <SidebarCtx.Provider value={ctx}>
+      <div className={sideBarContainer}>
+        <nav role="tablist" aria-orientation="vertical" className="h-full">
+          {menuListsData?.map((item) => (
+            <MenuTab key={item.id} item={item} />
+          ))}
+        </nav>
+        <section className={sidePanelContainer}>
+          {menuListsData.map(({ id, component: Component }) => (
+            <MenuPanel key={id} id={id}>
+              <Component />
+            </MenuPanel>
+          ))}
+        </section>
+      </div>
+    </SidebarCtx.Provider>
   );
 };
 

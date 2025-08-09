@@ -1,12 +1,13 @@
-import React, { memo } from "react";
+import React from "react";
+import { useSideMenu } from "..";
 
 interface Props {
   id: string;
-  activeTabId: string;
   children: React.ReactNode;
 }
 
-const MenuPanel = ({ id, activeTabId, children }: Props) => {
+const MenuPanel = ({ id, children }: Props) => {
+  const { activeTabId } = useSideMenu();
   const isVisible = id === activeTabId;
   return (
     <div
@@ -14,10 +15,11 @@ const MenuPanel = ({ id, activeTabId, children }: Props) => {
       id={`panel-${id}`}
       aria-labelledby={`tab-${id}`}
       hidden={!isVisible}
+      className="py-1"
     >
       {isVisible && children}
     </div>
   );
 };
 
-export default memo(MenuPanel);
+export default MenuPanel;
