@@ -2,10 +2,6 @@ import clsx from "clsx";
 import Image from "next/image";
 import React, { useState } from "react";
 
-interface Props {
-  handleDisplayPanelToggle: () => void;
-}
-
 const RecentLibraryPanel = () => {
   const [draggingElementId, setDraggingElementId] = useState("");
 

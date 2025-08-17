@@ -2,6 +2,7 @@
 
 import Tooltip from "@/components/ui/Tooltip";
 import { Ellipsis, Plus } from "lucide-react";
+import TextBlock from "../blocks/TextBlock";
 
 const DocumentCanvas = () => {
   return (
@@ -30,6 +31,9 @@ const DocumentCanvas = () => {
                 <div className="outline-none">
                   <div className="flex min-h-[1065px] w-[816px] flex-col shadow-xl">
                     <div className="p-5">PDF</div>
+                    <div className="p-5">
+                      <TextBlock />
+                    </div>
                   </div>
                 </div>
               </div>

@@ -30,7 +30,7 @@ export function Tab({
         tabIndex={selected ? 0 : -1}
         onClick={() => !disabled && setActive(value)}
         className={clsx(
-          "hover:text-muted py-2 text-sm text-gray-400",
+          "hover:text-muted -ml-1 px-1 py-2 text-sm text-gray-400",
           selected &&
             "relative border-b-[2px] border-[#248567] font-semibold text-gray-700! hover:text-gray-900",
           disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",

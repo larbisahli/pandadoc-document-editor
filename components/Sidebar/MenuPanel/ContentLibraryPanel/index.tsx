@@ -1,8 +1,16 @@
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@/components/ui/tabs";
 import React from "react";
-import RecentLibraryPanel from "./RecentLibrary";
-import FeaturedLibrary from "./FeaturedLibrary";
 import MenuHeader from "../MenuHeader";
+import dynamic from "next/dynamic";
+import { ContentLibraryPanelSkeleton } from "../Skeletons";
+
+const RecentLibraryPanel = dynamic(() => import("./RecentLibrary"), {
+  loading: () => <ContentLibraryPanelSkeleton />,
+});
+
+const FeaturedLibrary = dynamic(() => import("./FeaturedLibrary"), {
+  loading: () => <ContentLibraryPanelSkeleton />,
+});
 
 const ContentLibraryPanel = () => {
   return (

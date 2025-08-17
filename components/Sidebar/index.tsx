@@ -46,7 +46,7 @@ const SidebarComponent = () => {
   );
 
   const sideBarContainer = clsx(
-    "border-primary relative z-[2] h-full border-l",
+    "border-primary relative z-[2] h-full border-l bg-gree-400",
     {
       "w-[330px] min-w-[330px]": displayPanel,
       "w-[48px] min-w-[48px]": !displayPanel,
@@ -54,7 +54,7 @@ const SidebarComponent = () => {
   );
 
   const sidePanelContainer = clsx(
-    "absolute top-0 right-0 z-[1] overflow-hidden",
+    "absolute top-0 right-0 bottom-0 z-[1] overflow-auto",
     "border-primary border-l bg-white h-full w-[282px]",
     { hidden: !displayPanel },
   );
@@ -69,7 +69,7 @@ const SidebarComponent = () => {
         </nav>
         <section className={sidePanelContainer}>
           {menuListsData.map(({ id, component: Component }) => (
-            <MenuPanel key={id} id={id}>
+            <MenuPanel key={id} id={id} className="h-full w-full py-1">
               <Component />
             </MenuPanel>
           ))}
