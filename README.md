@@ -4,9 +4,9 @@ This project is a **demo document editor inspired by PandaDoc’s platform**, bu
 
 The editor demonstrates:
 
-* **Flexible document schema** with nested blocks, rows, and fields
-* **Drag-and-drop system** (custom hook + draggable wrapper) for adding and rearranging blocks
-* **Edge-based hover detection** with visual highlights for precise placement
-* **Undo/redo history** and normalized app state for predictable updates
+- **Flexible document schema** with nested blocks, rows, and fields
+- **Drag-and-drop system** (custom hook + draggable wrapper) for adding and rearranging blocks
+- **Edge-based hover detection** with visual highlights for precise placement
+- **Undo/redo history** and normalized app state for predictable updates
 
 This project was created as part of my preparation for **system design and front-end interviews at PandaDoc**.

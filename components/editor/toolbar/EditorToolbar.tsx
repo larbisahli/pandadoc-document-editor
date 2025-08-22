@@ -27,18 +27,7 @@ const EditorToolbar = () => {
             </button>
           </Tooltip>
           <div className="mr-[2px] ml-[8px] h-[28px] w-[1px] bg-gray-200"></div>
-          <div className="text-muted relative flex items-center">
-            <Tooltip content="Undo Ctrl+Z" placement="bottom">
-              <button className="m-1 rounded-[4px] p-1 hover:bg-gray-100">
-                <Undo strokeWidth={2.5} size={20} />
-              </button>
-            </Tooltip>
-            <Tooltip content="Redo Ctrl+Y" placement="bottom">
-              <button className="m-1 rounded-[4px] p-1 hover:bg-gray-100">
-                <Redo strokeWidth={2.5} size={20} />
-              </button>
-            </Tooltip>
-          </div>
+          <HistoryBar />
         </div>
         {/* <div className="flex-1 flex justify-end"></div> */}
         <div className="ml-auto rounded-[2px] bg-green-100 px-3 py-1 text-sm font-semibold text-green-700">
@@ -48,5 +37,22 @@ const EditorToolbar = () => {
     </div>
   );
 };
+
+function HistoryBar() {
+  return (
+    <div className="text-muted relative flex items-center">
+      <Tooltip content="Undo Ctrl+Z" placement="bottom">
+        <button className="m-1 rounded-[4px] p-1 hover:bg-gray-100">
+          <Undo strokeWidth={2.5} size={20} />
+        </button>
+      </Tooltip>
+      <Tooltip content="Redo Ctrl+Y" placement="bottom">
+        <button className="m-1 rounded-[4px] p-1 hover:bg-gray-100">
+          <Redo strokeWidth={2.5} size={20} />
+        </button>
+      </Tooltip>
+    </div>
+  );
+}
 
 export default EditorToolbar;

@@ -24,3 +24,9 @@ body {
 button {
   cursor: pointer;
 }
+
+/* DOCUMENT */
+
+.col .docBlock:not(:last-child) {
+  margin-bottom: 26px;
+}

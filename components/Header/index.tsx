@@ -12,10 +12,13 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import Tooltip from "../ui/Tooltip";
 import GithubIcon from "../ui/icons/github";
+import { useAppSelector } from "@/lib/hooks";
+import { selectDocTitle } from "@/lib/features/document/documentSlice";
 
 const Header = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [documentName, setDocumentName] = useState("");
+  const title = useAppSelector(selectDocTitle);
 
   const handleInput = () => {
     if (ref.current) {
@@ -41,7 +44,7 @@ const Header = () => {
               className="rounded-[4px] border border-transparent px-1 outline-none focus:border focus:border-green-500"
             >
               <span className="text-[15px] font-semibold text-gray-800">
-                Sample invoice
+                {title}
               </span>
             </div>
             <div className="ml-5">

@@ -2,8 +2,11 @@
 
 import DocumentCanvas from "./canvas/DocumentCanvas";
 import EditorToolbar from "./toolbar/EditorToolbar";
+import { selectDocTitle } from "@/lib/features/document/documentSlice";
+import { useAppSelector } from "@/lib/hooks";
 
 const EditorShell = () => {
+  const title = useAppSelector(selectDocTitle);
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-[#efedec]">
       <EditorToolbar />
@@ -11,7 +14,7 @@ const EditorShell = () => {
         <div className="mx-auto table px-6">
           {/* Title */}
           <div className="w-[816px] px-2 pt-4">
-            <span className="text-lg font-semibold">Sample Invoice</span>
+            <span className="text-xl font-semibold">{title}</span>
           </div>
           <DocumentCanvas />
         </div>

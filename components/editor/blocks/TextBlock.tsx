@@ -1,7 +1,8 @@
 import { DropOverlayWrapper } from "@/dnd";
-import { useCallback } from "react";
+import { TextDataType } from "@/interfaces/common";
+import { memo, useCallback } from "react";
 
-export default function TextBlock({ nodeId }) {
+function TextBlockss({ nodeId }) {
   const handleDrop = useCallback((payload, side) => {
     console.log({ payload, side });
   }, []);
@@ -36,3 +37,13 @@ export default function TextBlock({ nodeId }) {
     </DropOverlayWrapper>
   );
 }
+
+interface Props extends TextDataType {
+  props?: Record<string, unknown>;
+}
+
+function TextBlock({ content }: Props) {
+  return <div>{content}</div>;
+}
+
+export default memo(TextBlock);

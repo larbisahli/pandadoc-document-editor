@@ -2,6 +2,7 @@ import {
   ImageIcon,
   LetterText,
   LucideProps,
+  ScissorsLineDashed,
   SquarePlay,
   TableOfContents,
 } from "lucide-react";
@@ -50,6 +51,15 @@ export const contentBlocks: ContentBlockType[] = [
     dragPayload: {
       type: "palette.block",
       data: { templateId: "tpl-video" },
+    },
+  },
+  {
+    id: "block-page-break",
+    label: "Page break",
+    icon: (props) => <ScissorsLineDashed {...props} />,
+    dragPayload: {
+      type: "palette.block",
+      data: { templateId: "tpl-page-break" },
     },
   },
 ];

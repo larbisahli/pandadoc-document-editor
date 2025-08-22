@@ -48,3 +48,12 @@ function DropOverlayWrapper({ className, children, onDrop }: Props) {
 }
 
 export default memo(DropOverlayWrapper);
+
+// <DropBlockOverlayWrapper />
+// <DropFieldOverlayWrapper />
+// <DropContentOverlayWrapper />
+
+// acceptTypes | acceptTypes?: DragPayload["type"][]; // e.g. ["palette.block","move.node"]
+// if (acceptTypes && !acceptTypes.includes(p.type)) return;
+// if (shouldHighlight && !shouldHighlight(p)) return;
+// acceptTypes={["palette.block","move.node"]} shouldHighlight={(p) => p.type !== "tool.select"}
