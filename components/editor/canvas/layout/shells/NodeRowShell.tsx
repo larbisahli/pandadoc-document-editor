@@ -7,7 +7,11 @@ interface Props {
 
 function NodeRowShell({ id, children }: Props) {
   return (
-    <div id={id} data-node-type="node-row" className="flex bg-red-500 p-2">
+    <div
+      id={id}
+      data-node-type="node-row"
+      className="group/resizer flex bg-red-500 p-2"
+    >
       {children}
     </div>
   );

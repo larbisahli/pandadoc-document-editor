@@ -1,15 +1,15 @@
 import { useAppSelector } from "@/lib/hooks";
 import React from "react";
+import { InstanceId } from "@/interfaces/common";
+import { selectInstance } from "@/lib/features/instance/instanceSlice";
+import { selectTemplate } from "@/lib/features/template/templateSlice";
+import { BlockKind } from "@/interfaces/enum";
 import {
   ImageBlock,
   TableContentBlock,
   TextBlock,
   VideoBlock,
-} from "../blocks";
-import { InstanceId } from "@/interfaces/common";
-import { selectInstance } from "@/lib/features/instance/instanceSlice";
-import { selectTemplate } from "@/lib/features/template/templateSlice";
-import { BlockKind } from "@/interfaces/enum";
+} from "../../blocks";
 
 interface BlockRendererProps {
   instanceId: InstanceId;

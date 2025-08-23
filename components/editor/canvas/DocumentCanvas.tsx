@@ -2,8 +2,8 @@
 
 import React, { memo } from "react";
 import { useAppSelector } from "@/lib/hooks";
-import DocumentPage from "./DocumentPage";
-import EmptyDocument from "./EmptyDocument";
+import DocumentPage from "./pages/DocumentPage";
+import EmptyDocument from "./pages/EmptyDocument";
 import { selectDocPageIds } from "@/lib/features/document/documentSlice";
 
 const DocumentCanvas = () => {

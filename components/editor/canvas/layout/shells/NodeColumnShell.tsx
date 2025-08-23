@@ -1,14 +1,12 @@
 import React, { memo } from "react";
 
 interface Props {
-  id: string;
   children: React.ReactNode;
 }
 
-function NodeColumnShell({ id, children }: Props) {
+function NodeColumnShell({ children }: Props) {
   return (
     <div
-      id={id}
       data-node-type="node-column"
       className="h-full w-full bg-amber-300 p-2"
     >

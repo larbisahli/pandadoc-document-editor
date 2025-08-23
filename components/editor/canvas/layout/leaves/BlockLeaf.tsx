@@ -1,6 +1,6 @@
 import React, { memo } from "react";
-import BlockFactory from "./BlockFactory";
 import { InstanceId } from "@/interfaces/common";
+import BlockFactory from "../../blocks/BlockFactory";
 
 interface Props {
   id: string;

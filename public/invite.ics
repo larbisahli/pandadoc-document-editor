@@ -1,0 +1,52 @@
+BEGIN:VCALENDAR
+PRODID:-//Google Inc//Google Calendar 70.9054//EN
+VERSION:2.0
+CALSCALE:GREGORIAN
+METHOD:REQUEST
+BEGIN:VTIMEZONE
+TZID:Europe/Warsaw
+X-LIC-LOCATION:Europe/Warsaw
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:GMT+2
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:GMT+1
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Warsaw:20250827T131500
+DTEND;TZID=Europe/Warsaw:20250827T135000
+DTSTAMP:20250822T122604Z
+ORGANIZER;CN=Olga Gradowska:mailto:olga.gradowska@blazity.com
+UID:h56md45unu0ft3v9bj44mg6jss@google.com
+ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=
+ TRUE;CN=larbisahli1905@gmail.com;X-NUM-GUESTS=0:mailto:larbisahli1905@gmail
+ .com
+ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=
+ TRUE;CN=Olga Gradowska;X-NUM-GUESTS=0:mailto:olga.gradowska@blazity.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/wrh-iyhr-kyt
+X-MICROSOFT-CDO-OWNERAPPTID:502235451
+CREATED:20250822T122556Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~
+ :~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.com/wr
+ h-iyhr-kyt\nOr dial: (PL) +48 22 163 91 20 PIN: 249938421#\nMore phone numb
+ ers: https://tel.meet/wrh-iyhr-kyt?pin=8544120816601&hs=7\n\nLearn more abo
+ ut Meet at: https://support.google.com/a/users/answer/9282720\n\nPlease do 
+ not edit this section.\n-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:~::-
+LAST-MODIFIED:20250822T122603Z
+LOCATION:
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:Mid Fullstack Developer | Larbi
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

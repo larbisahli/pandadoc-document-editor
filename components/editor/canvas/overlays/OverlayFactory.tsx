@@ -4,7 +4,7 @@ import { OverlayId } from "@/interfaces/common";
 import { selectInstance } from "@/lib/features/instance/instanceSlice";
 import { selectTemplate } from "@/lib/features/template/templateSlice";
 import { FieldKind } from "@/interfaces/enum";
-import TextField from "../fields/TextField";
+import TextField from "../../fields/TextField";
 import { selectOverlayById } from "@/lib/features/overlay/overlaySlice";
 
 interface FieldRendererProps {

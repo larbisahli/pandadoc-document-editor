@@ -1,13 +1,13 @@
 "use client";
 
 import { useAppSelector } from "@/lib/hooks";
-import LayoutRenderer from "./LayoutRenderer";
 import { selectPageRootId } from "@/lib/features/layout/layoutSlice";
-import ContentHeader from "../ui/ContentHeader";
-import DocumentHeader from "./DocumentHeader";
 import { memo } from "react";
 import { PageId } from "@/interfaces/common";
-import OverlayLayer from "./OverlayLayer";
+import ContentHeader from "../../ui/ContentHeader";
+import DocumentHeader from "./DocumentHeader";
+import LayoutRenderer from "../layout/LayoutRenderer";
+import OverlayLayer from "../overlays/OverlayLayer";
 
 interface DocumentPageProps {
   pageId: PageId;
