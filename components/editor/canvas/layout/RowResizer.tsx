@@ -1,19 +1,32 @@
 import clsx from "clsx";
 import * as React from "react";
 
-type Props = { onResize?: (delta: number) => void };
+type Props = {
+  onResize?: (delta: number) => void;
+  onResizeEnd?: (delta: number) => void;
+};
 
-export default function RowResizer({ onResize }: Props) {
+function RowResizer({ onResize, onResizeEnd }: Props) {
+  const startXRef = React.useRef<number | null>(null);
+  const lastDeltaRef = React.useRef(0);
+
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
-    const startX = e.clientX;
+    startXRef.current = e.clientX;
+    lastDeltaRef.current = 0;
 
     const onMove = (event: MouseEvent) => {
-      const delta = event.clientX - startX;
+      if (startXRef.current == null) return;
+      const delta = event.clientX - startXRef.current;
+      lastDeltaRef.current = delta;
       onResize?.(delta);
     };
 
     const onUp = () => {
+      if (startXRef.current != null) {
+        onResizeEnd?.(lastDeltaRef.current);
+      }
+      startXRef.current = null;
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
     };
@@ -36,3 +49,5 @@ export default function RowResizer({ onResize }: Props) {
     />
   );
 }
+
+export default React.memo(RowResizer);

@@ -27,6 +27,31 @@ const initialState: LayoutSliceState = {
           children: ["colTopLeft", "colTopMiddle", "colTopRight"] as NodeId[],
           layoutStyle: {},
         },
+        ["colTopRight"]: {
+          id: "colTopRight" as NodeId,
+          kind: "container" as NodeKind,
+          direction: "row" as NodeDirection,
+          children: ["colTopRight-left", "colTopRight-right"] as NodeId[],
+          layoutStyle: {
+            width: "33.33%",
+          },
+        },
+        ["colTopRight-left"]: {
+          id: "colTopRight-left" as NodeId,
+          kind: "blockRef" as NodeKind,
+          instanceId: "inst-title" as InstanceId,
+          layoutStyle: {
+            width: "50%",
+          },
+        },
+        ["colTopRight-right"]: {
+          id: "colTopRight-right" as NodeId,
+          kind: "blockRef" as NodeKind,
+          instanceId: "inst-title" as InstanceId,
+          layoutStyle: {
+            width: "50%",
+          },
+        },
         ["rowBottom"]: {
           id: "rowBottom" as NodeId,
           kind: "container" as NodeKind,
@@ -78,14 +103,14 @@ const initialState: LayoutSliceState = {
           instanceId: "inst-intro" as InstanceId,
           layoutStyle: {},
         },
-        ["colTopRight"]: {
-          id: "colTopRight" as NodeId,
-          kind: "blockRef" as NodeKind,
-          instanceId: "inst-title" as InstanceId,
-          layoutStyle: {
-            width: "33.33%",
-          },
-        },
+        // ["colTopRight"]: {
+        //   id: "colTopRight" as NodeId,
+        //   kind: "blockRef" as NodeKind,
+        //   instanceId: "inst-title" as InstanceId,
+        //   layoutStyle: {
+        //     width: "33.33%",
+        //   },
+        // },
         ["colTopMiddle"]: {
           id: "colTopMiddle" as NodeId,
           kind: "blockRef" as NodeKind,
