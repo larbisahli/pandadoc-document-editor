@@ -7,8 +7,11 @@ interface Props extends FieldTextDataType {
 
 function TextField({ props }: Props) {
   return (
-    <div className="pointer-events-auto absolute top-0 left-[100px] z-50 h-10 w-10 bg-purple-700">
-      Text Field
+    <div
+      contentEditable={false}
+      className="pointer-events-autos absolute z-50 h-[100px] w-[200px] border border-red-500 p-1 text-sm text-blue-600"
+    >
+      <textarea placeholder="Enter value" disabled className="w-full" />
     </div>
   );
 }

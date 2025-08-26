@@ -9,7 +9,7 @@ import NodeColumnShell from "./shells/NodeColumnShell";
 import NodeRowShell from "./shells/NodeRowShell";
 import DocBlock from "./shells/DocBlock";
 import BlockLeaf from "./leaves/BlockLeaf";
-import RowResizerWrapper from "./RowResizerWrapper";
+import RowResizerWrapper from "./row-resizer/RowResizerWrapper";
 import { usePage } from "../context/PageContext";
 
 interface LayoutRendererProps {

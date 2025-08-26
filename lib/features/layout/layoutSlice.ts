@@ -103,14 +103,6 @@ const initialState: LayoutSliceState = {
           instanceId: "inst-intro" as InstanceId,
           layoutStyle: {},
         },
-        // ["colTopRight"]: {
-        //   id: "colTopRight" as NodeId,
-        //   kind: "blockRef" as NodeKind,
-        //   instanceId: "inst-title" as InstanceId,
-        //   layoutStyle: {
-        //     width: "33.33%",
-        //   },
-        // },
         ["colTopMiddle"]: {
           id: "colTopMiddle" as NodeId,
           kind: "blockRef" as NodeKind,
@@ -120,7 +112,7 @@ const initialState: LayoutSliceState = {
           },
         },
       },
-      overlayIds: [] as OverlayId[],
+      overlayIds: ["ov-sign"] as OverlayId[],
     },
   },
 };

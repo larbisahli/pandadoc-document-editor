@@ -28,8 +28,6 @@ function BlockFactory({ instanceId }: BlockRendererProps) {
     selectTemplate(state, instance?.templateId),
   );
 
-  console.log({ instance, template });
-
   const Component =
     BLOCK_COMPONENTS[template.kind as keyof typeof BLOCK_COMPONENTS];
 

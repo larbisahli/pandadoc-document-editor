@@ -6,6 +6,8 @@ import { selectTemplate } from "@/lib/features/template/templateSlice";
 import { FieldKind } from "@/interfaces/enum";
 import TextField from "../../fields/TextField";
 import { selectOverlayById } from "@/lib/features/overlay/overlaySlice";
+import { DraggableOverlay } from "./DraggableOverlay";
+import { browserZoomLevel } from "./helpers";
 
 interface FieldRendererProps {
   overlayId: OverlayId;
@@ -35,7 +37,18 @@ function FieldFactory({ overlayId }: FieldRendererProps) {
     return null;
   }
 
-  return <Component {...instance.data} props={instance.props} />;
+  return (
+    <DraggableOverlay
+      key={overlayId}
+      overlayId={overlayId}
+      offsetX={overlay?.position?.offsetX}
+      offsetY={overlay?.position?.offsetY}
+      scale={browserZoomLevel}
+    >
+      {/* TODO work on container resize */}
+      <Component {...instance.data} props={instance.props} />
+    </DraggableOverlay>
+  );
 }
 
 export default React.memo(FieldFactory);
