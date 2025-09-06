@@ -1,4 +1,4 @@
-import { Id } from "@/interfaces/document";
+import { Id } from "@/interfaces/common";
 
 const generateRandomId = (n: number) => {
   if (typeof crypto !== "undefined" && crypto.getRandomValues) {
@@ -34,6 +34,7 @@ export const newDocumentId = newIdFactory<"doc">("doc");
 export const newPageId = newIdFactory<"page">("page");
 export const newRootId = newIdFactory<"root">("root");
 export const newNodeId = newIdFactory<"node">("node");
-export const newInstanceId = newIdFactory<"instance">("inst");
-export const newTemplateId = newIdFactory<"template">("tpl");
-export const newFieldId = newIdFactory<"field">("fld");
+export const newInstanceId = newIdFactory<"inst">("inst");
+export const newTemplateId = newIdFactory<"tpl">("tpl");
+export const newFieldId = newIdFactory<"fld">("fld");
+export const newOverlayId = newIdFactory<"ov">("ov");

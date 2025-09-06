@@ -12,30 +12,39 @@ const BlockTile = ({ block }: BlockTileProps) => {
   const [draggedTileId, setDraggedTileId] = useState("");
   const Icon = block.icon;
 
-  const handleDragging = (e: React.DragEvent, id: string) => {
-    setDraggedTileId(id);
-    const ghost = e.currentTarget.cloneNode(true) as HTMLElement;
-    ghost.style.background = "#fefefe";
-    ghost.style.border = "1px solid #cdcdcd";
-    document.body.appendChild(ghost);
-    e.dataTransfer.setDragImage(ghost, 0, 0);
-    // Cleanup
-    setTimeout(() => document.body.removeChild(ghost), 0);
-  };
-
   const getDragPayload = useCallback(
     () => block.dragPayload,
     [block.dragPayload],
   );
 
+  const handleOnDragEnd = useCallback(() => {
+    setDraggedTileId("");
+  }, []);
+
+  const handleOnDragStart = useCallback(
+    (e: React.DragEvent) => {
+      setDraggedTileId(block.id);
+      const ghost = e.currentTarget.cloneNode(true) as HTMLElement;
+      ghost.style.background = "#fefefe";
+      ghost.style.border = "1px solid #cdcdcd";
+      document.body.appendChild(ghost);
+      e.dataTransfer.setDragImage(ghost, 0, 0);
+      // Cleanup
+      setTimeout(() => document.body.removeChild(ghost), 0);
+    },
+    [block.id],
+  );
+
   return (
-    <WithDraggable getDragPayload={getDragPayload}>
+    <WithDraggable
+      handleOnDragStart={handleOnDragStart}
+      handleOnDragEnd={handleOnDragEnd}
+      getDragPayload={getDragPayload}
+      className="h-[50px] max-w-[118px]"
+    >
       <div
-        draggable
-        onDragStart={(e) => handleDragging(e, block.id)}
-        onDragEnd={() => setDraggedTileId("")}
         className={clsx(
-          "shadow-sms relative flex h-[50px] max-w-[118px] cursor-move items-center rounded-[3px] border border-gray-200",
+          "shadow-sms relative flex cursor-move items-center rounded-[3px] border border-gray-200",
           draggedTileId === block.id ? "opacity-40 shadow-xs" : "group",
         )}
       >

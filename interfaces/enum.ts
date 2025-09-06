@@ -28,9 +28,21 @@ export enum BlockKind {
 
 // Field Template Kinds
 export enum FieldKind {
-  TextField = "textField",
+  TextArea = "textarea",
   Signature = "signature",
   Initials = "initials",
   checkbox = "checkbox",
   Stamp = "stamp",
+}
+
+export enum Templates {
+  Text = "tpl-text",
+  Textarea = "tpl-textarea",
+  Image = "tpl-image",
+  Video = "tpl-video",
+  PageBreak = "tpl-page-break",
+  Signature = "tpl-signature",
+  Initials = "tpl-initials",
+  Checkbox = "tpl-checkbox",
+  Stamp = "tpl-stamp",
 }

@@ -6,7 +6,6 @@ import {
   Stamp,
 } from "lucide-react";
 import React from "react";
-import { DragPayload } from "@/dnd/payload";
 import {
   TextImagePreview,
   SignatureImagePreview,
@@ -14,6 +13,8 @@ import {
   CheckboxImagePreview,
   StampImagePreview,
 } from "./FieldPreviews";
+import { DragPayload } from "@/interfaces/dnd";
+import { FieldKind, Templates, TemplateTypes } from "@/interfaces/enum";
 
 export interface FillableFieldType {
   id: string;
@@ -25,12 +26,33 @@ export interface FillableFieldType {
 
 export const fillableFields: FillableFieldType[] = [
   {
-    id: "field-text",
+    id: "field-textarea",
     label: "Text field",
     icon: (props) => <LetterText {...props} />,
     dragPayload: {
-      type: "palette.block",
-      data: { templateId: "tpl-text" },
+      kind: TemplateTypes.Field,
+      data: {
+        instance: {
+          data: {
+            content: "",
+          },
+        },
+        template: {
+          id: Templates.Textarea,
+          type: TemplateTypes.Field,
+          kind: FieldKind.TextArea,
+        },
+        overlay: {
+          position: {
+            offsetX: 0,
+            offsetY: 0,
+          },
+          style: {
+            width: 214,
+            height: 106,
+          },
+        },
+      },
     },
     dragImagePreview: TextImagePreview,
   },
@@ -39,7 +61,7 @@ export const fillableFields: FillableFieldType[] = [
     label: "Signature",
     icon: (props) => <PencilLine {...props} size={16} />,
     dragPayload: {
-      type: "palette.block",
+      kind: TemplateTypes.Field,
       data: { templateId: "tpl-signature" },
     },
     dragImagePreview: SignatureImagePreview,
@@ -49,7 +71,7 @@ export const fillableFields: FillableFieldType[] = [
     label: "Initials",
     icon: (props) => <LetterText {...props} />,
     dragPayload: {
-      type: "palette.block",
+      kind: TemplateTypes.Field,
       data: { templateId: "tpl-initials" },
     },
     dragImagePreview: InitialsImagePreview,
@@ -59,7 +81,7 @@ export const fillableFields: FillableFieldType[] = [
     label: "Checkbox",
     icon: (props) => <SquareCheck {...props} />,
     dragPayload: {
-      type: "palette.block",
+      kind: TemplateTypes.Field,
       data: { templateId: "tpl-checkbox" },
     },
     dragImagePreview: CheckboxImagePreview,
@@ -69,7 +91,7 @@ export const fillableFields: FillableFieldType[] = [
     label: "Stamp",
     icon: (props) => <Stamp {...props} />,
     dragPayload: {
-      type: "palette.block",
+      kind: TemplateTypes.Field,
       data: { templateId: "tpl-stamp" },
     },
     dragImagePreview: StampImagePreview,

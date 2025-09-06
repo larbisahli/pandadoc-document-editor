@@ -4,10 +4,9 @@ export type Id<T extends string> = string & { __brand: T };
 export type DocumentId = Id<"doc">;
 export type PageId = Id<"page">;
 export type NodeId = Id<"node">;
-export type InstanceId = Id<"instance">;
-export type TemplateId = Id<"template">;
-export type FieldId = Id<"field">;
-export type OverlayId = Id<"overlay">;
+export type InstanceId = Id<"inst">;
+export type FieldId = Id<"fld">;
+export type OverlayId = Id<"ov">;
 
 export interface TextDataType {
   content?: string;

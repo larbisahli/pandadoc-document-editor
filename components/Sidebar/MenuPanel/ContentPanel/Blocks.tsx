@@ -1,3 +1,5 @@
+import { DragPayload } from "@/interfaces/dnd";
+import { TemplateTypes } from "@/interfaces/enum";
 import {
   ImageIcon,
   LetterText,
@@ -7,7 +9,6 @@ import {
   TableOfContents,
 } from "lucide-react";
 import React from "react";
-import { DragPayload } from "@/dnd/payload";
 
 export interface ContentBlockType {
   id: string;
@@ -22,7 +23,7 @@ export const contentBlocks: ContentBlockType[] = [
     label: "Text",
     icon: (props) => <LetterText {...props} />,
     dragPayload: {
-      type: "palette.block",
+      kind: TemplateTypes.Block,
       data: { templateId: "tpl-text" },
     },
   },
@@ -31,7 +32,7 @@ export const contentBlocks: ContentBlockType[] = [
     label: "Image",
     icon: (props) => <ImageIcon {...props} />,
     dragPayload: {
-      type: "palette.block",
+      kind: TemplateTypes.Block,
       data: { templateId: "tpl-image" },
     },
   },
@@ -40,7 +41,7 @@ export const contentBlocks: ContentBlockType[] = [
     label: "Video",
     icon: (props) => <SquarePlay {...props} />,
     dragPayload: {
-      type: "palette.block",
+      kind: TemplateTypes.Block,
       data: { templateId: "tpl-video" },
     },
   },
@@ -49,7 +50,7 @@ export const contentBlocks: ContentBlockType[] = [
     label: "Table of contents",
     icon: (props) => <TableOfContents {...props} />,
     dragPayload: {
-      type: "palette.block",
+      kind: TemplateTypes.Block,
       data: { templateId: "tpl-video" },
     },
   },
@@ -58,7 +59,7 @@ export const contentBlocks: ContentBlockType[] = [
     label: "Page break",
     icon: (props) => <ScissorsLineDashed {...props} />,
     dragPayload: {
-      type: "palette.block",
+      kind: TemplateTypes.Block,
       data: { templateId: "tpl-page-break" },
     },
   },

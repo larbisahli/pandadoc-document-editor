@@ -5,15 +5,17 @@ import { DragPayload } from "./DraggableOverlay";
 import { clientToCanvas } from "./helpers";
 import clsx from "clsx";
 import { OverlayId } from "@/interfaces/common";
+import { usePage } from "../context/PageContext";
 
 type OverlayDropSurfaceProps = {
-  surfaceRef: React.RefObject<HTMLElement>;
+  surfaceRef: React.RefObject<HTMLDivElement>;
   scale?: number;
   onCommit: (
     overlayId: OverlayId,
     { offsetX, offsetY }: { offsetX: number; offsetY: number },
   ) => void;
   children: React.ReactNode[];
+  onDropHandler: (e: React.DragEvent) => void;
 };
 
 function OverlayDropSurface({
@@ -21,8 +23,30 @@ function OverlayDropSurface({
   scale = 1,
   onCommit,
   children,
+  onDropHandler,
 }: OverlayDropSurfaceProps) {
   const [dragStart, setDragStart] = useState(false);
+
+  const { pageId } = usePage();
+
+  const AllowWrite = (overlayId: OverlayId, offsetX: number, nextY: number) => {
+    const pageLayoutElement = document.getElementById(
+      pageId,
+    ) as HTMLElement | null;
+    const resizeContainerElementId = `resizer-${overlayId}`;
+    const resizeContainerElement = document.getElementById(
+      resizeContainerElementId,
+    ) as HTMLElement | null;
+    if (!resizeContainerElement || !pageLayoutElement) return false;
+
+    const rect = pageLayoutElement.getBoundingClientRect();
+    const elementRect = resizeContainerElement.getBoundingClientRect();
+
+    // In case dragging beyond allowed surface
+    if (offsetX + elementRect?.width >= rect?.width) return false;
+    else if (nextY + elementRect?.height >= rect?.height) return false;
+    return true;
+  };
 
   const onDragOver = (e: React.DragEvent) => {
     // Allow drops
@@ -31,15 +55,18 @@ function OverlayDropSurface({
 
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
+    // Callbacks
+    onDropHandler(e);
+
     const surfaceEl = surfaceRef.current;
     if (!surfaceEl) return;
 
-    const json = e.dataTransfer?.getData("application/json");
-    if (!json) return;
+    const data = e.dataTransfer?.getData("application/x-field-payload");
+    if (!data) return;
 
     let payload: DragPayload | null = null;
     try {
-      payload = JSON.parse(json);
+      payload = JSON.parse(data);
     } catch {
       return;
     }
@@ -52,37 +79,36 @@ function OverlayDropSurface({
     let nextX = hit.offsetX - payload.grabOffset.offsetX / scale;
     let nextY = hit.offsetY - payload.grabOffset.offsetY / scale;
 
-    // Keep within the visible surface.
-    const el = document.getElementById(payload.id) as HTMLElement | null;
+    const element = document.getElementById(payload.id) as HTMLElement | null;
 
-    const w = el ? el.getBoundingClientRect().width / scale : 0;
-    const h = el ? el.getBoundingClientRect().height / scale : 0;
-    const maxX = Math.max(0, surfaceEl.clientWidth / scale - w);
-    const maxY = Math.max(0, surfaceEl.clientHeight / scale - h);
+    const maxX = Math.max(0, surfaceEl.clientWidth / scale);
+    const maxY = Math.max(0, surfaceEl.clientHeight / scale);
     nextX = Math.max(0, Math.min(maxX, nextX));
     nextY = Math.max(0, Math.min(maxY, nextY));
+
+    if (!AllowWrite(payload.id, nextX, nextY)) return;
 
     // Commit to app state
     onCommit(payload.id, { offsetX: nextX, offsetY: nextY });
 
     // Also place the element immediately
-    if (el) {
-      el.style.left = `${nextX}px`;
-      el.style.top = `${nextY}px`;
-      // in case dragend ran before
-      el.style.opacity = "";
+    if (element) {
+      element.style.left = `${nextX}px`;
+      element.style.top = `${nextY}px`;
+      // In case dragend ran before
+      element.style.opacity = "";
     }
   };
 
   return (
     <div
-      ref={surfaceRef as any}
+      ref={surfaceRef}
       onDragStart={() => setDragStart(true)}
       onDragEnd={() => setDragStart(false)}
       onDragOver={onDragOver}
       onDrop={onDrop}
       className={clsx(
-        "absolute inset-0 overflow-auto",
+        "overlay-surface absolute inset-0 overflow-auto",
         !dragStart && "pointer-events-none",
       )}
       data-node-type="overlayLayer"

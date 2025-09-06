@@ -1,7 +1,7 @@
 import { InstanceId, NodeId, OverlayId, PageId } from "@/interfaces/common";
 import { LayoutMultiPageState } from "@/interfaces/document";
 import { NodeDirection, NodeKind } from "@/interfaces/enum";
-import { BlockRefNode, ContainerNode, LayoutNode } from "@/interfaces/layout";
+import { insertFieldCommitted } from "@/lib/features/editor/actions";
 import { createAppSlice } from "@/lib/createAppSlice";
 import { RootState } from "@/lib/store";
 import { createSelector, type PayloadAction } from "@reduxjs/toolkit";
@@ -112,7 +112,7 @@ const initialState: LayoutSliceState = {
           },
         },
       },
-      overlayIds: ["ov-sign"] as OverlayId[],
+      overlayIds: [] as OverlayId[],
     },
   },
 };
@@ -142,6 +142,13 @@ export const layoutSlice = createAppSlice({
       },
     ),
   }),
+  extraReducers: (builder) => {
+    builder.addCase(insertFieldCommitted, (state, { payload }) => {
+      const { pageId, overlay } = payload;
+      const page = state.pages[pageId];
+      page.overlayIds.push(overlay.id);
+    });
+  },
   selectors: {
     selectAllPages: (state) => state.pages,
     selectPageById: (state, pageId: PageId) => state.pages[pageId],

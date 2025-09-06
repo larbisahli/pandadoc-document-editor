@@ -18,17 +18,17 @@ import {
 } from "@/utils/helpers/resizer";
 
 type Props = {
-  rowRootId: string;
-  nodeIds: string[];
+  rowNodeId: NodeId;
+  childNodeIds: NodeId[];
   index: number;
 };
 
-function RowResizerWrapper({ rowRootId, nodeIds, index }: Props) {
+function RowResizerWrapper({ rowNodeId, childNodeIds, index }: Props) {
   // Drag session cache: everything we must not recompute per-move.
   const sessionRef = useRef<{
     rowEl: HTMLDivElement | null;
-    leftEl: HTMLDivElement | null;
-    rightEl: HTMLDivElement | null;
+    leftChildEl: HTMLDivElement | null;
+    rightChildEl: HTMLDivElement | null;
     rowWidth: number;
     effectiveDeltaPx: number;
     anchorOffsetPx: number;
@@ -38,31 +38,39 @@ function RowResizerWrapper({ rowRootId, nodeIds, index }: Props) {
   const { pageId } = usePage();
   const dispatch = useAppDispatch();
 
-  // the two panes controlled by this resizer
-  const leftId = nodeIds[index] as NodeId;
-  const rightId = nodeIds[index + 1] as NodeId;
+  // The two panes controlled by this resizer
+  const leftChildNodeId = childNodeIds[index] as NodeId;
+  const rightChildNodeId = childNodeIds[index + 1] as NodeId;
 
-  // base % widths from the store (source of truth)
+  // Base % widths from the store (source of truth)
   const leftBasePct = useAppSelector((s) =>
-    parseFloat(selectRowItemLayoutStyle(s, pageId, leftId)?.width || "0"),
+    parseFloat(
+      selectRowItemLayoutStyle(s, pageId, leftChildNodeId)?.width || "0",
+    ),
   );
   const rightBasePct = useAppSelector((s) =>
-    parseFloat(selectRowItemLayoutStyle(s, pageId, rightId)?.width || "0"),
+    parseFloat(
+      selectRowItemLayoutStyle(s, pageId, rightChildNodeId)?.width || "0",
+    ),
   );
 
   const ensureSession = useCallback(() => {
     let session = sessionRef.current;
     if (session) return session;
 
-    const rowEl = document.getElementById(rowRootId) as HTMLDivElement | null;
-    const leftEl = document.getElementById(leftId) as HTMLDivElement | null;
-    const rightEl = document.getElementById(rightId) as HTMLDivElement | null;
+    const rowEl = document.getElementById(rowNodeId) as HTMLDivElement | null;
+    const leftChildEl = document.getElementById(
+      leftChildNodeId,
+    ) as HTMLDivElement | null;
+    const rightChildEl = document.getElementById(
+      rightChildNodeId,
+    ) as HTMLDivElement | null;
     const rowWidth = rowEl?.clientWidth ?? 0;
 
     sessionRef.current = session = {
       rowEl,
-      leftEl,
-      rightEl,
+      leftChildEl,
+      rightChildEl,
       rowWidth,
       effectiveDeltaPx: 0,
       anchorOffsetPx: 0,
@@ -72,15 +80,16 @@ function RowResizerWrapper({ rowRootId, nodeIds, index }: Props) {
     // Isolate layout of the row during drag
     if (rowEl) rowEl.style.contain = "layout style";
     return session;
-  }, [rowRootId, leftId, rightId]);
+  }, [rowNodeId, leftChildNodeId, rightChildNodeId]);
 
-  // rAF writer — applies styles based on the clamped, effective delta
+  // rAF writer, applies styles based on the clamped, effective delta
   const applyFrame = useCallback(() => {
     const session = sessionRef.current;
     if (!session) return;
     session.rafId = 0;
 
-    if (!session.rowWidth || !session.leftEl || !session.rightEl) return;
+    if (!session.rowWidth || !session.leftChildEl || !session.rightChildEl)
+      return;
 
     const dPct = pxToPct(session.rowWidth, session.effectiveDeltaPx);
 
@@ -92,9 +101,9 @@ function RowResizerWrapper({ rowRootId, nodeIds, index }: Props) {
       MIN_PCT,
     );
 
-    // write only what’s needed, keep them fixed during drag
-    session.leftEl.style.width = `${leftRow.toFixed(2)}%`;
-    session.rightEl.style.width = `${rightRow.toFixed(2)}%`;
+    // Write to style
+    session.leftChildEl.style.width = `${leftRow.toFixed(2)}%`;
+    session.rightChildEl.style.width = `${rightRow.toFixed(2)}%`;
   }, [leftBasePct, rightBasePct]);
 
   const schedule = useCallback(() => {
@@ -147,8 +156,8 @@ function RowResizerWrapper({ rowRootId, nodeIds, index }: Props) {
 
       if (session.rowWidth) {
         // finalize effective delta (already re-anchored)
-        const effPx = rawDeltaPx + session.anchorOffsetPx;
-        const dPctRaw = pxToPct(session.rowWidth, effPx);
+        const effectivePx = rawDeltaPx + session.anchorOffsetPx;
+        const dPctRaw = pxToPct(session.rowWidth, effectivePx);
         const dPctClamped = clampDeltaPercent(
           leftBasePct,
           rightBasePct,
@@ -166,24 +175,24 @@ function RowResizerWrapper({ rowRootId, nodeIds, index }: Props) {
         dispatch(
           updateLayoutCalculatedWidth({
             pageId,
-            nodeId: leftId,
+            nodeId: leftChildNodeId,
             width: `${leftRow.toFixed(2)}%`,
           }),
         );
         dispatch(
           updateLayoutCalculatedWidth({
             pageId,
-            nodeId: rightId,
+            nodeId: rightChildNodeId,
             width: `${rightRow.toFixed(2)}%`,
           }),
         );
 
         // Ensure DOM reflects committed values
-        if (session.leftEl) {
-          session.leftEl.style.width = `${leftRow.toFixed(2)}%`;
+        if (session.leftChildEl) {
+          session.leftChildEl.style.width = `${leftRow.toFixed(2)}%`;
         }
-        if (session.rightEl) {
-          session.rightEl.style.width = `${rightRow.toFixed(2)}%`;
+        if (session.rightChildEl) {
+          session.rightChildEl.style.width = `${rightRow.toFixed(2)}%`;
         }
       }
 
@@ -197,8 +206,8 @@ function RowResizerWrapper({ rowRootId, nodeIds, index }: Props) {
       rightBasePct,
       dispatch,
       pageId,
-      leftId,
-      rightId,
+      leftChildNodeId,
+      rightChildNodeId,
     ],
   );
 

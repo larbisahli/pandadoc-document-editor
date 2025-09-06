@@ -35,18 +35,17 @@ function LayoutRenderer({ nodeId }: LayoutRendererProps) {
 
       return (
         <Shell id={n.id}>
-          {n.children.map((cid, index) => (
+          {n.children.map((cid, idx) => (
             <React.Fragment key={cid}>
               <ChildWrapper nodeId={cid}>
                 <LayoutRenderer nodeId={cid} />
               </ChildWrapper>
               {/* Add resizer between row children, but not after the last */}
-              {!isColumn && index < n.children.length - 1 && (
+              {!isColumn && idx < n.children.length - 1 && (
                 <RowResizerWrapper
-                  rowRootId={n.id}
-                  nodeId={cid}
-                  nodeIds={n.children}
-                  index={index}
+                  rowNodeId={n.id}
+                  childNodeIds={n.children}
+                  index={idx}
                 />
               )}
             </React.Fragment>

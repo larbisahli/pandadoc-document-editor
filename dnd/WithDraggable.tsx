@@ -18,12 +18,16 @@ type WithDraggableProps = {
   className?: string;
   suppressHighlight?: boolean;
   children: React.ReactNode;
+  handleOnDragStart: (e: React.DragEvent) => void;
+  handleOnDragEnd: (e: React.DragEvent) => void;
 };
 
 function WithDraggable({
   getDragPayload,
   dragImageSelector,
   effectAllowed = "copyMove",
+  handleOnDragStart,
+  handleOnDragEnd,
   suppressHighlight = false,
   className,
   children,
@@ -31,9 +35,16 @@ function WithDraggable({
   const ref = React.useRef<HTMLDivElement>(null);
 
   const onDragStart = (e: React.DragEvent) => {
+    handleOnDragStart(e);
+
     const payload = getDragPayload();
     e.dataTransfer.effectAllowed = effectAllowed;
-    e.dataTransfer.setData("application/json", JSON.stringify(payload));
+    e.dataTransfer.setData(
+      "application/x-block-payload",
+      JSON.stringify(payload),
+    );
+
+    // ------
     // Highlight
     if (suppressHighlight) {
       e.dataTransfer.setData(NOHL, "1");
@@ -52,6 +63,7 @@ function WithDraggable({
       ref={ref}
       draggable
       onDragStart={onDragStart}
+      onDragEnd={handleOnDragEnd}
       className={className}
       role="listitem"
       tabIndex={0}

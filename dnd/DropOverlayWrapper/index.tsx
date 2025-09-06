@@ -25,7 +25,9 @@ function DropOverlayWrapper({ className, children, onDrop }: Props) {
   const onDropHandle = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    const payload = JSON.parse(e.dataTransfer.getData("application/json"));
+    const data = e.dataTransfer.getData("application/x-block-payload");
+    if (!data) return;
+    const payload = JSON.parse(data);
     // Callbacks
     onDrop(payload, activeSide);
     onDropEdgeHandle();
@@ -38,7 +40,7 @@ function DropOverlayWrapper({ className, children, onDrop }: Props) {
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDropHandle}
-      className={clsx("relative", className)}
+      className="absolute inset-0"
     >
       {children}
       {/* Block highlight overlay */}

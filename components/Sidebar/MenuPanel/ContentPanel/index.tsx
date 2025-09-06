@@ -4,7 +4,7 @@ import React from "react";
 import MenuHeader from "../MenuHeader";
 import { contentBlocks } from "./Blocks";
 import BlockTile from "./BlockTile";
-import { fillableFields } from "./FillableFields";
+import { fillableFields } from "./Fields";
 import FieldTile from "./FieldTile";
 
 const ContentPanel = () => {

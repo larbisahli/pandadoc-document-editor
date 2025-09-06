@@ -8,7 +8,7 @@ export interface ResizerPayloadType {
 }
 
 // minimum width for any pane (in percent)
-export const MIN_PCT = 15;
+export const MIN_PCT = 7;
 
 export function pctToPx(rowWidth: number, pct: number) {
   return (pct / 100) * rowWidth;
@@ -62,7 +62,7 @@ export function applyPairPercent(
   // Cap to original pair total to avoid any rounding creep
   const cap = Math.max(0, leftBasePct + rightBasePct);
   const pairNow = leftRow + rightRow;
-  if (pairNow > cap && pairNow > 0) {
+  if (pairNow > 0 && pairNow > cap) {
     const s = cap / pairNow;
     leftRow = Math.max(minPct, leftRow * s);
     rightRow = Math.max(minPct, rightRow * s);

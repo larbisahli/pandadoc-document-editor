@@ -37,12 +37,14 @@ const DocumentPage = ({ pageId }: DocumentPageProps) => {
             >
               <div className="absolute inset-0 mx-[50px]">
                 <div
+                  id={pageId}
                   data-node-type="layout-root"
                   className="relative flex h-full flex-col outline-none"
                 >
                   {/* Flow layer: normal document layout */}
                   <LayoutRenderer nodeId={rootId} />
                   {/* Free layer: absolute overlays above flow */}
+                  <div>LOOOOOL</div>
                   <OverlayLayer />
                 </div>
               </div>

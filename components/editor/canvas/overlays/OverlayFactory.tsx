@@ -3,19 +3,15 @@ import React from "react";
 import { OverlayId } from "@/interfaces/common";
 import { selectInstance } from "@/lib/features/instance/instanceSlice";
 import { selectTemplate } from "@/lib/features/template/templateSlice";
-import { FieldKind } from "@/interfaces/enum";
-import TextField from "../../fields/TextField";
 import { selectOverlayById } from "@/lib/features/overlay/overlaySlice";
-import { DraggableOverlay } from "./DraggableOverlay";
 import { browserZoomLevel } from "./helpers";
+import ResizableFieldWrapper from "./ResizableFieldWrapper";
+import DraggableOverlay from "./DraggableOverlay";
+import { FIELD_COMPONENTS } from "./FieldRegistry";
 
 interface FieldRendererProps {
   overlayId: OverlayId;
 }
-
-const FIELD_COMPONENTS = {
-  [FieldKind.TextField]: TextField,
-} as const;
 
 function FieldFactory({ overlayId }: FieldRendererProps) {
   const overlay = useAppSelector((state) =>
@@ -28,25 +24,35 @@ function FieldFactory({ overlayId }: FieldRendererProps) {
     selectTemplate(state, instance?.templateId),
   );
 
-  console.log({ overlay, instance, template });
+  if (!overlay || !instance || !template?.kind) return null;
 
-  const Component =
-    FIELD_COMPONENTS[template.kind as keyof typeof FIELD_COMPONENTS];
+  const Component = FIELD_COMPONENTS[template.kind];
 
   if (!Component) {
     return null;
   }
 
+  const { position, style } = overlay;
+  const width = style?.width ?? undefined;
+  const height = style?.height ?? undefined;
+  const offsetX = position?.offsetX ?? 0;
+  const offsetY = position?.offsetY ?? 0;
+
   return (
     <DraggableOverlay
-      key={overlayId}
       overlayId={overlayId}
-      offsetX={overlay?.position?.offsetX}
-      offsetY={overlay?.position?.offsetY}
+      offsetX={offsetX}
+      offsetY={offsetY}
       scale={browserZoomLevel}
     >
-      {/* TODO work on container resize */}
-      <Component {...instance.data} props={instance.props} />
+      <ResizableFieldWrapper
+        overlayId={overlayId}
+        width={width}
+        height={height}
+        scale={browserZoomLevel}
+      >
+        <Component overlayId={overlayId} instance={instance} />
+      </ResizableFieldWrapper>
     </DraggableOverlay>
   );
 }

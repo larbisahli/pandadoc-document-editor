@@ -1,8 +1,9 @@
 import clsx from "clsx";
 import { GripVertical } from "lucide-react";
 import React, { useCallback, useState } from "react";
-import { FillableFieldType } from "./FillableFields";
+import { FillableFieldType } from "./Fields";
 import { WithDraggable } from "@/dnd";
+import { TemplateTypes } from "@/interfaces/enum";
 
 interface FieldTileProps {
   field: FillableFieldType;
@@ -18,18 +19,31 @@ const FieldTile = ({ field }: FieldTileProps) => {
     [field.dragPayload],
   );
 
+  const handleOnDragStart = useCallback(
+    (e: React.DragEvent) => {
+      document.body.setAttribute("data-drag-kind", TemplateTypes.Field);
+      setDraggedTileId(field.id);
+    },
+    [field.id],
+  );
+
+  const handleOnDragEnd = useCallback((e: React.DragEvent) => {
+    document.body.removeAttribute("data-drag-kind");
+    setDraggedTileId("");
+  }, []);
+
   return (
     <WithDraggable
       suppressHighlight
+      effectAllowed="move"
       dragImageSelector=".ghost"
       getDragPayload={getDragPayload}
+      handleOnDragStart={handleOnDragStart}
+      handleOnDragEnd={handleOnDragEnd}
     >
       <div
-        draggable
-        onDragStart={() => setDraggedTileId(field.id)}
-        onDragEnd={() => setDraggedTileId("")}
         className={clsx(
-          "shadow-sms relative flex h-[50px] max-w-[118px] cursor-move items-center rounded-[3px] border border-orange-200",
+          "shadow-sms pointer-events-auto relative flex h-[50px] max-w-[118px] cursor-move items-center rounded-[3px] border border-orange-200",
           draggedTileId === field.id ? "shadow-sms opacity-40" : "group",
         )}
       >

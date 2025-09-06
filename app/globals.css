@@ -30,3 +30,8 @@ button {
 .col .docBlock:not(:last-child) {
   margin-bottom: 26px;
 }
+
+/* globals.css */
+[data-drag-kind="field"] .overlay-surface {
+  pointer-events: auto !important;
+}

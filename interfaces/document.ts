@@ -6,7 +6,7 @@ import { TemplateType } from "./template";
 
 export interface Normalized<T> {
   byId: Record<string, T>;
-  allIds: string[];
+  // allIds: string[];
 }
 
 /**

@@ -1,9 +1,10 @@
-import { DataType, InstanceId, TemplateId } from "./common";
+import { DataType, InstanceId } from "./common";
+import { Templates } from "./enum";
 import { ContentStyleType, LayoutStyleType } from "./style";
 
 export interface InstanceType {
   id: InstanceId;
-  templateId: TemplateId;
+  templateId: Templates;
   data: DataType; // e.g. {content:".."} or {value:".."} or {url:".."}
   props?: Record<string, unknown>;
   meta?: Record<string, unknown>;

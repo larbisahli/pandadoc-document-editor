@@ -1,6 +1,7 @@
 import { Point } from "../DraggableOverlay";
 
-export const browserZoomLevel = window?.visualViewport?.scale ?? 1;
+export const browserZoomLevel =
+  typeof window !== "undefined" ? (window.visualViewport?.scale ?? 1) : 1;
 
 /** Create a fixed-position clone as drag image. */
 export function makeDragImageFrom(
@@ -29,7 +30,7 @@ export function makeDragImageFrom(
   document.body.appendChild(ghost);
 
   return {
-    el: ghost,
+    element: ghost,
     /** Position ghost so pointer stays aligned to the same spot in the box. */
     updateAt(
       clientX: number,
@@ -53,11 +54,43 @@ export function clientToCanvas(
   scale = 1,
 ): Point {
   const r = surfaceEl.getBoundingClientRect();
-  // position inside the visible surface
+  // Position inside the visible surface
   const xInView = clientX - r.left;
   const yInView = clientY - r.top;
-  // add scroll to get content coords, then unscale
+  // Add scroll to get content coords, then unscale
   const offsetX = (xInView + surfaceEl.scrollLeft) / scale;
   const offsetY = (yInView + surfaceEl.scrollTop) / scale;
   return { offsetX, offsetY };
+}
+
+export const num = (value: unknown, f = 0) => {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : f;
+};
+
+export const clamp = (value: number, low?: number, high?: number) =>
+  Math.max(low ?? -Infinity, Math.min(high ?? Infinity, value));
+
+/** Compute page content geometry & origin in DEVICE px, plus content size in CONTENT coords */
+export function getPageMetrics(pageElement: HTMLElement, zoom: number) {
+  const computedStyle = getComputedStyle(pageElement);
+  const padL = num(computedStyle.paddingLeft);
+  const padR = num(computedStyle.paddingRight);
+  const padT = num(computedStyle.paddingTop);
+  const padB = num(computedStyle.paddingBottom);
+
+  const rect = pageElement.getBoundingClientRect();
+
+  // Content box origin
+  const originLeftDev = rect.left + pageElement.clientLeft + padL;
+  const originTopDev = rect.top + pageElement.clientTop + padT;
+
+  // Inner content size
+  const innerWDev = pageElement.clientWidth - padL - padR;
+  const innerHDev = pageElement.clientHeight - padT - padB;
+
+  const contentW = num(innerWDev, 0) / (zoom > 0 ? zoom : 1);
+  const contentH = num(innerHDev, 0) / (zoom > 0 ? zoom : 1);
+
+  return { originLeftDev, originTopDev, contentW, contentH };
 }

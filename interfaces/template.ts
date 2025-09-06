@@ -1,20 +1,28 @@
-import { TemplateId } from "./common";
-import { BlockKind, FieldKind, TemplateTypes } from "./enum";
+import { BlockKind, FieldKind, Templates, TemplateTypes } from "./enum";
 
 export type TemplateType = BlockTemplateType | FieldTemplateType;
 
 export interface BlockTemplateType {
-  id: TemplateId;
-  type: TemplateTypes.Block;
+  id: Templates;
+  type: TemplateTypes;
   kind: BlockKind;
-  requiredSlots: string[]; // e.g. ["content"] or ["src","alt"]
-  optionalSlots?: string[];
 }
 
 export interface FieldTemplateType {
-  id: TemplateId;
-  type: TemplateTypes.Field;
+  id: Templates;
+  type: TemplateTypes;
   kind: FieldKind;
   valueSchema?: Record<string, unknown>;
   propsSchema?: Record<string, unknown>;
 }
+
+export type TemplatesTypes =
+  | "tpl-text"
+  | "tpl-textarea"
+  | "tpl-image"
+  | "tpl-video"
+  | "tpl-page-break"
+  | "tpl-signature"
+  | "tpl-initials"
+  | "tpl-checkbox"
+  | "tpl-stamp";
