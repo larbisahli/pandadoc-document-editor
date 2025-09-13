@@ -3,7 +3,7 @@ import { Ellipsis, Plus } from "lucide-react";
 
 const ContentHeader = () => {
   return (
-    <div className="mx-auto min-h-[45px] px-2 py-[4px]">
+    <div className="mx-auto min-h-[45px] px-[8px] py-[14px]">
       <div className="relative flex h-[24px] items-center justify-between">
         {<p className="text-muted text-sm">3 pages</p>}
         <Tooltip content="Add content" placement="bottom">

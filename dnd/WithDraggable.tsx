@@ -1,9 +1,9 @@
+import { DropPayload } from "@/interfaces/dnd";
 import React, { memo } from "react";
-import type { DragPayload } from "./payload";
-import { NOHL } from "./DropOverlayWrapper/useEdgeHover";
+import { PALETTE_DATA_FORMAT } from ".";
 
 type WithDraggableProps = {
-  getDragPayload: () => DragPayload;
+  getDragPayload: () => DropPayload;
   /** Optional CSS selector inside children to use as custom drag preview */
   dragImageSelector?: string;
   effectAllowed?:
@@ -16,7 +16,6 @@ type WithDraggableProps = {
     | "move"
     | "all";
   className?: string;
-  suppressHighlight?: boolean;
   children: React.ReactNode;
   handleOnDragStart: (e: React.DragEvent) => void;
   handleOnDragEnd: (e: React.DragEvent) => void;
@@ -28,7 +27,6 @@ function WithDraggable({
   effectAllowed = "copyMove",
   handleOnDragStart,
   handleOnDragEnd,
-  suppressHighlight = false,
   className,
   children,
 }: WithDraggableProps) {
@@ -39,16 +37,8 @@ function WithDraggable({
 
     const payload = getDragPayload();
     e.dataTransfer.effectAllowed = effectAllowed;
-    e.dataTransfer.setData(
-      "application/x-block-payload",
-      JSON.stringify(payload),
-    );
+    e.dataTransfer.setData(PALETTE_DATA_FORMAT, JSON.stringify(payload));
 
-    // ------
-    // Highlight
-    if (suppressHighlight) {
-      e.dataTransfer.setData(NOHL, "1");
-    }
     // Image preview
     if (dragImageSelector && ref.current) {
       const element = ref.current.querySelector(

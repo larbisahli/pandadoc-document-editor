@@ -1,28 +1,21 @@
 import { PageId } from "@/interfaces/common";
-import { InstanceType } from "@/interfaces/instance";
-import { OverlayItem } from "@/interfaces/overlay";
-import { TemplateType } from "@/interfaces/template";
 import { AppDispatch, RootState } from "@/lib/store";
 import { newInstanceId, newOverlayId } from "@/utils/ids";
-import { insertFieldCommitted, InsertFieldPayload } from "./actions";
+import { insertFieldCommitted, InsertFieldPayload } from "../actions";
+import { DropEvent } from "@/interfaces/dnd";
 
 interface InsertFieldFlowType {
   pageId: PageId;
   offsetX: number;
   offsetY: number;
-  instance: Omit<InstanceType, "id" | "templateId"> &
-    Partial<Pick<InstanceType, "id" | "templateId">>;
-  template: TemplateType;
-  overlay: Omit<OverlayItem, "id" | "instanceId"> &
-    Partial<Pick<OverlayItem, "id" | "instanceId">>;
+  instance: DropEvent["payload"]["data"]["instance"];
+  overlay: DropEvent["payload"]["data"]["overlay"];
 }
 
 export const insertFieldFlow =
   (args: InsertFieldFlowType) =>
   (dispatch: AppDispatch, getState: () => RootState) => {
-    // You can validate IDs, generate defaults, permissions, etc. here
-
-    const { template, instance, overlay, offsetX, offsetY, pageId } = args;
+    const { instance, overlay, offsetX, offsetY, pageId } = args;
 
     // Generate IDs
     const instanceId = newInstanceId();
@@ -30,14 +23,12 @@ export const insertFieldFlow =
 
     const payload: InsertFieldPayload = {
       pageId,
-      template,
       instance: {
-        ...instance,
+        ...instance!,
         id: instanceId,
-        templateId: template?.id,
       },
       overlay: {
-        ...overlay,
+        ...overlay!,
         id: overlayId,
         instanceId,
         position: {
@@ -46,5 +37,6 @@ export const insertFieldFlow =
         },
       },
     };
+
     dispatch(insertFieldCommitted(payload));
   };

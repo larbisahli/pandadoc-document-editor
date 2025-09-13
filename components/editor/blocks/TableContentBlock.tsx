@@ -1,12 +1,8 @@
-import { TableContentType } from "@/interfaces/common";
 import { memo } from "react";
+import { BaseBlockProps } from "../canvas/blocks/BlockRegistry";
 
-interface Props extends TableContentType {
-  props?: Record<string, unknown>;
-}
-
-function TableContentBlock({ props }: Props) {
-  return <div>table of content</div>;
+function TableContentBlock({ props }: BaseBlockProps) {
+  return <div className="bg-blue-200">table of content</div>;
 }
 
 export default memo(TableContentBlock);

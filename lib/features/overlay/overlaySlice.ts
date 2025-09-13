@@ -8,34 +8,7 @@ import { createSelector, type PayloadAction } from "@reduxjs/toolkit";
 
 type OverlaySliceState = Normalized<OverlayItem>;
 
-const initialState: OverlaySliceState = {
-  byId: {
-    ["ov-sign"]: {
-      id: "ov-sign" as OverlayId,
-      instanceId: "fld-sign" as InstanceId,
-      position: {
-        offsetX: 18,
-        offsetY: 129,
-      },
-      style: {
-        width: 214,
-        height: 106,
-      },
-    },
-    ["ov-sign-1"]: {
-      id: "ov-sign-1" as OverlayId,
-      instanceId: "fld-sign" as InstanceId,
-      position: {
-        offsetX: 188,
-        offsetY: 229,
-      },
-      style: {
-        width: 214,
-        height: 106,
-      },
-    },
-  },
-};
+const initialState: OverlaySliceState = { byId: {} };
 
 export const overlaySlice = createAppSlice({
   name: "overlays",

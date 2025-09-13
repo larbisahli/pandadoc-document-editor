@@ -1,10 +1,14 @@
 import { InstanceId, NodeId, OverlayId, PageId } from "@/interfaces/common";
 import { LayoutMultiPageState } from "@/interfaces/document";
 import { NodeDirection, NodeKind } from "@/interfaces/enum";
-import { insertFieldCommitted } from "@/lib/features/editor/actions";
+import {
+  dropApplied,
+  insertFieldCommitted,
+} from "@/lib/features/editor/actions";
 import { createAppSlice } from "@/lib/createAppSlice";
 import { RootState } from "@/lib/store";
 import { createSelector, type PayloadAction } from "@reduxjs/toolkit";
+import { applyDrop } from "@/utils/layout-apply-drop";
 
 type LayoutSliceState = LayoutMultiPageState;
 
@@ -15,6 +19,7 @@ const initialState: LayoutSliceState = {
       byId: {
         ["root_1"]: {
           id: "root_1" as NodeId,
+          parentId: null,
           kind: "container" as NodeKind,
           direction: "column" as NodeDirection,
           children: ["rowTop", "rowBottom"] as NodeId[],
@@ -22,6 +27,7 @@ const initialState: LayoutSliceState = {
         },
         ["rowTop"]: {
           id: "rowTop" as NodeId,
+          parentId: "root_1" as NodeId,
           kind: "container" as NodeKind,
           direction: "row" as NodeDirection,
           children: ["colTopLeft", "colTopMiddle", "colTopRight"] as NodeId[],
@@ -29,6 +35,7 @@ const initialState: LayoutSliceState = {
         },
         ["colTopRight"]: {
           id: "colTopRight" as NodeId,
+          parentId: "rowTop" as NodeId,
           kind: "container" as NodeKind,
           direction: "row" as NodeDirection,
           children: ["colTopRight-left", "colTopRight-right"] as NodeId[],
@@ -38,6 +45,7 @@ const initialState: LayoutSliceState = {
         },
         ["colTopRight-left"]: {
           id: "colTopRight-left" as NodeId,
+          parentId: "colTopRight" as NodeId,
           kind: "blockRef" as NodeKind,
           instanceId: "inst-title" as InstanceId,
           layoutStyle: {
@@ -46,6 +54,7 @@ const initialState: LayoutSliceState = {
         },
         ["colTopRight-right"]: {
           id: "colTopRight-right" as NodeId,
+          parentId: "colTopRight" as NodeId,
           kind: "blockRef" as NodeKind,
           instanceId: "inst-title" as InstanceId,
           layoutStyle: {
@@ -54,6 +63,7 @@ const initialState: LayoutSliceState = {
         },
         ["rowBottom"]: {
           id: "rowBottom" as NodeId,
+          parentId: "root_1" as NodeId,
           kind: "container" as NodeKind,
           direction: "row" as NodeDirection,
           children: ["colBottomLeft", "colBottomRight"] as NodeId[],
@@ -61,24 +71,27 @@ const initialState: LayoutSliceState = {
         },
         ["colTopLeft"]: {
           id: "colTopLeft" as NodeId,
+          parentId: "rowTop" as NodeId,
           kind: "container" as NodeKind,
           direction: "column" as NodeDirection,
-          children: ["titleLeaf", "introLeaf", "titleLeaf2"] as NodeId[],
+          children: ["titleLeaf", "introLeaf"] as NodeId[],
           layoutStyle: {
             width: "33.33%",
           },
         },
         ["colBottomLeft"]: {
           id: "colBottomLeft" as NodeId,
+          parentId: "rowBottom" as NodeId,
           kind: "container" as NodeKind,
           direction: "column" as NodeDirection,
-          children: ["titleLeaf", "introLeaf", "titleLeaf2"] as NodeId[],
+          children: ["titleLeaf2", "introLeaf2"] as NodeId[],
           layoutStyle: {
             width: "50%",
           },
         },
         ["colBottomRight"]: {
           id: "colBottomRight" as NodeId,
+          parentId: "rowBottom" as NodeId,
           kind: "blockRef" as NodeKind,
           instanceId: "inst-title" as InstanceId,
           layoutStyle: {
@@ -87,24 +100,35 @@ const initialState: LayoutSliceState = {
         },
         ["titleLeaf"]: {
           id: "titleLeaf" as NodeId,
+          parentId: "colTopLeft" as NodeId,
           kind: "blockRef" as NodeKind,
           instanceId: "inst-title" as InstanceId,
           layoutStyle: {},
         },
         ["titleLeaf2"]: {
           id: "titleLeaf2" as NodeId,
+          parentId: "colBottomLeft" as NodeId,
           kind: "blockRef" as NodeKind,
           instanceId: "inst-title" as InstanceId,
           layoutStyle: {},
         },
         ["introLeaf"]: {
           id: "introLeaf" as NodeId,
+          parentId: "colTopLeft" as NodeId,
           kind: "blockRef" as NodeKind,
-          instanceId: "inst-intro" as InstanceId,
+          instanceId: "inst-title" as InstanceId,
+          layoutStyle: {},
+        },
+        ["introLeaf2"]: {
+          id: "introLeaf2" as NodeId,
+          parentId: "colBottomLeft" as NodeId,
+          kind: "blockRef" as NodeKind,
+          instanceId: "inst-title" as InstanceId,
           layoutStyle: {},
         },
         ["colTopMiddle"]: {
           id: "colTopMiddle" as NodeId,
+          parentId: "rowTop" as NodeId,
           kind: "blockRef" as NodeKind,
           instanceId: "inst-title" as InstanceId,
           layoutStyle: {
@@ -121,6 +145,15 @@ export const layoutSlice = createAppSlice({
   name: "layout",
   initialState,
   reducers: (create) => ({
+    // add: {
+    //   reducer(state, action: PayloadAction<{ id: string; text: string }>) {
+    //     state.push(action.payload);
+    //   },
+    //   prepare(text: string) {
+    //     // Generate ID here
+    //     return { payload: { id: nanoid(), text } };
+    //   }
+    // },
     addNode: create.reducer(
       (state, action: PayloadAction<{ title: string }>) => {},
     ),
@@ -143,11 +176,19 @@ export const layoutSlice = createAppSlice({
     ),
   }),
   extraReducers: (builder) => {
-    builder.addCase(insertFieldCommitted, (state, { payload }) => {
-      const { pageId, overlay } = payload;
-      const page = state.pages[pageId];
-      page.overlayIds.push(overlay.id);
-    });
+    builder
+      .addCase(insertFieldCommitted, (state, { payload }) => {
+        const { pageId, overlay } = payload;
+        const page = state.pages[pageId];
+        if (page) {
+          page.overlayIds.push(overlay.id);
+        }
+      })
+      .addCase(dropApplied, (state, action) => {
+        const dropEvent = action.payload;
+        const page = state.pages[dropEvent.pageId];
+        applyDrop(page.byId, dropEvent, page.rootId);
+      });
   },
   selectors: {
     selectAllPages: (state) => state.pages,

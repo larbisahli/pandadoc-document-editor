@@ -1,14 +1,15 @@
 import { OverlayId } from "@/interfaces/common";
 import { FieldKind } from "@/interfaces/enum";
 import { InstanceType } from "@/interfaces/instance";
-import React, { ComponentType, lazy } from "react";
+import dynamic from "next/dynamic";
+import React, { ComponentType } from "react";
 
 export const FIELD_KINDS = [
   FieldKind.TextArea,
   FieldKind.Initials,
   FieldKind.Signature,
   FieldKind.Stamp,
-  FieldKind.checkbox,
+  FieldKind.Checkbox,
 ] as const;
 
 export const isFieldKind = (v: unknown): v is FieldKind =>
@@ -27,15 +28,32 @@ const UnknownField: AnyFieldComponent = ({ overlayId }) => (
 );
 
 // Static or lazy component imports
-const TextField = lazy(() => import("@/components/editor/fields/TextField"));
+const TextAreaLoader = () => import("@/components/editor/fields/TextArea");
+const InitialsLoader = () => import("@/components/editor/fields/Initials");
+const SignatureLoader = () => import("@/components/editor/fields/Signature");
+const StampLoader = () => import("@/components/editor/fields/Stamp");
+const CheckboxLoader = () => import("@/components/editor/fields/Checkbox");
+
+export const TextArea = dynamic(TextAreaLoader);
+export const Initials = dynamic(InitialsLoader);
+export const Signature = dynamic(SignatureLoader);
+export const Stamp = dynamic(StampLoader);
+export const Checkbox = dynamic(CheckboxLoader);
+
+// warm the chunk on drag
+export const preloadTextAreaField = () => TextAreaLoader();
+export const preloadInitialsField = () => InitialsLoader();
+export const preloadSignatureField = () => SignatureLoader();
+export const preloadStampField = () => StampLoader();
+export const preloadCheckboxField = () => CheckboxLoader();
 
 /* The registry (static map) */
 const STATIC_REGISTRY: Record<FieldKind, AnyFieldComponent> = {
-  [FieldKind.TextArea]: TextField,
-  [FieldKind.Initials]: TextField,
-  [FieldKind.Signature]: TextField,
-  [FieldKind.Stamp]: TextField,
-  [FieldKind.checkbox]: TextField,
+  [FieldKind.TextArea]: TextArea,
+  [FieldKind.Initials]: Initials,
+  [FieldKind.Signature]: Signature,
+  [FieldKind.Stamp]: Stamp,
+  [FieldKind.Checkbox]: Checkbox,
 };
 
 /* Runtime registry (extensible) */

@@ -1,16 +1,6 @@
-import { clamp, hasTransferType } from "@/utils";
+import { DropSide } from "@/interfaces/enum";
+import { clamp } from "@/utils";
 import { useEffect, useRef, useState, RefObject } from "react";
-
-export enum SideEnum {
-  TOP = "top",
-  LEFT = "left",
-  RIGHT = "right",
-  BOTTOM = "bottom",
-}
-
-export type Side = SideEnum | null;
-
-export const NOHL = "application/x-editor-nohighlight";
 
 type BoundsRect = {
   left: number;
@@ -29,13 +19,13 @@ const EDGE_FRACTION_X = 0.2,
 
 export function useEdgeHover(ref: RefObject<HTMLDivElement | null>) {
   const boundsRef = useRef<BoundsRect | null>(null);
-  const lastSideRef = useRef<Side>(null);
+  const lastSideRef = useRef<DropSide>(null);
   const rafRef = useRef<number>(0);
   const depthRef = useRef<number>(0);
-  const pendingSideRef = useRef<Side>(null);
+  const pendingSideRef = useRef<DropSide>(null);
 
-  const [activeSide, setActiveSide] = useState<Side>(null);
-  const [isHovering, setIsHovering] = useState(false);
+  const [activeSide, setActiveSide] = useState<DropSide | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   // Cache geometry
   const onDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
@@ -63,10 +53,7 @@ export function useEdgeHover(ref: RefObject<HTMLDivElement | null>) {
         edgeY,
       };
 
-      // skip block highlight
-      if (!hasTransferType(e, NOHL)) {
-        setIsHovering(true);
-      }
+      setIsDragging(true);
     }
     depthRef.current += 1;
   };
@@ -80,7 +67,7 @@ export function useEdgeHover(ref: RefObject<HTMLDivElement | null>) {
       lastSideRef.current = null;
       pendingSideRef.current = null;
       setActiveSide(null);
-      setIsHovering(false);
+      setIsDragging(false);
     }
   };
 
@@ -98,7 +85,7 @@ export function useEdgeHover(ref: RefObject<HTMLDivElement | null>) {
     }
   };
 
-  const computeSide = (e: React.DragEvent<HTMLDivElement>): Side => {
+  const computeSide = (e: React.DragEvent<HTMLDivElement>): DropSide | null => {
     if (!boundsRef.current) return null;
 
     const { width, height, left, top, edgeX, edgeY } = boundsRef.current;
@@ -109,43 +96,43 @@ export function useEdgeHover(ref: RefObject<HTMLDivElement | null>) {
       dR = width - x,
       dT = y,
       dB = height - y;
-    let side: Side = SideEnum.LEFT;
+    let side: DropSide = DropSide.Left;
     let min = dL;
     let thresholdX = edgeX,
       thresholdY = edgeY;
 
     if (dR < min) {
       min = dR;
-      side = SideEnum.RIGHT;
+      side = DropSide.Right;
     }
     if (dT < min) {
       min = dT;
-      side = SideEnum.TOP;
+      side = DropSide.Top;
     }
     if (dB < min) {
       min = dB;
-      side = SideEnum.BOTTOM;
+      side = DropSide.Bottom;
     }
 
     // HYSTERESIS_PX adds a buffer so that once we’re in one edge, it doesn’t immediately flip when you move slightly away.
     switch (lastSideRef.current) {
-      case SideEnum.LEFT:
-      case SideEnum.RIGHT:
+      case DropSide.Left:
+      case DropSide.Right:
         if (side === lastSideRef.current) thresholdX += HYSTERESIS_PX;
         break;
-      case SideEnum.TOP:
-      case SideEnum.BOTTOM:
+      case DropSide.Top:
+      case DropSide.Bottom:
         if (side === lastSideRef.current) thresholdY += HYSTERESIS_PX;
         break;
     }
 
     if (
-      (side === SideEnum.LEFT || side === SideEnum.RIGHT) &&
+      (side === DropSide.Left || side === DropSide.Right) &&
       min <= thresholdX
     )
       return side;
     if (
-      (side === SideEnum.TOP || side === SideEnum.BOTTOM) &&
+      (side === DropSide.Top || side === DropSide.Bottom) &&
       min <= thresholdY
     )
       return side;
@@ -182,7 +169,7 @@ export function useEdgeHover(ref: RefObject<HTMLDivElement | null>) {
       }
     }
 
-    if (!isHovering && !hasTransferType(e, NOHL)) setIsHovering(true);
+    if (!isDragging) setIsDragging(true);
 
     const side = computeSide(e);
     // In case same side
@@ -198,7 +185,7 @@ export function useEdgeHover(ref: RefObject<HTMLDivElement | null>) {
     lastSideRef.current = null;
     pendingSideRef.current = null;
     setActiveSide(null);
-    setIsHovering(false);
+    setIsDragging(false);
   };
 
   // Cancel the last animation frame
@@ -210,7 +197,7 @@ export function useEdgeHover(ref: RefObject<HTMLDivElement | null>) {
 
   return {
     activeSide,
-    isHovering,
+    isDragging,
     onDragEnter,
     onDragLeave,
     onDragOver,

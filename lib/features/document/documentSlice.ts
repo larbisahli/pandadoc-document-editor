@@ -9,7 +9,7 @@ type DocumentSliceState = DocumentMeta;
 const initialState: DocumentSliceState = {
   id: "doc_1" as DocumentId,
   title: "Simple invoice",
-  pageIds: ["page_1"] as PageId[],
+  pageIds: ["page_1", "page_2"] as PageId[],
 };
 
 export const documentSlice = createAppSlice({
@@ -22,8 +22,6 @@ export const documentSlice = createAppSlice({
       },
     ),
   }),
-  // Use selectors if we are not returning object/array reference,
-  // Otherwise use createSelector to memoize the instance reference
   selectors: {
     selectDocTitle: (state) => state.title,
   },

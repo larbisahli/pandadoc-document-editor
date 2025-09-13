@@ -5,14 +5,16 @@ import { LayoutStyleType } from "./style";
 export interface ContainerNode {
   id: NodeId;
   kind: NodeKind;
+  parentId: NodeId | null; // parent pointer
   direction: NodeDirection; // "row" or "column"
-  children: NodeId[]; // ordered children (containers or blockRefs)
+  children: NodeId[]; // ordered children ids (containers or blockRefs)
   layoutStyle: LayoutStyleType;
 }
 
 export interface BlockRefNode {
   id: NodeId;
   kind: NodeKind;
+  parentId: NodeId | null;
   instanceId: InstanceId; // points into blockInstances.byId
   layoutStyle: LayoutStyleType;
 }

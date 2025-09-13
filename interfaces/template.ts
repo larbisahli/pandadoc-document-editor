@@ -25,4 +25,5 @@ export type TemplatesTypes =
   | "tpl-signature"
   | "tpl-initials"
   | "tpl-checkbox"
-  | "tpl-stamp";
+  | "tpl-stamp"
+  | "tpl-table-of-contents";

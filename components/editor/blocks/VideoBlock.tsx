@@ -1,12 +1,8 @@
-import { VideoDataType } from "@/interfaces/common";
 import { memo } from "react";
+import { BaseBlockProps } from "../canvas/blocks/BlockRegistry";
 
-interface Props extends VideoDataType {
-  props?: Record<string, unknown>;
-}
-
-function VideoBlock({ props }: Props) {
-  return <div>video</div>;
+function VideoBlock({ props }: BaseBlockProps) {
+  return <div className="bg-blue-200">video</div>;
 }
 
 export default memo(VideoBlock);

@@ -6,6 +6,7 @@ import { memo } from "react";
 import { PageId } from "@/interfaces/common";
 import ContentHeader from "../../ui/ContentHeader";
 import DocumentHeader from "./DocumentHeader";
+import DocumentFooter from "./DocumentFooter";
 import LayoutRenderer from "../layout/LayoutRenderer";
 import OverlayLayer from "../overlays/OverlayLayer";
 import { PageContext } from "../context/PageContext";
@@ -21,34 +22,33 @@ const DocumentPage = ({ pageId }: DocumentPageProps) => {
 
   return (
     <PageContext value={{ pageId }}>
-      <div className="relative h-full">
+      <div className="relative h-full last:mb-[50px]">
         <div className="h-full">
           {/* Content-head */}
           <ContentHeader />
-          <div className="flex min-h-[1065px] w-[816px] flex-col bg-white shadow-xl">
+          <div className="p relative mx-auto flex h-full min-h-[1065px] w-[816px] flex-col bg-white shadow-lg transition-all will-change-transform">
             {/* Document-header */}
-            <div className="mx-[50px]">
-              <DocumentHeader />
-            </div>
+            <DocumentHeader />
             {/* Document-body */}
             <div
               data-node-type="pageContent"
-              className="relative h-full flex-1"
+              className="relative flex h-full flex-1 flex-col"
             >
-              <div className="absolute inset-0 mx-[50px]">
+              <div className="relative mx-[50px] flex h-full flex-1 flex-col">
                 <div
                   id={pageId}
-                  data-node-type="layout-root"
-                  className="relative flex h-full flex-col outline-none"
+                  data-node-type="page-root"
+                  className="relative flex flex-1 flex-col outline-none"
                 >
                   {/* Flow layer: normal document layout */}
                   <LayoutRenderer nodeId={rootId} />
                   {/* Free layer: absolute overlays above flow */}
-                  <div>LOOOOOL</div>
                   <OverlayLayer />
                 </div>
               </div>
             </div>
+            {/* Document-footer */}
+            <DocumentFooter />
           </div>
         </div>
       </div>

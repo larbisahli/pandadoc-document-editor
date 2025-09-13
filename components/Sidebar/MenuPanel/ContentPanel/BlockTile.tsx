@@ -40,11 +40,11 @@ const BlockTile = ({ block }: BlockTileProps) => {
       handleOnDragStart={handleOnDragStart}
       handleOnDragEnd={handleOnDragEnd}
       getDragPayload={getDragPayload}
-      className="h-[50px] max-w-[118px]"
+      className="max-w-[118px]"
     >
       <div
         className={clsx(
-          "shadow-sms relative flex cursor-move items-center rounded-[3px] border border-gray-200",
+          "shadow-sms relative flex h-[50px] cursor-move items-center rounded-[3px] border border-gray-200",
           draggedTileId === block.id ? "opacity-40 shadow-xs" : "group",
         )}
       >

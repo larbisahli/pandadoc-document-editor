@@ -5,7 +5,10 @@ import { InstanceType } from "@/interfaces/instance";
 import { createAppSlice } from "@/lib/createAppSlice";
 import { RootState } from "@/lib/store";
 import { createSelector, PayloadAction } from "@reduxjs/toolkit";
-import { insertFieldCommitted } from "@/lib/features/editor/actions";
+import {
+  dropApplied,
+  insertFieldCommitted,
+} from "@/lib/features/editor/actions";
 
 type InstanceSliceState = Normalized<InstanceType>;
 
@@ -20,27 +23,6 @@ const initialState: InstanceSliceState = {
       props: { variant: "h1" },
       contentStyle: {},
       layoutStyle: {},
-    },
-    ["inst-intro"]: {
-      id: "inst-intro" as InstanceId,
-      templateId: Templates.Text,
-      data: {
-        content: "",
-      },
-    },
-    ["inst-hero"]: {
-      id: "inst-hero" as InstanceId,
-      templateId: Templates.Image,
-      data: {
-        content: "",
-      },
-    },
-    ["fld-sign"]: {
-      id: "fld-sign" as InstanceId,
-      templateId: Templates.Signature,
-      data: {
-        content: "",
-      },
     },
   },
 };
@@ -65,10 +47,16 @@ export const instancesSlice = createAppSlice({
     ),
   }),
   extraReducers: (builder) => {
-    builder.addCase(insertFieldCommitted, (state, { payload }) => {
-      const { instance } = payload;
-      state.byId[instance.id] = instance;
-    });
+    builder
+      .addCase(dropApplied, (state, action) => {
+        const instance = action.payload.payload.data.instance;
+        const instanceId = instance!.id as InstanceId;
+        state.byId[instanceId] = instance as InstanceType;
+      })
+      .addCase(insertFieldCommitted, (state, action) => {
+        const { instance } = action.payload;
+        state.byId[instance.id] = instance;
+      });
   },
   selectors: {
     selectInstancesById: (state) => state.byId,

@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useLayoutEffect, useRef } from "react";
 import clsx from "clsx";
 import { OverlayId } from "@/interfaces/common";
 import { usePage } from "../context/PageContext";
@@ -47,7 +47,7 @@ function ResizableFieldWrapper({
   const dispatch = useAppDispatch();
 
   // keep DOM in sync with external state
-  React.useEffect(() => {
+  useLayoutEffect(() => {
     const element = ref.current;
     if (!element) return;
     element.style.width = `${num(width)}px`;
@@ -212,7 +212,7 @@ function ResizableFieldWrapper({
         onPointerUp={onPointerUp}
         className={clsx(
           "absolute right-0 bottom-0 translate-x-1/2 translate-y-1/2",
-          "h-2 w-2 cursor-nwse-resize rounded-full bg-white shadow-2xl shadow-black",
+          "h-2 w-2 cursor-nwse-resize rounded-full border border-gray-300 bg-white shadow",
           "invisible touch-none select-none group-hover/resize-point:visible",
         )}
       />

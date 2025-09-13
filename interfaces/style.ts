@@ -7,6 +7,7 @@ export interface ContentStyleType {
 export interface LayoutStyleType {
   backgroundColor?: string;
   width?: string;
+  height?: string;
   minHeight?: number;
   margin?: {
     left: number;

@@ -1,9 +1,9 @@
 import clsx from "clsx";
 
-const DocumentHeader = () => {
+const DocumentFooter = () => {
   const isDoubleClicked = false;
   return (
-    <div className="mb-[6px] h-12 w-full">
+    <div className="mt-[6px] h-12 w-full">
       <div className="mx-[50px] bg-transparent">
         <div
           className={clsx(
@@ -18,4 +18,4 @@ const DocumentHeader = () => {
   );
 };
 
-export default DocumentHeader;
+export default DocumentFooter;

@@ -3,24 +3,11 @@ import React from "react";
 import { InstanceId } from "@/interfaces/common";
 import { selectInstance } from "@/lib/features/instance/instanceSlice";
 import { selectTemplate } from "@/lib/features/template/templateSlice";
-import { BlockKind } from "@/interfaces/enum";
-import {
-  ImageBlock,
-  TableContentBlock,
-  TextBlock,
-  VideoBlock,
-} from "../../blocks";
+import { BLOCK_COMPONENTS } from "./BlockRegistry";
 
 interface BlockRendererProps {
   instanceId: InstanceId;
 }
-
-const BLOCK_COMPONENTS = {
-  [BlockKind.Text]: TextBlock,
-  [BlockKind.Image]: ImageBlock,
-  [BlockKind.TableOfContents]: TableContentBlock,
-  [BlockKind.Video]: VideoBlock,
-} as const;
 
 function BlockFactory({ instanceId }: BlockRendererProps) {
   const instance = useAppSelector((state) => selectInstance(state, instanceId));
@@ -28,14 +15,15 @@ function BlockFactory({ instanceId }: BlockRendererProps) {
     selectTemplate(state, instance?.templateId),
   );
 
-  const Component =
-    BLOCK_COMPONENTS[template.kind as keyof typeof BLOCK_COMPONENTS];
+  const Component = BLOCK_COMPONENTS[template.kind];
+
+  if (!instance || !template?.kind) return null;
 
   if (!Component) {
     return null;
   }
 
-  return <Component {...instance.data} props={{ ...instance.props }} />;
+  return <Component instance={instance} />;
 }
 
 export default React.memo(BlockFactory);

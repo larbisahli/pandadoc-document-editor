@@ -1,14 +1,42 @@
-import React, { memo } from "react";
+import { DropBlockOverlayWrapper } from "@/dnd";
+import { NodeId } from "@/interfaces/common";
+import React, { memo, useCallback } from "react";
+import { usePage } from "../../context/PageContext";
+import { useAppDispatch } from "@/lib/hooks";
+import { DropEvent, DropPayload } from "@/interfaces/dnd";
+import { DropSide } from "@/interfaces/enum";
+import { dropCommitted } from "@/lib/features/editor/thunks/layoutThunks";
 
 interface Props {
   children: React.ReactNode;
+  nodeId: NodeId;
 }
 
-function DocBlock({ children }: Props) {
+function DocBlock({ nodeId, children }: Props) {
+  const { pageId } = usePage();
+  const dispatch = useAppDispatch();
+
+  const handleDrop = useCallback(
+    (payload: DropPayload, side: DropSide | null) => {
+      const dropEvent: DropEvent = {
+        pageId,
+        nodeId,
+        side,
+        payload,
+      };
+      dispatch(dropCommitted(dropEvent));
+    },
+    [dispatch, nodeId, pageId],
+  );
+
   return (
-    <div data-node-type="docBlock" className="docBlock">
+    <DropBlockOverlayWrapper
+      dataNodeType="docBlock"
+      className="docBlock will-change-transform"
+      onDrop={handleDrop}
+    >
       {children}
-    </div>
+    </DropBlockOverlayWrapper>
   );
 }
 

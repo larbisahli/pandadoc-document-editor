@@ -1,10 +1,12 @@
+import { NodeId } from "@/interfaces/common";
 import React, { memo } from "react";
 
 interface Props {
   children: React.ReactNode;
+  parentId: NodeId | null;
 }
 
-function NodeColumnShell({ children }: Props) {
+function NodeColumnShell({ children, parentId }: Props) {
   return (
     <div
       data-node-type="node-column"

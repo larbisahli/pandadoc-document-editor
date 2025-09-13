@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { GripVertical } from "lucide-react";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FillableFieldType } from "./Fields";
 import { WithDraggable } from "@/dnd";
 import { TemplateTypes } from "@/interfaces/enum";
@@ -14,11 +14,19 @@ const FieldTile = ({ field }: FieldTileProps) => {
   const Icon = field.icon;
   const DragImagePreview = field.dragImagePreview;
 
+  useEffect(() => {
+    // Preload lazy component so we don't see lagging on drop
+    requestIdleCallback(() => {
+      void field?.handleComponentPreload?.();
+    });
+  }, []);
+
   const getDragPayload = useCallback(
     () => field.dragPayload,
     [field.dragPayload],
   );
 
+  // Using attribute data-drag-kind to allow overlay surface drop
   const handleOnDragStart = useCallback(
     (e: React.DragEvent) => {
       document.body.setAttribute("data-drag-kind", TemplateTypes.Field);
@@ -34,7 +42,6 @@ const FieldTile = ({ field }: FieldTileProps) => {
 
   return (
     <WithDraggable
-      suppressHighlight
       effectAllowed="move"
       dragImageSelector=".ghost"
       getDragPayload={getDragPayload}
@@ -43,8 +50,8 @@ const FieldTile = ({ field }: FieldTileProps) => {
     >
       <div
         className={clsx(
-          "shadow-sms pointer-events-auto relative flex h-[50px] max-w-[118px] cursor-move items-center rounded-[3px] border border-orange-200",
-          draggedTileId === field.id ? "shadow-sms opacity-40" : "group",
+          "pointer-events-auto relative flex h-[50px] max-w-[118px] cursor-move items-center rounded-[3px] border border-orange-200",
+          draggedTileId === field.id ? "opacity-40" : "group",
         )}
       >
         <DragImagePreview />

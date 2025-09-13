@@ -1,5 +1,5 @@
-import { DragPayload } from "@/interfaces/dnd";
-import { TemplateTypes } from "@/interfaces/enum";
+import { DropPayload } from "@/interfaces/dnd";
+import { BlockKind, Templates, TemplateTypes } from "@/interfaces/enum";
 import {
   ImageIcon,
   LetterText,
@@ -14,7 +14,7 @@ export interface ContentBlockType {
   id: string;
   label: string;
   icon: (props: LucideProps) => React.JSX.Element;
-  dragPayload: DragPayload;
+  dragPayload: DropPayload;
 }
 
 export const contentBlocks: ContentBlockType[] = [
@@ -24,7 +24,19 @@ export const contentBlocks: ContentBlockType[] = [
     icon: (props) => <LetterText {...props} />,
     dragPayload: {
       kind: TemplateTypes.Block,
-      data: { templateId: "tpl-text" },
+      data: {
+        instance: {
+          templateId: Templates.Text,
+          data: {
+            content: "My Text content",
+          },
+        },
+        template: {
+          id: Templates.Text,
+          type: TemplateTypes.Block,
+          kind: BlockKind.Text,
+        },
+      },
     },
   },
   {
@@ -33,7 +45,19 @@ export const contentBlocks: ContentBlockType[] = [
     icon: (props) => <ImageIcon {...props} />,
     dragPayload: {
       kind: TemplateTypes.Block,
-      data: { templateId: "tpl-image" },
+      data: {
+        instance: {
+          templateId: Templates.Image,
+          data: {
+            content: "My Image content",
+          },
+        },
+        template: {
+          id: Templates.Image,
+          type: TemplateTypes.Block,
+          kind: BlockKind.Image,
+        },
+      },
     },
   },
   {
@@ -42,7 +66,19 @@ export const contentBlocks: ContentBlockType[] = [
     icon: (props) => <SquarePlay {...props} />,
     dragPayload: {
       kind: TemplateTypes.Block,
-      data: { templateId: "tpl-video" },
+      data: {
+        instance: {
+          templateId: Templates.Video,
+          data: {
+            content: "My Video content",
+          },
+        },
+        template: {
+          id: Templates.Video,
+          type: TemplateTypes.Block,
+          kind: BlockKind.Video,
+        },
+      },
     },
   },
   {
@@ -51,7 +87,19 @@ export const contentBlocks: ContentBlockType[] = [
     icon: (props) => <TableOfContents {...props} />,
     dragPayload: {
       kind: TemplateTypes.Block,
-      data: { templateId: "tpl-video" },
+      data: {
+        instance: {
+          templateId: Templates.TableOfContents,
+          data: {
+            content: "My Table of contents content",
+          },
+        },
+        template: {
+          id: Templates.TableOfContents,
+          type: TemplateTypes.Block,
+          kind: BlockKind.TableOfContents,
+        },
+      },
     },
   },
   {
@@ -60,7 +108,19 @@ export const contentBlocks: ContentBlockType[] = [
     icon: (props) => <ScissorsLineDashed {...props} />,
     dragPayload: {
       kind: TemplateTypes.Block,
-      data: { templateId: "tpl-page-break" },
+      data: {
+        instance: {
+          templateId: Templates.PageBreak,
+          data: {
+            content: "Page break",
+          },
+        },
+        template: {
+          id: Templates.PageBreak,
+          type: TemplateTypes.Block,
+          kind: BlockKind.PageBreak,
+        },
+      },
     },
   },
 ];

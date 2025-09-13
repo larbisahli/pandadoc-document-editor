@@ -8,9 +8,9 @@ import RowItem from "./shells/RowItem";
 import NodeColumnShell from "./shells/NodeColumnShell";
 import NodeRowShell from "./shells/NodeRowShell";
 import DocBlock from "./shells/DocBlock";
-import BlockLeaf from "./leaves/BlockLeaf";
 import RowResizerWrapper from "./row-resizer/RowResizerWrapper";
 import { usePage } from "../context/PageContext";
+import BlockFactory from "../blocks/BlockFactory";
 
 interface LayoutRendererProps {
   nodeId: NodeId;
@@ -34,7 +34,7 @@ function LayoutRenderer({ nodeId }: LayoutRendererProps) {
       const ChildWrapper = isColumn ? DocBlock : RowItem;
 
       return (
-        <Shell id={n.id}>
+        <Shell nodeId={n.id} parentId={n.parentId}>
           {n.children.map((cid, idx) => (
             <React.Fragment key={cid}>
               <ChildWrapper nodeId={cid}>
@@ -56,7 +56,12 @@ function LayoutRenderer({ nodeId }: LayoutRendererProps) {
 
     case NodeKind.BlockRef: {
       const leaf = node as BlockRefNode;
-      return <BlockLeaf id={leaf.id} instanceId={leaf.instanceId} />;
+      return (
+        <DocBlock nodeId={leaf.id}>
+          <BlockFactory instanceId={leaf.instanceId} />
+        </DocBlock>
+      );
+      // <BlockLeaf id={leaf.id} instanceId={leaf.instanceId} />;
     }
 
     default:

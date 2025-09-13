@@ -23,7 +23,6 @@ export enum BlockKind {
   Video = "video",
   TableOfContents = "table_of_contents",
   PageBreak = "page_break",
-  ProductCard = "product_card",
 }
 
 // Field Template Kinds
@@ -31,7 +30,7 @@ export enum FieldKind {
   TextArea = "textarea",
   Signature = "signature",
   Initials = "initials",
-  checkbox = "checkbox",
+  Checkbox = "checkbox",
   Stamp = "stamp",
 }
 
@@ -45,4 +44,12 @@ export enum Templates {
   Initials = "tpl-initials",
   Checkbox = "tpl-checkbox",
   Stamp = "tpl-stamp",
+  TableOfContents = "tpl-table-of-contents",
+}
+
+export enum DropSide {
+  Left = "left",
+  Right = "right",
+  Top = "top",
+  Bottom = "bottom",
 }

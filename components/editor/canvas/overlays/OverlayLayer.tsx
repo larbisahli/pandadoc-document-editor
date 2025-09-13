@@ -7,8 +7,9 @@ import OverlayDropSurface from "./OverlayDropSurface";
 import { browserZoomLevel } from "./helpers";
 import { OverlayId } from "@/interfaces/common";
 import { updateFiledPosition } from "@/lib/features/overlay/overlaySlice";
-import { DragPayload } from "@/interfaces/dnd";
-import { insertFieldFlow } from "@/lib/features/editor/thunks";
+import { DropPayload } from "@/interfaces/dnd";
+import { insertFieldFlow } from "@/lib/features/editor/thunks/overlayThunks";
+import { PALETTE_DATA_FORMAT } from "@/dnd";
 
 function OverlayLayer() {
   const surfaceRef = useRef<HTMLDivElement>(null);
@@ -36,11 +37,10 @@ function OverlayLayer() {
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
-      // TODO change this x-block-payload to x-field-payload
-      const data = e.dataTransfer.getData("application/x-block-payload");
+      const data = e.dataTransfer.getData(PALETTE_DATA_FORMAT);
       if (!data) return;
-      const payload = JSON.parse(data) as DragPayload;
-      const { template, overlay, instance } = payload.data;
+      const payload = JSON.parse(data) as DropPayload;
+      const { overlay, instance } = payload.data;
 
       // Measure position
       const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
@@ -52,9 +52,8 @@ function OverlayLayer() {
           pageId,
           offsetX,
           offsetY,
-          template,
-          overlay,
           instance,
+          overlay,
         }),
       );
     },

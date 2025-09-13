@@ -1,20 +1,31 @@
-import clsx from "clsx";
 import React, { memo } from "react";
 import { useEdgeHover } from "./useEdgeHover";
-import type { Side } from "./useEdgeHover";
 import EdgeBlockHighlight from "./EdgeBlockHighlight";
-import type { DragPayload } from "../payload";
+import clsx from "clsx";
+import { DropPayload } from "@/interfaces/dnd";
+import { PALETTE_DATA_FORMAT } from "..";
+import { DropSide } from "@/interfaces/enum";
 
 interface Props {
   children: React.ReactNode;
-  onDrop: (payload: DragPayload, side: Side) => void;
+  onDrop: (payload: DropPayload, side: DropSide | null) => void;
   className?: string;
+  id?: string;
+  dataNodeType?: string;
+  style?: React.CSSProperties;
 }
 
-function DropOverlayWrapper({ className, children, onDrop }: Props) {
+function DropBlockOverlayWrapper({
+  id,
+  children,
+  onDrop,
+  className,
+  dataNodeType,
+  style,
+}: Props) {
   const ref = React.useRef<HTMLDivElement | null>(null);
   const {
-    isHovering,
+    isDragging,
     activeSide,
     onDragEnter,
     onDragLeave,
@@ -25,7 +36,7 @@ function DropOverlayWrapper({ className, children, onDrop }: Props) {
   const onDropHandle = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    const data = e.dataTransfer.getData("application/x-block-payload");
+    const data = e.dataTransfer.getData(PALETTE_DATA_FORMAT);
     if (!data) return;
     const payload = JSON.parse(data);
     // Callbacks
@@ -35,27 +46,21 @@ function DropOverlayWrapper({ className, children, onDrop }: Props) {
 
   return (
     <div
+      id={id}
       ref={ref}
       onDragEnter={onDragEnter}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDropHandle}
-      className="absolute inset-0"
+      className={clsx("relative w-full bg-amber-700", className)}
+      data-node-type={dataNodeType}
+      style={style}
     >
       {children}
       {/* Block highlight overlay */}
-      {isHovering && <EdgeBlockHighlight side={activeSide} />}
+      {isDragging && <EdgeBlockHighlight side={activeSide} />}
     </div>
   );
 }
 
-export default memo(DropOverlayWrapper);
-
-// <DropBlockOverlayWrapper />
-// <DropFieldOverlayWrapper />
-// <DropContentOverlayWrapper />
-
-// acceptTypes | acceptTypes?: DragPayload["type"][]; // e.g. ["palette.block","move.node"]
-// if (acceptTypes && !acceptTypes.includes(p.type)) return;
-// if (shouldHighlight && !shouldHighlight(p)) return;
-// acceptTypes={["palette.block","move.node"]} shouldHighlight={(p) => p.type !== "tool.select"}
+export default memo(DropBlockOverlayWrapper);

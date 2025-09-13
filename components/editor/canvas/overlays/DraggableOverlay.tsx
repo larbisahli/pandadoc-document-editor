@@ -1,13 +1,13 @@
 "use client";
 
-import React, { memo, useEffect, useRef } from "react";
+import React, { memo, useLayoutEffect, useRef } from "react";
 import { makeDragImageFrom } from "./helpers";
 import { OverlayId } from "@/interfaces/common";
+import { FIELD_DATA_FORMAT } from "@/dnd";
 
 export type Point = { offsetX: number; offsetY: number };
 
-// TODO CHANGE THIS NAME ALREADY EXIST
-export type DragPayload = {
+export type OverlayDragPayload = {
   kind: "overlay";
   id: OverlayId;
   grabOffset: { offsetX: number; offsetY: number };
@@ -34,7 +34,7 @@ function DraggableOverlay({
   const grabOffset = useRef<Point>({ offsetX: 0, offsetY: 0 });
 
   // Keep DOM position in sync with props
-  useEffect(() => {
+  useLayoutEffect(() => {
     const element = ref.current;
     if (!element) return;
     element.style.left = `${offsetX}px`;
@@ -54,17 +54,15 @@ function DraggableOverlay({
 
     // Prepare payload
     grabOffset.current = computeGrabOffset(e);
-    const payload: DragPayload = {
+    const payload: OverlayDragPayload = {
       kind: "overlay",
       id: overlayId,
       grabOffset: { ...grabOffset.current },
       startPos: { offsetX, offsetY },
     };
     e.dataTransfer.effectAllowed = "move";
-    e.dataTransfer.setData(
-      "application/x-field-payload",
-      JSON.stringify(payload),
-    );
+
+    e.dataTransfer.setData(FIELD_DATA_FORMAT, JSON.stringify(payload));
 
     // Build and register custom drag image
     const ghost = makeDragImageFrom(element, scale);
@@ -114,7 +112,7 @@ function DraggableOverlay({
     <div
       ref={ref}
       id={overlayId}
-      className="pointer-events-auto absolute h-fit w-fit"
+      className="pointer-events-auto absolute h-fit w-fit bg-green-800"
       draggable
       onDragStart={onDragStart}
       onDrag={onDrag}

@@ -10,7 +10,7 @@ interface Props {
   instance: InstanceType;
 }
 
-function TextField({ overlayId, instance }: Props) {
+function TextArea({ overlayId, instance }: Props) {
   const ref = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
 
@@ -79,4 +79,4 @@ function TextField({ overlayId, instance }: Props) {
   );
 }
 
-export default memo(TextField);
+export default memo(TextArea);

@@ -1,11 +1,12 @@
 "use client";
 
 import React, { memo, useState } from "react";
-import { DragPayload } from "./DraggableOverlay";
+import { OverlayDragPayload } from "./DraggableOverlay";
 import { clientToCanvas } from "./helpers";
 import clsx from "clsx";
 import { OverlayId } from "@/interfaces/common";
 import { usePage } from "../context/PageContext";
+import { FIELD_DATA_FORMAT } from "@/dnd";
 
 type OverlayDropSurfaceProps = {
   surfaceRef: React.RefObject<HTMLDivElement>;
@@ -61,10 +62,11 @@ function OverlayDropSurface({
     const surfaceEl = surfaceRef.current;
     if (!surfaceEl) return;
 
-    const data = e.dataTransfer?.getData("application/x-field-payload");
+    const data = e.dataTransfer?.getData(FIELD_DATA_FORMAT);
+    console.log("!!!!!", { data });
     if (!data) return;
 
-    let payload: DragPayload | null = null;
+    let payload: OverlayDragPayload | null = null;
     try {
       payload = JSON.parse(data);
     } catch {
@@ -107,13 +109,13 @@ function OverlayDropSurface({
       onDragEnd={() => setDragStart(false)}
       onDragOver={onDragOver}
       onDrop={onDrop}
-      className={clsx(
-        "overlay-surface absolute inset-0 overflow-auto",
-        !dragStart && "pointer-events-none",
-      )}
       data-node-type="overlayLayer"
       role="application"
       aria-label="Overlay canvas drop surface"
+      className={clsx(
+        "overlay-surface bsg-amber-400 absolute inset-0 overflow-auto",
+        !dragStart && "pointer-events-none",
+      )}
     >
       {children}
     </div>

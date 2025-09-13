@@ -1,8 +1,12 @@
 import { NodeId } from "@/interfaces/common";
 import { selectRowItemLayoutStyle } from "@/lib/features/layout/layoutSlice";
-import { useAppSelector } from "@/lib/hooks";
-import React, { memo } from "react";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import React, { memo, useCallback } from "react";
 import { usePage } from "../../context/PageContext";
+import { DropBlockOverlayWrapper } from "@/dnd";
+import { dropCommitted } from "@/lib/features/editor/thunks/layoutThunks";
+import { DropSide } from "@/interfaces/enum";
+import { DropEvent, DropPayload } from "@/interfaces/dnd";
 
 interface Props {
   nodeId: NodeId;
@@ -11,6 +15,7 @@ interface Props {
 
 function RowItem({ nodeId, children }: Props) {
   const { pageId } = usePage();
+  const dispatch = useAppDispatch();
 
   const layoutStyle = useAppSelector((state) =>
     selectRowItemLayoutStyle(state, pageId, nodeId),
@@ -19,14 +24,29 @@ function RowItem({ nodeId, children }: Props) {
   const basePct = parseFloat(layoutStyle?.width ?? "0");
   console.log("RowItem >>>>>", { nodeId });
 
+  const handleDrop = useCallback(
+    (payload: DropPayload, side: DropSide | null) => {
+      const dropEvent: DropEvent = {
+        pageId,
+        nodeId,
+        side,
+        payload,
+      };
+      dispatch(dropCommitted(dropEvent));
+    },
+    [dispatch, nodeId, pageId],
+  );
+
   return (
     <div
       id={nodeId}
       data-node-type="item-row"
-      className="item-row flex w-full overflow-hidden bg-purple-400 px-[13px] py-2"
+      className="item-row m-1 flex w-full overflow-hidden bg-purple-400 px-[13px] py-2"
       style={{ width: `${(basePct as number).toFixed(2)}%` }}
     >
-      {children}
+      <DropBlockOverlayWrapper onDrop={handleDrop}>
+        {children}
+      </DropBlockOverlayWrapper>
     </div>
   );
 }
