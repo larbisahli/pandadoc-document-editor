@@ -64,6 +64,7 @@ function OverlayDropSurface({
     if (!surfaceEl) return;
 
     const data = e.dataTransfer?.getData(FIELD_DATA_FORMAT);
+    console.log({ data });
     if (!data) return;
 
     let payload: OverlayDragPayload | null = null;
@@ -134,7 +135,7 @@ function OverlayDropSurface({
       role="application"
       aria-label="Overlay canvas drop surface"
       className={clsx(
-        "overlay-surface bsg-amber-400 absolute inset-0 overflow-auto",
+        "overlay-surface absolute inset-0 overflow-hidden",
         !dragStart && "pointer-events-none",
       )}
     >

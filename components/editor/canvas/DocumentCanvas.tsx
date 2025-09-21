@@ -16,8 +16,8 @@ const DocumentCanvas = () => {
 
   return (
     <div
+      id="document-canvas" // Important
       className="relative"
-      data-node-type="document-canvas"
       role="region"
       aria-label="Document canvas"
     >

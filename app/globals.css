@@ -16,7 +16,8 @@
   --color-green-primary: #248567;
 }
 
-/* ---------- */
+/* -----< PDF PRINT >----- */
+
 @media print {
   @page {
     size: A4;
@@ -64,14 +65,13 @@ button {
   The border is applied to the dropped elements, but only when a drag operation is active.
 */
 .dropzone-active {
-  border: 1px solid #e5e5e5;
+  border: 1px solid transparent;
   opacity: 0;
-  opacity: 1;
 }
 
 [data-drag-kind="field"] .dropzone-active,
 [data-drag-kind="content"] .dropzone-active,
 [data-drag-kind="block"] .dropzone-active {
-  border: 1px solid rgb(247, 125, 125);
+  border-color: #e5e5e5;
   opacity: 1;
 }

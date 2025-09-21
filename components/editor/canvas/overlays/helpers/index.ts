@@ -94,3 +94,28 @@ export function getPageMetrics(pageElement: HTMLElement, zoom: number) {
 
   return { originLeftDev, originTopDev, contentW, contentH };
 }
+
+// Clamp a drop so the entire field fits inside pageId
+export function clampPlacementToPageBounds(
+  pageId: string,
+  x: number,
+  y: number,
+  fieldW: number,
+  fieldH: number,
+): { x: number; y: number; outside: boolean } | null {
+  const pageEl = document.getElementById(pageId) as HTMLElement | null;
+  if (!pageEl) return null;
+
+  const rect = pageEl.getBoundingClientRect();
+  const maxX = Math.max(0, rect.width - fieldW);
+  const maxY = Math.max(0, rect.height - fieldH);
+
+  const outside =
+    x < 0 || y < 0 || x + fieldW > rect.width || y + fieldH > rect.height;
+
+  return {
+    x: Math.min(Math.max(0, x), maxX),
+    y: Math.min(Math.max(0, y), maxY),
+    outside,
+  };
+}

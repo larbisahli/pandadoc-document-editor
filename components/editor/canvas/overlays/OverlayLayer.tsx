@@ -4,7 +4,7 @@ import { memo, useCallback, useRef } from "react";
 import OverlayFactory from "./OverlayFactory";
 import { usePage } from "../context/PageContext";
 import OverlayDropSurface from "./OverlayDropSurface";
-import { browserZoomLevel } from "./helpers";
+import { browserZoomLevel, clampPlacementToPageBounds } from "./helpers";
 import { OverlayId } from "@/interfaces/common";
 import { updateFiledPosition } from "@/lib/features/overlay/overlaySlice";
 import { DropPayload } from "@/interfaces/dnd";
@@ -35,23 +35,40 @@ function OverlayLayer() {
     [dispatch],
   );
 
-  const handleDrop = useCallback(
+  const handleOnDrop = useCallback(
     (e: React.DragEvent) => {
+      e.preventDefault();
+
       const data = e.dataTransfer.getData(PALETTE_DATA_FORMAT);
       if (!data) return;
       const payload = JSON.parse(data) as DropPayload;
       const { overlay, instance } = payload.data;
 
-      // Measure position
+      // Measure pointer offset within the drop target
       const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
-      const offsetX = e.clientX - rect.left;
-      const offsetY = e.clientY - rect.top;
+      const rawX = e.clientX - rect.left;
+      const rawY = e.clientY - rect.top;
 
+      // Determine field size (use whatever your payload provides)
+      const fieldW = overlay?.style?.width as number;
+      const fieldH = overlay?.style?.height as number;
+
+      const clamped = clampPlacementToPageBounds(
+        pageId,
+        rawX,
+        rawY,
+        fieldW,
+        fieldH,
+      );
+
+      if (!clamped || clamped?.outside) return;
+
+      // Or proceed with clamped coordinates to always keep the field fully inside:
       dispatch(
         insertFieldFlow({
           pageId,
-          offsetX,
-          offsetY,
+          offsetX: clamped.x,
+          offsetY: clamped.y,
           instance,
           overlay,
         }),
@@ -65,7 +82,7 @@ function OverlayLayer() {
       surfaceRef={surfaceRef as React.RefObject<HTMLDivElement>}
       scale={browserZoomLevel}
       onCommit={handleOnCommit}
-      onDropHandler={handleDrop}
+      onDropHandler={handleOnDrop}
     >
       {overlayIds.map((overlayId) => (
         <OverlayFactory key={overlayId} overlayId={overlayId} />
