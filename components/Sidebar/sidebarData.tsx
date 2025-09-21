@@ -1,6 +1,7 @@
-import { CirclePlus, Palette, Shapes } from "lucide-react";
+import { CirclePlus, Palette, Shapes, Users } from "lucide-react";
 import React from "react";
 import ContentPanel from "./MenuPanel/ContentPanel";
+import RecipientsPanel from "./MenuPanel/RecipientsPanel";
 import ContentLibraryPanel from "./MenuPanel/ContentLibraryPanel";
 import DesignPanel from "./MenuPanel/DesignPanel";
 import VariablesPanel from "./MenuPanel/VariablesPanel";
@@ -20,6 +21,12 @@ export const menuListsData: SidebarItem[] = [
     label: "Content",
     icon: (props) => <CirclePlus {...props} />,
     component: ContentPanel,
+  },
+  {
+    id: "menu-recipients",
+    label: "Recipients",
+    icon: (props) => <Users {...props} />,
+    component: RecipientsPanel,
   },
   {
     id: "menu-content-library",

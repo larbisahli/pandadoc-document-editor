@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { OverlayId } from "@/interfaces/common";
 import { usePage } from "../context/PageContext";
 import { FIELD_DATA_FORMAT } from "@/dnd";
+import { snapFinalPosition } from "@/utils/helpers/alignmentGuides";
 
 type OverlayDropSurfaceProps = {
   surfaceRef: React.RefObject<HTMLDivElement>;
@@ -56,57 +57,77 @@ function OverlayDropSurface({
 
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
-    // Callbacks
+    // Drop handler for palette drop
     onDropHandler(e);
 
     const surfaceEl = surfaceRef.current;
     if (!surfaceEl) return;
 
     const data = e.dataTransfer?.getData(FIELD_DATA_FORMAT);
-    console.log("!!!!!", { data });
     if (!data) return;
 
     let payload: OverlayDragPayload | null = null;
     try {
       payload = JSON.parse(data);
-    } catch {
+    } catch (e) {
+      console.log(e);
       return;
     }
+
     if (!payload || payload.kind !== "overlay") return;
 
-    // Where did the pointer land
+    // Where did the pointer land (content coords)
     const hit = clientToCanvas(surfaceEl, e.clientX, e.clientY, scale);
 
-    // Place the overlay so that the original grab point sits under the cursor
+    // Tentative position from pointer + grab offset
     let nextX = hit.offsetX - payload.grabOffset.offsetX / scale;
     let nextY = hit.offsetY - payload.grabOffset.offsetY / scale;
 
-    const element = document.getElementById(payload.id) as HTMLElement | null;
-
+    // Clamp to page bounds
     const maxX = Math.max(0, surfaceEl.clientWidth / scale);
     const maxY = Math.max(0, surfaceEl.clientHeight / scale);
     nextX = Math.max(0, Math.min(maxX, nextX));
     nextY = Math.max(0, Math.min(maxY, nextY));
 
+    // SNAP to page center / other fields (matches ghost snapping)
+    const snapped = snapFinalPosition(
+      surfaceEl,
+      payload.id,
+      nextX,
+      nextY,
+      scale,
+    );
+    nextX = snapped.left;
+    nextY = snapped.top;
+
+    // In case outside boundaries
     if (!AllowWrite(payload.id, nextX, nextY)) return;
 
-    // Commit to app state
+    // Commit to store
     onCommit(payload.id, { offsetX: nextX, offsetY: nextY });
 
-    // Also place the element immediately
+    // Also place the element immediately for visual sync
+    const element = document.getElementById(payload.id) as HTMLElement | null;
     if (element) {
       element.style.left = `${nextX}px`;
       element.style.top = `${nextY}px`;
-      // In case dragend ran before
       element.style.opacity = "";
     }
+  };
+
+  const handleDragStart = (e: React.DragEvent) => {
+    setDragStart(true);
+  };
+
+  const handleOnDragEnd = (e: React.DragEvent) => {
+    setDragStart(false);
   };
 
   return (
     <div
       ref={surfaceRef}
-      onDragStart={() => setDragStart(true)}
-      onDragEnd={() => setDragStart(false)}
+      onDragStart={handleDragStart}
+      onDragEnd={handleOnDragEnd}
       onDragOver={onDragOver}
       onDrop={onDrop}
       data-node-type="overlayLayer"

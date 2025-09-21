@@ -2,6 +2,7 @@
 export enum TemplateTypes {
   Field = "field",
   Block = "block",
+  Content = "content",
 }
 
 // Layout direction of a container
@@ -31,7 +32,11 @@ export enum FieldKind {
   Signature = "signature",
   Initials = "initials",
   Checkbox = "checkbox",
+  Date = "date",
   Stamp = "stamp",
+  Dropdown = "dropdown",
+  CollectFiles = "collect-files",
+  Radio = "radio",
 }
 
 export enum Templates {
@@ -43,8 +48,12 @@ export enum Templates {
   Signature = "tpl-signature",
   Initials = "tpl-initials",
   Checkbox = "tpl-checkbox",
+  Date = "tpl-date",
   Stamp = "tpl-stamp",
   TableOfContents = "tpl-table-of-contents",
+  Dropdown = "tpl-Dropdown",
+  CollectFiles = "collect-files",
+  Radio = "radio",
 }
 
 export enum DropSide {

@@ -1,6 +1,7 @@
 import { DropPayload } from "@/interfaces/dnd";
 import React, { memo } from "react";
 import { PALETTE_DATA_FORMAT } from ".";
+import { TemplateTypes } from "@/interfaces/enum";
 
 type WithDraggableProps = {
   getDragPayload: () => DropPayload;
@@ -16,6 +17,7 @@ type WithDraggableProps = {
     | "move"
     | "all";
   className?: string;
+  kind: TemplateTypes;
   children: React.ReactNode;
   handleOnDragStart: (e: React.DragEvent) => void;
   handleOnDragEnd: (e: React.DragEvent) => void;
@@ -28,6 +30,7 @@ function WithDraggable({
   handleOnDragStart,
   handleOnDragEnd,
   className,
+  kind,
   children,
 }: WithDraggableProps) {
   const ref = React.useRef<HTMLDivElement>(null);
@@ -46,6 +49,16 @@ function WithDraggable({
       ) as HTMLElement | null;
       if (element) e.dataTransfer.setDragImage(element, 0, 0);
     }
+
+    // Add Global indicator for dragging type
+    document.body.setAttribute("data-drag-kind", kind);
+  };
+
+  const onDragEnd = (e: React.DragEvent) => {
+    handleOnDragEnd(e);
+
+    // Remove Global indicator for dragging type
+    document.body.removeAttribute("data-drag-kind");
   };
 
   return (
@@ -53,7 +66,7 @@ function WithDraggable({
       ref={ref}
       draggable
       onDragStart={onDragStart}
-      onDragEnd={handleOnDragEnd}
+      onDragEnd={onDragEnd}
       className={className}
       role="listitem"
       tabIndex={0}

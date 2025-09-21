@@ -201,7 +201,7 @@ function ResizableFieldWrapper({
     <div
       ref={ref}
       id={`resizer-${overlayId}`}
-      className="group/resize-point absolute box-border"
+      className="group/resize-point box-border"
     >
       {children}
       <div

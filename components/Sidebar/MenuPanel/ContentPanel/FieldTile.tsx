@@ -19,29 +19,27 @@ const FieldTile = ({ field }: FieldTileProps) => {
     requestIdleCallback(() => {
       void field?.handleComponentPreload?.();
     });
-  }, []);
+  }, [field]);
 
   const getDragPayload = useCallback(
     () => field.dragPayload,
     [field.dragPayload],
   );
 
-  // Using attribute data-drag-kind to allow overlay surface drop
   const handleOnDragStart = useCallback(
     (e: React.DragEvent) => {
-      document.body.setAttribute("data-drag-kind", TemplateTypes.Field);
       setDraggedTileId(field.id);
     },
     [field.id],
   );
 
   const handleOnDragEnd = useCallback((e: React.DragEvent) => {
-    document.body.removeAttribute("data-drag-kind");
     setDraggedTileId("");
   }, []);
 
   return (
     <WithDraggable
+      kind={TemplateTypes.Field}
       effectAllowed="move"
       dragImageSelector=".ghost"
       getDragPayload={getDragPayload}

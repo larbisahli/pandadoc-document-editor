@@ -34,7 +34,7 @@ function NodeRowShell({ nodeId, children }: Props) {
       <div
         id={nodeId}
         data-node-type="node-row"
-        className="group/resizer flex w-full bg-red-500 p-2"
+        className="group/resizer mx-[-13px] my-0 flex"
       >
         {children}
       </div>

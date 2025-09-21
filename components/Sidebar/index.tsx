@@ -2,6 +2,7 @@
 
 import {
   createContext,
+  startTransition,
   useCallback,
   useContext,
   useMemo,
@@ -32,8 +33,10 @@ const SidebarComponent = () => {
   const [displayPanel, setDisplayPanel] = useState(true);
 
   const handleActiveTab = useCallback((id: string) => {
-    setActiveTabId(id);
-    setDisplayPanel(true);
+    startTransition(() => {
+      setActiveTabId(id);
+      setDisplayPanel(true);
+    });
   }, []);
 
   const handlePanelToggle = useCallback(() => {

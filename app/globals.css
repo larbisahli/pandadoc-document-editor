@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --rulerBgColor: #0c0cf6;
 }
 
 @theme inline {
@@ -13,6 +14,29 @@
   --color-muted: #767676;
   --color-blue-primary: #2167c6;
   --color-green-primary: #248567;
+}
+
+/* ---------- */
+@media print {
+  @page {
+    size: A4;
+    margin: 16mm;
+  }
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: red;
+  }
+}
+/* ---------- */
+
+/* Helpers for pagination and layout control in PDFs */
+.page-break {
+  break-before: page;
+}
+.avoid-break {
+  break-inside: avoid;
 }
 
 body {
@@ -31,7 +55,23 @@ button {
   margin-bottom: 26px;
 }
 
-/* globals.css */
+/* Using attribute data-drag-kind to allow overlay (fields) surface drop */
 [data-drag-kind="field"] .overlay-surface {
   pointer-events: auto !important;
+}
+
+/*
+  The border is applied to the dropped elements, but only when a drag operation is active.
+*/
+.dropzone-active {
+  border: 1px solid #e5e5e5;
+  opacity: 0;
+  opacity: 1;
+}
+
+[data-drag-kind="field"] .dropzone-active,
+[data-drag-kind="content"] .dropzone-active,
+[data-drag-kind="block"] .dropzone-active {
+  border: 1px solid rgb(247, 125, 125);
+  opacity: 1;
 }

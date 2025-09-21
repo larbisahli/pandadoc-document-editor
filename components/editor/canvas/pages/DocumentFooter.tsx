@@ -3,11 +3,11 @@ import clsx from "clsx";
 const DocumentFooter = () => {
   const isDoubleClicked = false;
   return (
-    <div className="mt-[6px] h-12 w-full">
+    <div className="mt-[6px] h-8 w-full">
       <div className="mx-[50px] bg-transparent">
         <div
           className={clsx(
-            "min-h-[65px] border border-gray-200 px-[50px] py-[12px]",
+            "border border-gray-200 px-[50px] py-[14px]",
             !isDoubleClicked && "pointer-events-none",
           )}
         >

@@ -8,14 +8,8 @@ interface Props {
 
 function NodeColumnShell({ children, parentId }: Props) {
   return (
-    <div
-      data-node-type="node-column"
-      className="h-full w-full bg-amber-300 p-2"
-    >
-      <div
-        data-node-type="col"
-        className="col flex w-full flex-col bg-blue-300 p-2"
-      >
+    <div data-node-type="node-column" className="h-full w-full">
+      <div data-node-type="col" className="col flex w-full flex-col">
         {children}
       </div>
     </div>

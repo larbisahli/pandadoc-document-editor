@@ -154,9 +154,6 @@ export const layoutSlice = createAppSlice({
     //     return { payload: { id: nanoid(), text } };
     //   }
     // },
-    addNode: create.reducer(
-      (state, action: PayloadAction<{ title: string }>) => {},
-    ),
     updateLayoutCalculatedWidth: create.reducer(
       (
         state,
@@ -197,7 +194,7 @@ export const layoutSlice = createAppSlice({
   },
 });
 
-export const { addNode, updateLayoutCalculatedWidth } = layoutSlice.actions;
+export const { updateLayoutCalculatedWidth } = layoutSlice.actions;
 
 export const { selectPageRootId, selectPageById, selectAllPages } =
   layoutSlice.selectors;

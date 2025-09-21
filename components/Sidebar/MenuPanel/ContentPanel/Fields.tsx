@@ -1,4 +1,5 @@
 import {
+  CalendarDays,
   LetterText,
   LucideProps,
   PencilLine,
@@ -12,11 +13,19 @@ import {
   InitialsImagePreview,
   CheckboxImagePreview,
   StampImagePreview,
+  DateImagePreview,
+  DropdownImagePreview,
+  CollectFilesImagePreview,
+  RadioImagePreview,
 } from "./FieldPreviews";
 import { Templates, TemplateTypes } from "@/interfaces/enum";
 import {
   preloadCheckboxField,
+  preloadCollectFilesField,
+  preloadDateField,
+  preloadDropdownField,
   preloadInitialsField,
+  preloadRadioField,
   preloadSignatureField,
   preloadStampField,
   preloadTextAreaField,
@@ -119,6 +128,34 @@ export const fillableFields: FillableFieldType[] = [
     },
   },
   {
+    id: "field-date",
+    label: "Date",
+    icon: (props) => <CalendarDays {...props} />,
+    dragImagePreview: DateImagePreview,
+    handleComponentPreload: preloadDateField,
+    dragPayload: {
+      kind: TemplateTypes.Field,
+      data: {
+        instance: {
+          templateId: Templates.Date,
+          data: {
+            content: "",
+          },
+        },
+        overlay: {
+          position: {
+            offsetX: 0,
+            offsetY: 0,
+          },
+          style: {
+            width: 170,
+            height: 30,
+          },
+        },
+      },
+    },
+  },
+  {
     id: "field-checkbox",
     label: "Checkbox",
     icon: (props) => <SquareCheck {...props} />,
@@ -157,6 +194,90 @@ export const fillableFields: FillableFieldType[] = [
       data: {
         instance: {
           templateId: Templates.Stamp,
+          data: {
+            content: "",
+          },
+        },
+        overlay: {
+          position: {
+            offsetX: 0,
+            offsetY: 0,
+          },
+          style: {
+            width: 140,
+            height: 140,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: "field-dropdown",
+    label: "Dropdown",
+    icon: (props) => <Stamp {...props} />,
+    dragImagePreview: DropdownImagePreview,
+    handleComponentPreload: preloadDropdownField,
+    dragPayload: {
+      kind: TemplateTypes.Field,
+      data: {
+        instance: {
+          templateId: Templates.Dropdown,
+          data: {
+            content: "",
+          },
+        },
+        overlay: {
+          position: {
+            offsetX: 0,
+            offsetY: 0,
+          },
+          style: {
+            width: 140,
+            height: 140,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: "field-radio",
+    label: "Radio buttons",
+    icon: (props) => <Stamp {...props} />,
+    dragImagePreview: RadioImagePreview,
+    handleComponentPreload: preloadRadioField,
+    dragPayload: {
+      kind: TemplateTypes.Field,
+      data: {
+        instance: {
+          templateId: Templates.Radio,
+          data: {
+            content: "",
+          },
+        },
+        overlay: {
+          position: {
+            offsetX: 0,
+            offsetY: 0,
+          },
+          style: {
+            width: 140,
+            height: 140,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: "field-collect-files",
+    label: "Collect files",
+    icon: (props) => <Stamp {...props} />,
+    dragImagePreview: CollectFilesImagePreview,
+    handleComponentPreload: preloadCollectFilesField,
+    dragPayload: {
+      kind: TemplateTypes.Field,
+      data: {
+        instance: {
+          templateId: Templates.CollectFiles,
           data: {
             content: "",
           },

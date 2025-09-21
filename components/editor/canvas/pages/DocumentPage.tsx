@@ -2,7 +2,7 @@
 
 import { useAppSelector } from "@/lib/hooks";
 import { selectPageRootId } from "@/lib/features/layout/layoutSlice";
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { PageId } from "@/interfaces/common";
 import ContentHeader from "../../ui/ContentHeader";
 import DocumentHeader from "./DocumentHeader";
@@ -17,16 +17,17 @@ interface DocumentPageProps {
 
 const DocumentPage = ({ pageId }: DocumentPageProps) => {
   const rootId = useAppSelector((state) => selectPageRootId(state, pageId));
+  const value = useMemo(() => ({ pageId }), [pageId]);
 
   if (!rootId || !pageId) return null;
 
   return (
-    <PageContext value={{ pageId }}>
+    <PageContext value={value}>
       <div className="relative h-full last:mb-[50px]">
         <div className="h-full">
           {/* Content-head */}
           <ContentHeader />
-          <div className="p relative mx-auto flex h-full min-h-[1065px] w-[816px] flex-col bg-white shadow-lg transition-all will-change-transform">
+          <div className="relative mx-auto flex h-full min-h-[1065px] w-[816px] flex-col bg-white shadow-lg transition-all will-change-transform">
             {/* Document-header */}
             <DocumentHeader />
             {/* Document-body */}

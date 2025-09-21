@@ -61,7 +61,6 @@ function LayoutRenderer({ nodeId }: LayoutRendererProps) {
           <BlockFactory instanceId={leaf.instanceId} />
         </DocBlock>
       );
-      // <BlockLeaf id={leaf.id} instanceId={leaf.instanceId} />;
     }
 
     default:

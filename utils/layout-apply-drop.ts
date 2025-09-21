@@ -175,6 +175,8 @@ export function applyDrop(
     throw new Error(`applyDrop: please specify the drop side direction.`);
   }
 
+  console.log(">>>>>>>>>>>>", { dropEvent });
+
   // Create the new node (blockRef example). In a real app, route by payload.kind.
   const newNode = createBlockRefFromPayload(byId, dropEvent.payload, null);
 

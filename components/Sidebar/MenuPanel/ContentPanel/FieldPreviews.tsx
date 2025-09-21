@@ -1,4 +1,4 @@
-import { PencilLine, Stamp } from "lucide-react";
+import { CalendarDays, PencilLine, Stamp } from "lucide-react";
 import React from "react";
 
 export const TextImagePreview = () => (
@@ -60,7 +60,69 @@ export const CheckboxImagePreview = () => (
   </div>
 );
 
+export const DateImagePreview = () => (
+  <div
+    className="ghost pointer-events-none absolute inset-0 flex h-[26px] w-[170px] items-center justify-between border border-gray-50 bg-white p-1"
+    style={{
+      transform: "scale(0.9)",
+      boxShadow: "0 8px 24px rgba(0,0,0,.2)",
+      opacity: 0.001,
+    }}
+  >
+    <span className="text-xs text-gray-500">Select date</span>
+    <CalendarDays className="h-5 w-5 text-gray-500" />
+  </div>
+);
+
 export const StampImagePreview = () => (
+  <div
+    className="ghost pointer-events-none absolute inset-0 h-[140px] w-[140px]"
+    style={{
+      transform: "scale(0.9)",
+      boxShadow: "0 8px 24px rgba(0,0,0,.2)",
+      opacity: 0.001,
+    }}
+  >
+    <div className="flex h-[140px] w-[140px] items-center justify-center rounded-md bg-white text-sm font-semibold text-gray-800 opacity-70">
+      <Stamp size={18} className="mr-2" />
+      Stamp
+    </div>
+  </div>
+);
+
+export const DropdownImagePreview = () => (
+  <div
+    className="ghost pointer-events-none absolute inset-0 h-[140px] w-[140px]"
+    style={{
+      transform: "scale(0.9)",
+      boxShadow: "0 8px 24px rgba(0,0,0,.2)",
+      opacity: 0.001,
+    }}
+  >
+    <div className="flex h-[140px] w-[140px] items-center justify-center rounded-md bg-white text-sm font-semibold text-gray-800 opacity-70">
+      <Stamp size={18} className="mr-2" />
+      Stamp
+    </div>
+  </div>
+);
+
+export const CollectFilesImagePreview = () => (
+  <div
+    className="ghost pointer-events-none absolute inset-0 h-[140px] w-[140px]"
+    style={{
+      transform: "scale(0.9)",
+      boxShadow: "0 8px 24px rgba(0,0,0,.2)",
+      opacity: 0.001,
+    }}
+  >
+    <div className="flex h-[140px] w-[140px] items-center justify-center rounded-md bg-white text-sm font-semibold text-gray-800 opacity-70">
+      <Stamp size={18} className="mr-2" />
+      Stamp
+    </div>
+  </div>
+);
+
+export const RadioImagePreview = () => (
   <div
     className="ghost pointer-events-none absolute inset-0 h-[140px] w-[140px]"
     style={{

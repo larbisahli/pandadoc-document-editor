@@ -1,4 +1,3 @@
-import { NodeId, OverlayId } from "@/interfaces/common";
 import { BlockKind } from "@/interfaces/enum";
 import { InstanceType } from "@/interfaces/instance";
 import dynamic from "next/dynamic";
@@ -21,7 +20,7 @@ export interface BaseBlockProps {
 export type AnyBlockComponent = ComponentType<BaseBlockProps>;
 
 // Fallback for unknown kinds
-const UnknownBlock: AnyBlockComponent = ({ overlayId }) => (
+const UnknownBlock: AnyBlockComponent = ({ overlayId }: any) => (
   <div className="text-xs text-red-600">Unknown block: {overlayId}</div>
 );
 
@@ -43,8 +42,14 @@ export const preloadImageBlock = () => ImageBlockLoader();
 export const preloadVideoBlock = () => VideoBlockLoader();
 export const preloadTableOfContentsBlock = () => TableOfContentsBlockLoader();
 
+type RegistryKind =
+  | BlockKind.Text
+  | BlockKind.Image
+  | BlockKind.Video
+  | BlockKind.TableOfContents;
+
 /* The registry (static map) */
-const STATIC_REGISTRY: Record<BlockKind, AnyBlockComponent> = {
+const STATIC_REGISTRY: Record<RegistryKind, AnyBlockComponent> = {
   [BlockKind.Text]: TextBlock,
   [BlockKind.Image]: ImageBlock,
   [BlockKind.Video]: VideoBlock,
@@ -62,7 +67,11 @@ export function registerField(kind: BlockKind, component: AnyBlockComponent) {
 // Lookup
 export function getFieldComponent(kind?: string | null): AnyBlockComponent {
   if (!kind || !isFieldKind(kind)) return UnknownBlock;
-  return RUNTIME_REGISTRY.get(kind) ?? STATIC_REGISTRY[kind] ?? UnknownBlock;
+  return (
+    RUNTIME_REGISTRY.get(kind) ??
+    STATIC_REGISTRY[kind as keyof typeof STATIC_REGISTRY] ??
+    UnknownBlock
+  );
 }
 
 // Under the hood calls getFieldComponent

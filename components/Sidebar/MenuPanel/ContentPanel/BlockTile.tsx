@@ -3,6 +3,7 @@ import { GripVertical } from "lucide-react";
 import { ContentBlockType } from "./Blocks";
 import React, { useCallback, useState } from "react";
 import { WithDraggable } from "@/dnd";
+import { TemplateTypes } from "@/interfaces/enum";
 
 interface BlockTileProps {
   block: ContentBlockType;
@@ -37,6 +38,7 @@ const BlockTile = ({ block }: BlockTileProps) => {
 
   return (
     <WithDraggable
+      kind={TemplateTypes.Block}
       handleOnDragStart={handleOnDragStart}
       handleOnDragEnd={handleOnDragEnd}
       getDragPayload={getDragPayload}

@@ -57,10 +57,30 @@ const initialState: TemplateSliceState = {
       type: TemplateTypes.Field,
       kind: FieldKind.Checkbox,
     },
+    [Templates.Date]: {
+      id: Templates.Date,
+      type: TemplateTypes.Field,
+      kind: FieldKind.Date,
+    },
     [Templates.Stamp]: {
       id: Templates.Stamp,
       type: TemplateTypes.Field,
       kind: FieldKind.Stamp,
+    },
+    [Templates.CollectFiles]: {
+      id: Templates.CollectFiles,
+      type: TemplateTypes.Field,
+      kind: FieldKind.CollectFiles,
+    },
+    [Templates.Radio]: {
+      id: Templates.Radio,
+      type: TemplateTypes.Field,
+      kind: FieldKind.Radio,
+    },
+    [Templates.Dropdown]: {
+      id: Templates.Dropdown,
+      type: TemplateTypes.Field,
+      kind: FieldKind.Dropdown,
     },
     [Templates.TableOfContents]: {
       id: Templates.TableOfContents,

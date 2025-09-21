@@ -6,6 +6,7 @@ import { contentBlocks } from "./Blocks";
 import BlockTile from "./BlockTile";
 import { fillableFields } from "./Fields";
 import FieldTile from "./FieldTile";
+import RecipientDropdown from "@/components/editor/ui/RecipientDropdown";
 
 const ContentPanel = () => {
   return (
@@ -22,6 +23,9 @@ const ContentPanel = () => {
         </div>
         <div className="text-muted w-full pt-4 pb-2 text-xs uppercase">
           Fillable fields for
+        </div>
+        <div className="mb-4">
+          <RecipientDropdown />
         </div>
         <div className="grid grid-cols-2 gap-2">
           {fillableFields.map((field) => (

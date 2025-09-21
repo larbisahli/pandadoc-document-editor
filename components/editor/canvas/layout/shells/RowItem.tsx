@@ -41,7 +41,7 @@ function RowItem({ nodeId, children }: Props) {
     <div
       id={nodeId}
       data-node-type="item-row"
-      className="item-row m-1 flex w-full overflow-hidden bg-purple-400 px-[13px] py-2"
+      className="item-row flex w-full px-[13px] py-0"
       style={{ width: `${(basePct as number).toFixed(2)}%` }}
     >
       <DropBlockOverlayWrapper onDrop={handleDrop}>

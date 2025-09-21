@@ -52,7 +52,7 @@ function DropBlockOverlayWrapper({
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDropHandle}
-      className={clsx("relative w-full bg-amber-700", className)}
+      className={clsx("relative w-full", className)}
       data-node-type={dataNodeType}
       style={style}
     >

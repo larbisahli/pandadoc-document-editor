@@ -1,4 +1,4 @@
-import { DropActionBlockType, DropEvent } from "@/interfaces/dnd";
+import { DropEvent } from "@/interfaces/dnd";
 import { AppDispatch, RootState } from "@/lib/store";
 import { dropApplied } from "../actions";
 import { newInstanceId } from "@/utils/ids";
@@ -25,8 +25,6 @@ export const dropCommitted =
         },
       },
     } as DropEvent;
-
-    console.log("YYYYYY", { payload });
 
     dispatch(dropApplied(payload));
   };
