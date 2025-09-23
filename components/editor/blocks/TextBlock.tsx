@@ -1,6 +1,7 @@
 import { memo, useState } from "react";
 import { BaseBlockProps } from "../canvas/blocks/BlockRegistry";
 import clsx from "clsx";
+import BorderWrapper from "./BorderWrapper";
 
 function TextBlock({ instance }: BaseBlockProps) {
   const [active, setActive] = useState(false);
@@ -20,22 +21,18 @@ function TextBlock({ instance }: BaseBlockProps) {
   };
 
   return (
-    <div className="relative">
-      <div className="relative">
-        <div
-          contentEditable={true}
-          onFocus={handleFocusChange}
-          onBlur={handleFocusChange}
-          onInput={handleInput}
-          className="w-full outline-none"
-        />
-      </div>
-      <div
-        className={clsx(
-          "dropzone-active pointer-events-none absolute inset-[-7] rounded-[2px]",
-          active && "border-[#248567]! opacity-35!",
-        )}
-      ></div>
+    <div className="group relative">
+      <BorderWrapper active={active}>
+        <div className="relative">
+          <div
+            contentEditable={true}
+            onFocus={handleFocusChange}
+            onBlur={handleFocusChange}
+            onInput={handleInput}
+            className={clsx("w-full outline-none", !active && "cursor-pointer")}
+          />
+        </div>
+      </BorderWrapper>
     </div>
   );
 }

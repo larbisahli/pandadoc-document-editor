@@ -10,3 +10,9 @@ The editor demonstrates:
 - **Undo/redo history** and normalized app state for predictable updates
 
 This project was created as part of my preparation for **system design and front-end interviews at PandaDoc**.
+
+<!-- TODO -->
+
+- add block on page in general
+- add block and field on click in the middle for field
+- commit recipient

@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useCallback, useLayoutEffect, useRef } from "react";
 import clsx from "clsx";
 import { OverlayId } from "@/interfaces/common";
@@ -16,6 +17,8 @@ type Props = {
   scale?: number;
   onResizeEnd?: (w: number, h: number) => void;
   children?: React.ReactNode;
+  canResizeWidth: boolean;
+  canResizeHeight: boolean;
 };
 
 type Session = {
@@ -23,8 +26,8 @@ type Session = {
   startH: number;
   startX: number;
   startY: number;
-  maxWidthWithinPage: number; // in CONTENT coords
-  maxHeightWithinPage: number; // in CONTENT coords
+  maxWidthWithinPage: number; // in content coords
+  maxHeightWithinPage: number; // in content coords
   rafId: number;
   nextW: number;
   nextH: number;
@@ -34,11 +37,13 @@ function ResizableFieldWrapper({
   overlayId,
   width,
   height,
+  onResizeEnd,
+  children,
   minW = 10,
   minH = 30,
   scale = 1,
-  onResizeEnd,
-  children,
+  canResizeWidth = true,
+  canResizeHeight = true,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const sessionRef = useRef<Session | null>(null);
@@ -67,9 +72,13 @@ function ResizableFieldWrapper({
       ? session.nextH
       : session.startH;
 
-    element.style.width = `${width}px`;
-    element.style.height = `${height}px`;
-  }, []);
+    if (canResizeWidth) {
+      element.style.width = `${width}px`;
+    }
+    if (canResizeHeight) {
+      element.style.height = `${height}px`;
+    }
+  }, [canResizeHeight, canResizeWidth]);
 
   const schedule = useCallback(() => {
     const session = sessionRef.current;
@@ -80,6 +89,9 @@ function ResizableFieldWrapper({
   }, [apply]);
 
   const onPointerDown = (e: React.PointerEvent) => {
+    // Do nothing
+    if (!(canResizeWidth || canResizeHeight)) return;
+
     e.preventDefault();
     e.stopPropagation();
 
@@ -127,8 +139,11 @@ function ResizableFieldWrapper({
       nextH: startH,
     };
 
-    // willChange is great for GPU acceleration
-    element.style.willChange = "width, height";
+    // only set will-change for enabled axes, willChange is great for GPU acceleration
+    const wc: string[] = [];
+    if (canResizeWidth) wc.push("width");
+    if (canResizeHeight) wc.push("height");
+    element.style.willChange = wc.join(", ");
     (element.parentElement || document.body).style.userSelect = "none";
   };
 
@@ -144,17 +159,34 @@ function ResizableFieldWrapper({
     const dx = (event.clientX - session.startX) / zoom;
     const dy = (event.clientY - session.startY) / zoom;
 
-    let width = session.startW + dx;
-    let height = session.startH + dy;
+    // start from original sizes
+    let nextW = session.startW;
+    let nextH = session.startH;
 
-    // Clamp against min and computed page-remaining space
-    width = clamp(width, num(minW, 0), session.maxWidthWithinPage);
-    height = clamp(height, num(minH, 0), session.maxHeightWithinPage);
+    if (canResizeWidth) {
+      nextW = clamp(
+        session.startW + dx,
+        num(minW, 0),
+        session.maxWidthWithinPage,
+      );
+      if (!Number.isFinite(nextW)) nextW = session.startW;
+      session.nextW = nextW;
+    }
 
-    if (!Number.isFinite(width) || !Number.isFinite(height)) return;
+    if (canResizeHeight) {
+      nextH = clamp(
+        session.startH + dy,
+        num(minH, 0),
+        session.maxHeightWithinPage,
+      );
+      if (!Number.isFinite(nextH)) nextH = session.startH;
+      session.nextH = nextH;
+    }
 
-    session.nextW = width;
-    session.nextH = height;
+    // If an axis is disabled, keep the session's next values at start values
+    if (!canResizeWidth) session.nextW = session.startW;
+    if (!canResizeHeight) session.nextH = session.startH;
+
     schedule();
   };
 
@@ -171,51 +203,64 @@ function ResizableFieldWrapper({
       session.rafId = 0;
     }
 
-    const finalWidth = Number.isFinite(session.nextW)
-      ? session.nextW
+    const finalWidth = canResizeWidth
+      ? Number.isFinite(session.nextW)
+        ? session.nextW
+        : session.startW
       : session.startW;
-    const finalHeight = Number.isFinite(session.nextH)
-      ? session.nextH
+    const finalHeight = canResizeHeight
+      ? Number.isFinite(session.nextH)
+        ? session.nextH
+        : session.startH
       : session.startH;
 
-    element.style.width = `${finalWidth}px`;
-    element.style.height = `${finalHeight}px`;
+    if (canResizeWidth) element.style.width = `${finalWidth}px`;
+    if (canResizeHeight) element.style.height = `${finalHeight}px`;
 
     // Clean up
     element.style.willChange = "";
     (element.parentElement || document.body).style.userSelect = "";
     sessionRef.current = null;
 
+    // Dispatch with final values (unchanged axis sends previous size)
     dispatch(
-      updateOverlaySize({
-        overlayId,
-        width: finalWidth,
-        height: finalHeight,
-      }),
+      updateOverlaySize({ overlayId, width: finalWidth, height: finalHeight }),
     );
-
     onResizeEnd?.(finalWidth, finalHeight);
   };
+
+  // Cursor by enabled axes
+  const handleCursor =
+    canResizeWidth && canResizeHeight
+      ? "cursor-nwse-resize"
+      : canResizeWidth
+        ? "cursor-ew-resize"
+        : canResizeHeight
+          ? "cursor-ns-resize"
+          : "cursor-default";
 
   return (
     <div
       ref={ref}
       id={`resizer-${overlayId}`}
-      className="group/resize-point box-border"
+      className="group/resize-point box-border overflow-hidden"
     >
       {children}
-      <div
-        id={`resize-point-${overlayId}`}
-        role="separator"
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        className={clsx(
-          "absolute right-0 bottom-0 translate-x-1/2 translate-y-1/2",
-          "h-2 w-2 cursor-nwse-resize rounded-full border border-gray-300 bg-white shadow",
-          "invisible touch-none select-none group-hover/resize-point:visible",
-        )}
-      />
+      {(canResizeWidth || canResizeHeight) && (
+        <div
+          id={`resize-point-${overlayId}`}
+          role="separator"
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          className={clsx(
+            "absolute right-0 bottom-0 translate-x-1/2 translate-y-1/2",
+            "h-2 w-2 rounded-full border border-gray-300 bg-white shadow",
+            "invisible touch-none select-none group-hover/resize-point:visible",
+            handleCursor,
+          )}
+        />
+      )}
     </div>
   );
 }

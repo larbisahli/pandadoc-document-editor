@@ -32,7 +32,9 @@ function FieldFactory({ overlayId }: FieldRendererProps) {
     return null;
   }
 
-  const { position, style } = overlay;
+  const { position, style, settings } = overlay;
+  const canResizeWidth = settings?.resizeWidth as boolean;
+  const canResizeHeight = settings?.resizeHeight as boolean;
   const width = style?.width ?? undefined;
   const height = style?.height ?? undefined;
   const offsetX = position?.offsetX ?? 0;
@@ -46,6 +48,8 @@ function FieldFactory({ overlayId }: FieldRendererProps) {
       scale={browserZoomLevel}
     >
       <ResizableFieldWrapper
+        canResizeWidth={canResizeWidth}
+        canResizeHeight={canResizeHeight}
         overlayId={overlayId}
         width={width}
         height={height}

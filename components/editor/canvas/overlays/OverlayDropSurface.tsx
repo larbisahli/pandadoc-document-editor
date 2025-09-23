@@ -64,7 +64,6 @@ function OverlayDropSurface({
     if (!surfaceEl) return;
 
     const data = e.dataTransfer?.getData(FIELD_DATA_FORMAT);
-    console.log({ data });
     if (!data) return;
 
     let payload: OverlayDragPayload | null = null;

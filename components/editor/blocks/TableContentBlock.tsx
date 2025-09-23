@@ -1,18 +1,35 @@
-import { memo } from "react";
+import { memo, useRef, useState } from "react";
 import { BaseBlockProps } from "../canvas/blocks/BlockRegistry";
+import { useClickOutside } from "../hooks/useClickOutside";
+import clsx from "clsx";
+import BorderWrapper from "./BorderWrapper";
 
 function TableContentBlock({ props }: BaseBlockProps) {
+  const blockRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(false);
+  useClickOutside(blockRef, () => setActive(false));
+
   return (
-    <div className="relative">
-      <div className="flex flex-col">
-        <div className="cursor-default p-1 hover:bg-gray-100">Content 1:</div>
-        <div className="cursor-default p-1 hover:bg-gray-100">Content 2:</div>
-        <div className="cursor-default p-1 hover:bg-gray-100">Content 3:</div>
-        <div className="cursor-default p-1 hover:bg-gray-100">Content 4:</div>
-        <div className="cursor-default p-1 hover:bg-gray-100">Content 5:</div>
-        <div className="cursor-default p-1 hover:bg-gray-100">Content 6:</div>
-      </div>
-      <div className="dropzone-active pointer-events-none absolute inset-[-7] rounded-[2px]"></div>
+    <div
+      ref={blockRef}
+      className="group relative"
+      onClick={() => setActive(true)}
+    >
+      <BorderWrapper active={active}>
+        <div
+          className={clsx("flex flex-col", !active && "pointer-events-none")}
+        >
+          <button className="cursor-default! p-1 text-left hover:bg-gray-100">
+            Content 1:
+          </button>
+          <button className="cursor-default! p-1 text-left hover:bg-gray-100">
+            Content 2:
+          </button>
+          <button className="cursor-default! p-1 text-left hover:bg-gray-100">
+            Content 3:
+          </button>
+        </div>
+      </BorderWrapper>
     </div>
   );
 }

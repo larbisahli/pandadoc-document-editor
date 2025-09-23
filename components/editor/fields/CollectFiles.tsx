@@ -1,6 +1,6 @@
 import { OverlayId } from "@/interfaces/common";
 import { InstanceType } from "@/interfaces/instance";
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, Upload } from "lucide-react";
 import { memo } from "react";
 
 interface Props {
@@ -10,8 +10,9 @@ interface Props {
 
 function CollectFiles({ overlayId, instance }: Props) {
   return (
-    <div className="relative flex h-full w-full items-center justify-between border border-green-500 bg-green-200/30 p-1 outline-none">
-      <span className="text-xs text-black">CollectFiles</span>
+    <div className="flex h-full w-full items-center justify-center border border-green-500 bg-green-200/30 p-1 text-sm font-semibold text-gray-800 opacity-70 outline-none">
+      <Upload size={18} className="mr-2" />
+      <span>Click to upload file</span>
     </div>
   );
 }

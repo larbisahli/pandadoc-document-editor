@@ -23,13 +23,6 @@ type WithDraggableProps = {
   handleOnDragEnd: (e: React.DragEvent) => void;
 };
 
-const TRANSPARENT_IMG = (() => {
-  const i = new Image();
-  i.src =
-    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y6vYf8AAAAASUVORK5CYII=";
-  return i;
-})();
-
 // Check if pointer inside page bounds
 function isInsidePage(x: number, y: number): boolean {
   const el = document.getElementById("document-canvas") as HTMLElement | null;
@@ -37,6 +30,16 @@ function isInsidePage(x: number, y: number): boolean {
   if (x === 0 && y === 0) return false;
   const hit = document.elementFromPoint(x, y);
   return !!hit && (hit === el || el.contains(hit));
+}
+
+function useTransparentImg() {
+  return React.useMemo(() => {
+    if (typeof window === "undefined") return null; // SSR safe
+    const i = new Image();
+    i.src =
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y6vYf8AAAAASUVORK5CYII=";
+    return i;
+  }, []);
 }
 
 function WithDraggable({
@@ -60,6 +63,8 @@ function WithDraggable({
     y: -1,
     inside: null,
   });
+
+  const transparentImg = useTransparentImg();
 
   const onDragStart = (e: React.DragEvent) => {
     handleOnDragStart(e);
@@ -92,7 +97,7 @@ function WithDraggable({
       position: "fixed",
       top: "0",
       left: "0",
-      transform: `translate(${(e.clientX || 0) - ox}px, ${(e.clientY || 0) - oy}px) scale(0.9)`,
+      transform: `translate(${(e.clientX || 0) - ox}px, ${(e.clientY || 0) - oy}px)`,
       pointerEvents: "none",
       zIndex: "2147483647",
       opacity: "0.95",
@@ -104,10 +109,10 @@ function WithDraggable({
     ghostRef.current = ghost;
 
     // Hide native ghost
-    e.dataTransfer.setDragImage(TRANSPARENT_IMG, 0, 0);
+    if (transparentImg) e.dataTransfer.setDragImage(transparentImg, 0, 0);
 
     // Initial position (top-left at cursor)
-    ghost.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) scale(0.9)`;
+    ghost.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
   };
 
   const onDrag = (e: React.DragEvent) => {
@@ -130,7 +135,7 @@ function WithDraggable({
 
       // move ghost (only if changed)
       if (x !== lastRef.current.x || y !== lastRef.current.y) {
-        ghost.style.transform = `translate3d(${x}px, ${y}px, 0) scale(0.9)`;
+        ghost.style.transform = `translate3d(${x}px, ${y}px, 0)`;
         lastRef.current.x = x;
         lastRef.current.y = y;
       }

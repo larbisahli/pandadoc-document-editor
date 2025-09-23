@@ -52,7 +52,10 @@ const FieldTile = ({ field }: FieldTileProps) => {
           draggedTileId === field.id ? "opacity-40" : "group",
         )}
       >
-        <DragImagePreview />
+        <DragImagePreview
+          width={field.dragPayload.data.overlay?.style.width ?? 100}
+          height={field.dragPayload.data.overlay?.style.height ?? 50}
+        />
         <div className="absolute top-0 bottom-0 left-0 hidden h-full items-center justify-center bg-[#cc5b0e29] group-hover:flex">
           <GripVertical
             strokeWidth={1.2}

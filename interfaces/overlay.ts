@@ -1,4 +1,5 @@
 import { InstanceId, OverlayId } from "./common";
+import { RecipientType } from "./recipient";
 
 export interface OverlayItem {
   id: OverlayId;
@@ -13,5 +14,6 @@ export interface OverlayItem {
     fontSize?: number;
     color?: string;
   };
-  settings?: unknown;
+  settings?: Record<string, unknown>;
+  recipient: RecipientType;
 }

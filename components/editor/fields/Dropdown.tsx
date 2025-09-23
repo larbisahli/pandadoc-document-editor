@@ -1,6 +1,6 @@
 import { OverlayId } from "@/interfaces/common";
 import { InstanceType } from "@/interfaces/instance";
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, ChevronDown } from "lucide-react";
 import { memo } from "react";
 
 interface Props {
@@ -10,9 +10,9 @@ interface Props {
 
 function Dropdown({ overlayId, instance }: Props) {
   return (
-    <div className="relative flex h-full w-full items-center justify-between border border-green-500 bg-green-200/30 p-1 outline-none">
-      <span className="text-xs text-black">Dropdown</span>
-      <CalendarDays className="h-5 w-5 text-gray-600" />
+    <div className="flex h-full w-full items-center justify-between border border-green-500 bg-green-200/30 text-sm font-semibold text-gray-800 opacity-70 outline-none">
+      <span className="px-1">Please select...</span>
+      <ChevronDown size={18} className="mr-2" />
     </div>
   );
 }

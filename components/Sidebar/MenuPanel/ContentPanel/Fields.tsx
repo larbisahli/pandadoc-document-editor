@@ -37,7 +37,7 @@ export interface FillableFieldType {
   label: string;
   icon: (props: LucideProps) => React.JSX.Element;
   dragPayload: DropPayload;
-  dragImagePreview: React.FC<unknown>;
+  dragImagePreview: React.FC<{ width: number; height: number }>;
   handleComponentPreload: () => void;
 }
 
@@ -63,9 +63,13 @@ export const fillableFields: FillableFieldType[] = [
             offsetY: 0,
           },
           style: {
-            width: 214,
-            height: 106,
+            width: 171,
+            height: 93,
             // TODO add minW and minH here
+          },
+          settings: {
+            resizeWidth: true,
+            resizeHeight: true,
           },
         },
       },
@@ -92,8 +96,12 @@ export const fillableFields: FillableFieldType[] = [
             offsetY: 0,
           },
           style: {
-            width: 200,
-            height: 80,
+            width: 129,
+            height: 62,
+          },
+          settings: {
+            resizeWidth: true,
+            resizeHeight: true,
           },
         },
       },
@@ -120,8 +128,12 @@ export const fillableFields: FillableFieldType[] = [
             offsetY: 0,
           },
           style: {
-            width: 110,
-            height: 110,
+            width: 100,
+            height: 68,
+          },
+          settings: {
+            resizeWidth: true,
+            resizeHeight: true,
           },
         },
       },
@@ -148,8 +160,12 @@ export const fillableFields: FillableFieldType[] = [
             offsetY: 0,
           },
           style: {
-            width: 170,
-            height: 30,
+            width: 149,
+            height: 26,
+          },
+          settings: {
+            resizeWidth: true,
+            resizeHeight: false,
           },
         },
       },
@@ -179,61 +195,9 @@ export const fillableFields: FillableFieldType[] = [
             width: 25,
             height: 25,
           },
-        },
-      },
-    },
-  },
-  {
-    id: "field-stamp",
-    label: "Stamp",
-    icon: (props) => <Stamp {...props} />,
-    dragImagePreview: StampImagePreview,
-    handleComponentPreload: preloadStampField,
-    dragPayload: {
-      kind: TemplateTypes.Field,
-      data: {
-        instance: {
-          templateId: Templates.Stamp,
-          data: {
-            content: "",
-          },
-        },
-        overlay: {
-          position: {
-            offsetX: 0,
-            offsetY: 0,
-          },
-          style: {
-            width: 140,
-            height: 140,
-          },
-        },
-      },
-    },
-  },
-  {
-    id: "field-dropdown",
-    label: "Dropdown",
-    icon: (props) => <Stamp {...props} />,
-    dragImagePreview: DropdownImagePreview,
-    handleComponentPreload: preloadDropdownField,
-    dragPayload: {
-      kind: TemplateTypes.Field,
-      data: {
-        instance: {
-          templateId: Templates.Dropdown,
-          data: {
-            content: "",
-          },
-        },
-        overlay: {
-          position: {
-            offsetX: 0,
-            offsetY: 0,
-          },
-          style: {
-            width: 140,
-            height: 140,
+          settings: {
+            resizeWidth: true,
+            resizeHeight: true,
           },
         },
       },
@@ -260,8 +224,44 @@ export const fillableFields: FillableFieldType[] = [
             offsetY: 0,
           },
           style: {
-            width: 140,
-            height: 140,
+            width: 117,
+            height: 90,
+          },
+          settings: {
+            resizeWidth: false,
+            resizeHeight: false,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: "field-dropdown",
+    label: "Dropdown",
+    icon: (props) => <Stamp {...props} />,
+    dragImagePreview: DropdownImagePreview,
+    handleComponentPreload: preloadDropdownField,
+    dragPayload: {
+      kind: TemplateTypes.Field,
+      data: {
+        instance: {
+          templateId: Templates.Dropdown,
+          data: {
+            content: "",
+          },
+        },
+        overlay: {
+          position: {
+            offsetX: 0,
+            offsetY: 0,
+          },
+          style: {
+            width: 160,
+            height: 26,
+          },
+          settings: {
+            resizeWidth: true,
+            resizeHeight: false,
           },
         },
       },
@@ -288,8 +288,44 @@ export const fillableFields: FillableFieldType[] = [
             offsetY: 0,
           },
           style: {
-            width: 140,
-            height: 140,
+            width: 180,
+            height: 28,
+          },
+          settings: {
+            resizeWidth: true,
+            resizeHeight: false,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: "field-stamp",
+    label: "Stamp",
+    icon: (props) => <Stamp {...props} />,
+    dragImagePreview: StampImagePreview,
+    handleComponentPreload: preloadStampField,
+    dragPayload: {
+      kind: TemplateTypes.Field,
+      data: {
+        instance: {
+          templateId: Templates.Stamp,
+          data: {
+            content: "",
+          },
+        },
+        overlay: {
+          position: {
+            offsetX: 0,
+            offsetY: 0,
+          },
+          style: {
+            width: 150,
+            height: 150,
+          },
+          settings: {
+            resizeWidth: true,
+            resizeHeight: true,
           },
         },
       },
