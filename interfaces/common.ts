@@ -15,7 +15,12 @@ export interface TextDataType {
 
 export interface ImageDataType {
   url?: string;
-  alt?: string;
+  name?: string;
+  type?: string;
+  size?: number;
+  width?: number;
+  height?: number;
+  aspectRatio?: number;
 }
 
 export interface VideoDataType {

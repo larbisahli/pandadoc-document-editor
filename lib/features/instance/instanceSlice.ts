@@ -11,9 +11,7 @@ import {
 
 type InstanceSliceState = Normalized<InstanceType>;
 
-const initialState: InstanceSliceState = {
-  byId: {},
-};
+const initialState: InstanceSliceState = { byId: {} };
 
 export const instancesSlice = createAppSlice({
   name: "instances",

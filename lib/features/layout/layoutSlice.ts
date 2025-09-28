@@ -1,4 +1,4 @@
-import { InstanceId, NodeId, OverlayId, PageId } from "@/interfaces/common";
+import { NodeId, OverlayId, PageId } from "@/interfaces/common";
 import { LayoutMultiPageState } from "@/interfaces/document";
 import { NodeDirection, NodeKind } from "@/interfaces/enum";
 import {
@@ -19,48 +19,6 @@ const initialState: LayoutSliceState = {
       byId: {
         ["root_1"]: {
           id: "root_1" as NodeId,
-          parentId: null,
-          kind: "container" as NodeKind,
-          direction: "column" as NodeDirection,
-          children: [] as NodeId[],
-          layoutStyle: {},
-        },
-      },
-      overlayIds: [] as OverlayId[],
-    },
-    ["page_2"]: {
-      rootId: "root_2" as NodeId,
-      byId: {
-        ["root_2"]: {
-          id: "root_2" as NodeId,
-          parentId: null,
-          kind: "container" as NodeKind,
-          direction: "column" as NodeDirection,
-          children: [] as NodeId[],
-          layoutStyle: {},
-        },
-      },
-      overlayIds: [] as OverlayId[],
-    },
-    ["page_3"]: {
-      rootId: "root_3" as NodeId,
-      byId: {
-        ["root_3"]: {
-          id: "root_3" as NodeId,
-          parentId: null,
-          kind: "container" as NodeKind,
-          direction: "column" as NodeDirection,
-          children: [] as NodeId[],
-          layoutStyle: {},
-        },
-      },
-      overlayIds: [] as OverlayId[],
-    },
-    ["page_4"]: {
-      rootId: "root_4" as NodeId,
-      byId: {
-        ["root_4"]: {
-          id: "root_4" as NodeId,
           parentId: null,
           kind: "container" as NodeKind,
           direction: "column" as NodeDirection,
@@ -105,7 +63,6 @@ export const layoutSlice = createAppSlice({
     //     state.push(action.payload);
     //   },
     //   prepare(text: string) {
-    //     // Generate ID here
     //     return { payload: { id: nanoid(), text } };
     //   }
     // },
@@ -171,15 +128,3 @@ export const selectRowItemLayoutStyle = createSelector(
     return node?.layoutStyle;
   },
 );
-
-// export const selectNodeChildren = createSelector(
-//   [
-//     (state: RootState, pageId: PageId) => selectPageById(state, pageId)?.byId,
-//     (_: RootState, __: PageId, nodeId: NodeId) => nodeId,
-//   ],
-//   (byId, nodeId) => {
-//     const node = byId?.[nodeId];
-//     if (!node) return undefined;
-//     return (node as ContainerNode)?.children  ?? [];
-//   }
-// );

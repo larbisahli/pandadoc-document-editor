@@ -43,7 +43,7 @@ function redistributeSizes(byId: LayoutById, container: ContainerNode): void {
         ...child.layoutStyle,
         width: toPercentString(share),
       };
-      // Optional: clear height so it can be auto
+      // clear height so it can be auto
       // delete child.layoutStyle.height;
     }
   }
@@ -210,8 +210,6 @@ export function applyDrop(
     throw new Error(`applyDrop: please specify the drop side direction.`);
   }
 
-  console.log(">>>>>>>>>>>>", { kind: targetNode.kind, dropEvent });
-
   // Create the new node (blockRef example). In a real app, route by payload.kind.
   const newNode = createBlockRefFromPayload(byId, dropEvent.payload, null);
 
@@ -279,6 +277,7 @@ export function applyDrop(
         requiredDirection,
         orderedChildren,
         parent.id,
+        // targetNode.layoutStyle
       );
       replaceChild(byId, parent, indexInParent, wrapper.id);
       redistributeSizes(byId, wrapper);
@@ -358,11 +357,15 @@ export function applyDrop(
     wrapperDirection,
     wrapperChildren,
     parentContainer.id,
+    targetNode.layoutStyle,
   );
+
+  console.log(JSON.parse(JSON.stringify(targetNode)), { wrapperDirection });
+
   replaceChild(byId, parentContainer, indexInParent, wrapper.id);
 
   redistributeSizes(byId, wrapper);
-  redistributeSizes(byId, parentContainer);
+  // redistributeSizes(byId, parentContainer);
 
   return { newNodeId: newNode.id, maybeNewRootId: rootId };
 }

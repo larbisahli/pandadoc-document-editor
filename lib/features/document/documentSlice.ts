@@ -9,7 +9,7 @@ type DocumentSliceState = DocumentMeta;
 const initialState: DocumentSliceState = {
   id: "doc_1" as DocumentId,
   title: "Simple invoice",
-  pageIds: ["page_1", "page_2", "page_3", "page_4"] as PageId[],
+  pageIds: ["page_1"] as PageId[],
 };
 
 export const documentSlice = createAppSlice({
