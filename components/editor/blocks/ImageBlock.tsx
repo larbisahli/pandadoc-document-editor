@@ -4,10 +4,14 @@ import { Image, Upload } from "lucide-react";
 import { useClickOutside } from "../hooks/useClickOutside";
 import clsx from "clsx";
 import BorderWrapper from "./BorderWrapper";
+import { useAppSelector } from "@/lib/hooks";
+import { selectInstance } from "@/lib/features/instance/instanceSlice";
 
-function ImageBlock({ instance }: BaseBlockProps) {
+function ImageBlock({ instanceId }: BaseBlockProps) {
+  const instance = useAppSelector((state) => selectInstance(state, instanceId));
+
   const blockRef = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(false);
+  const [active, setActive] = useState(true);
   useClickOutside(blockRef, () => setActive(false));
 
   return (

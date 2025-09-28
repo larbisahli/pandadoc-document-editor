@@ -108,7 +108,7 @@ export const DateImagePreview = ({
       height,
     }}
   >
-    <div className="flex h-full w-full items-center justify-between bg-white text-gray-500 opacity-70">
+    <div className="flex h-full w-full items-center justify-between bg-white text-gray-800 opacity-70">
       <span className="text-xs">Select date</span>
       <CalendarDays className="h-5 w-5" />
     </div>
@@ -154,7 +154,7 @@ export const DropdownImagePreview = ({
       height,
     }}
   >
-    <div className="flex h-full w-full items-center justify-between bg-white text-sm font-semibold text-gray-800 opacity-70">
+    <div className="flex h-full w-full items-center justify-between bg-white text-sm text-gray-800 opacity-70">
       <span className="px-1">Please select...</span>
       <ChevronDown size={18} className="mr-2" />
     </div>
@@ -177,7 +177,7 @@ export const CollectFilesImagePreview = ({
       height,
     }}
   >
-    <div className="flex h-full w-full items-center justify-center bg-white text-sm font-semibold text-gray-800 opacity-70">
+    <div className="flex h-full w-full items-center justify-center bg-white text-sm text-gray-800 opacity-70">
       <Upload size={18} className="mr-2" />
       <span>Click to upload file</span>
     </div>

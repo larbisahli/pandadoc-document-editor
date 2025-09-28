@@ -22,7 +22,6 @@ function RowItem({ nodeId, children }: Props) {
   );
 
   const basePct = parseFloat(layoutStyle?.width ?? "0");
-  console.log("RowItem >>>>>", { nodeId });
 
   const handleDrop = useCallback(
     (payload: DropPayload, side: DropSide | null) => {

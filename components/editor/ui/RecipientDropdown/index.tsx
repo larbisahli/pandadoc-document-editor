@@ -5,45 +5,21 @@ import React, { useRef, useState } from "react";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import { RecipientType } from "@/interfaces/recipient";
 import RecipientView from "./RecipientView";
-
-const users: RecipientType[] = [
-  {
-    id: "1",
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@gmail.com",
-    userColor: "#FFE8E0",
-  },
-  {
-    id: "2",
-    firstName: "Amelia",
-    lastName: "Novak",
-    email: "amelia.novak@example.com",
-    userColor: "#E0F7F1",
-  },
-  {
-    id: "3",
-    firstName: "Lucas",
-    lastName: "Richter",
-    email: "lucas.richter@example.com",
-    userColor: "#FFF8E0",
-  },
-  {
-    id: "4",
-    firstName: "Ethan",
-    lastName: "Kowalski",
-    email: "ethan.kowalski@example.com",
-    userColor: "#E8F0FF",
-  },
-];
-
-const initialRecipient = users[0];
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import {
+  selectActiveRecipient,
+  selectRecipient,
+  selectRecipientList,
+} from "@/lib/features/recipient/recipientSlice";
 
 const RecipientDropdown = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedRecipient, setSelectedRecipient] =
-    useState<RecipientType | null>(initialRecipient);
+
+  const recipients = useAppSelector(selectRecipientList);
+  const activeRecipient = useAppSelector(selectActiveRecipient);
+
+  const dispatch = useAppDispatch();
 
   useClickOutside(ref, () => setIsOpen(false));
 
@@ -51,9 +27,8 @@ const RecipientDropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleRecipientSelect = (user: RecipientType) => {
-    console.log(user);
-    setSelectedRecipient(user);
+  const handleRecipientSelect = (recipient: RecipientType) => {
+    dispatch(selectRecipient(recipient?.id));
     setIsOpen(false);
   };
 
@@ -65,8 +40,8 @@ const RecipientDropdown = () => {
         type="button"
         onClick={toggleDropdown}
       >
-        {selectedRecipient ? (
-          <RecipientView recipient={selectedRecipient} />
+        {activeRecipient ? (
+          <RecipientView recipient={activeRecipient} />
         ) : (
           "Project users"
         )}
@@ -82,11 +57,10 @@ const RecipientDropdown = () => {
             className="h-48 overflow-y-auto py-2 text-gray-700"
             aria-labelledby="dropdownUsersButton"
           >
-            {users.map((recipient) => (
+            {recipients.map((recipient) => (
               <li key={recipient.id}>
                 <RecipientView
                   isList
-                  selectedRecipient={selectedRecipient}
                   recipient={recipient}
                   onSelect={handleRecipientSelect}
                 />

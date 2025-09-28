@@ -3,7 +3,12 @@ import { GripVertical } from "lucide-react";
 import { ContentBlockType } from "./Blocks";
 import React, { useCallback, useState } from "react";
 import { WithDraggable } from "@/dnd";
-import { TemplateTypes } from "@/interfaces/enum";
+import { DropSide, TemplateTypes } from "@/interfaces/enum";
+import { DropEvent } from "@/interfaces/dnd";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { selectVisiblePageId } from "@/lib/features/layout/layoutSlice";
+import { dropCommitted } from "@/lib/features/editor/thunks/layoutThunks";
+import { NodeId } from "@/interfaces/common";
 
 interface BlockTileProps {
   block: ContentBlockType;
@@ -12,6 +17,9 @@ interface BlockTileProps {
 const BlockTile = ({ block }: BlockTileProps) => {
   const [draggedTileId, setDraggedTileId] = useState("");
   const Icon = block.icon;
+
+  const activePageId = useAppSelector(selectVisiblePageId);
+  const dispatch = useAppDispatch();
 
   const getDragPayload = useCallback(
     () => block.dragPayload,
@@ -36,12 +44,23 @@ const BlockTile = ({ block }: BlockTileProps) => {
     [block.id],
   );
 
+  const handleOnClick = useCallback(() => {
+    const dropEvent: DropEvent = {
+      pageId: activePageId!,
+      side: DropSide.Bottom,
+      payload: block.dragPayload,
+      forceRoot: true,
+    };
+    dispatch(dropCommitted(dropEvent));
+  }, [activePageId, block, dispatch]);
+
   return (
     <WithDraggable
       kind={TemplateTypes.Block}
       handleOnDragStart={handleOnDragStart}
       handleOnDragEnd={handleOnDragEnd}
       getDragPayload={getDragPayload}
+      onClick={handleOnClick}
       className="max-w-[118px]"
     >
       <div

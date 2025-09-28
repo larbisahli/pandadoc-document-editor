@@ -15,4 +15,7 @@ This project was created as part of my preparation for **system design and front
 
 - add block on page in general
 - add block and field on click in the middle for field
-- commit recipient
+
+- Block hover drop lines get close to edge problem
+
+- add filed by click (middle)

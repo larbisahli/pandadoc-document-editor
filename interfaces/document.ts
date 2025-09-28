@@ -2,6 +2,7 @@ import { DocumentId, PageId } from "./common";
 import { InstanceType } from "./instance";
 import { PageLayout } from "./layout";
 import { OverlayItem } from "./overlay";
+import { RecipientType } from "./recipient";
 import { TemplateType } from "./template";
 
 export interface Normalized<T> {
@@ -23,6 +24,7 @@ export type PagesMap = Record<string, PageLayout>;
 
 export interface LayoutMultiPageState {
   pages: PagesMap;
+  visiblePageId: PageId | null;
 }
 
 // Document Root
@@ -32,4 +34,5 @@ export interface DocumentModel {
   instances: Normalized<InstanceType>;
   templates: Normalized<TemplateType>;
   overlays: Normalized<OverlayItem>;
+  recipients: Normalized<RecipientType>;
 }

@@ -10,7 +10,7 @@ const EditorShell = () => {
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-[#efedec]">
       <EditorToolbar />
-      <div className="relative flex-1 overflow-auto">
+      <div id="editor" className="relative flex-1 overflow-auto">
         <div className="mx-auto table px-6">
           {/* Title */}
           <div className="w-[816px] px-2 pt-4">

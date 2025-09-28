@@ -1,30 +1,76 @@
-import { memo, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { BaseBlockProps } from "../canvas/blocks/BlockRegistry";
 import clsx from "clsx";
 import BorderWrapper from "./BorderWrapper";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import {
+  selectInstance,
+  updateInstanceDataField,
+} from "@/lib/features/instance/instanceSlice";
+import { TextDataType } from "@/interfaces/common";
 
-function TextBlock({ instance }: BaseBlockProps) {
-  const [active, setActive] = useState(false);
+function TextBlock({ instanceId }: BaseBlockProps) {
+  const divRef = useRef<HTMLDivElement>(null);
+
+  const instance = useAppSelector((state) => selectInstance(state, instanceId));
+  const dispatch = useAppDispatch();
+
+  const [active, setActive] = useState(true);
+  const [value, setValue] = useState<string>("");
 
   const handleFocusChange = (e: React.FocusEvent<HTMLDivElement>) => {
     if (e.type === "focus") {
-      console.log("Div focused:", e.currentTarget.innerText);
       setActive(true);
     } else {
-      console.log("Div unfocused:", e.currentTarget.innerText);
       setActive(false);
     }
   };
 
   const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
-    console.log("Content changed:", e.currentTarget.innerText);
+    setValue(e.currentTarget.innerText);
   };
+
+  const onCommit = useCallback(
+    (value: string) => {
+      dispatch(
+        updateInstanceDataField({
+          data: { content: value },
+          instanceId,
+        }),
+      );
+    },
+    [dispatch, instanceId],
+  );
+
+  // Keep in sync on content changes
+  useEffect(() => {
+    if (divRef.current) {
+      const text = (instance?.data as TextDataType)?.content ?? "";
+      divRef.current.innerText = text;
+      setValue(text);
+    }
+  }, [instance]);
+
+  useEffect(() => {
+    if (active && divRef.current) {
+      divRef.current.focus();
+    }
+  }, [active]);
+
+  useEffect(() => {
+    const id = setTimeout(() => {
+      const text = (instance?.data as TextDataType)?.content ?? "";
+      if (value !== text) onCommit(value);
+    }, 500);
+    return () => clearTimeout(id);
+  }, [value, instance, onCommit]);
 
   return (
     <div className="group relative">
       <BorderWrapper active={active}>
         <div className="relative">
           <div
+            ref={divRef}
             contentEditable={true}
             onFocus={handleFocusChange}
             onBlur={handleFocusChange}

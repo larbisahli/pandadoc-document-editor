@@ -23,7 +23,7 @@ function BlockFactory({ instanceId }: BlockRendererProps) {
     return null;
   }
 
-  return <Component instance={instance} />;
+  return <Component instanceId={instanceId} />;
 }
 
 export default React.memo(BlockFactory);

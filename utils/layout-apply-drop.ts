@@ -136,7 +136,7 @@ function isRoot(byId: LayoutById, nodeId: NodeId, rootId?: NodeId): boolean {
 function insertAsSiblingInRoot(
   byId: LayoutById,
   root: ContainerNode,
-  targetId: NodeId,
+  targetId: NodeId | null,
   side: DropSide,
   newNodeId: NodeId,
 ) {
@@ -144,12 +144,20 @@ function insertAsSiblingInRoot(
   if (root.direction !== NodeDirection.Column) {
     root.direction = NodeDirection.Column;
   }
-  const targetIndex = root.children.indexOf(targetId);
-  if (targetIndex === -1) {
-    throw new Error("applyDrop: target not found among root children.");
+
+  if (targetId == null || root.children.length === 0) {
+    // Root has no children yet → append as first child
+    insertChild(byId, root, 0, newNodeId);
+  } else {
+    // Insert relative to existing target
+    const targetIndex = root.children.indexOf(targetId);
+    if (targetIndex === -1) {
+      throw new Error("applyDrop: target not found among root children.");
+    }
+    const insertIndex = sideIsBefore(side) ? targetIndex : targetIndex + 1;
+    insertChild(byId, root, insertIndex, newNodeId);
   }
-  const insertIndex = sideIsBefore(side) ? targetIndex : targetIndex + 1;
-  insertChild(byId, root, insertIndex, newNodeId);
+
   // Equal heights for root children after change
   redistributeSizes(byId, root);
 }
@@ -160,14 +168,41 @@ function insertAsSiblingInRoot(
  * - Otherwise wraps the target and the new node in a new container with the orthogonal direction.
  * - After any structural change, redistributes sizes (widths for rows, heights for columns).
  *
- * IMPORTANT: This function mutates `byId` in-place (ideal inside RTK reducers which use Immer).
+ * IMPORTANT: This function mutates `byId` in-place.
  */
 export function applyDrop(
   byId: LayoutById,
   dropEvent: DropEvent,
-  rootId?: NodeId,
+  rootId: NodeId,
 ): { newNodeId: NodeId; maybeNewRootId?: NodeId } {
-  const targetNode = byId[dropEvent.nodeId];
+  const nodeId = dropEvent?.nodeId;
+  let targetNode;
+
+  if (nodeId) {
+    targetNode = byId[nodeId];
+  }
+
+  // ** Insert Block in root **
+  if (dropEvent?.forceRoot && !targetNode) {
+    // Create a new block node from the payload
+    const newNode = createBlockRefFromPayload(byId, dropEvent.payload, null);
+
+    // Ensure root exists and is a container
+    const root = byId[rootId] as ContainerNode | undefined;
+    if (!root || !Array.isArray(root.children)) {
+      throw new Error(`Root container not found for id: ${rootId}`);
+    }
+
+    // Find the last child in root (if any)
+    const lastChildId =
+      root.children.length > 0 ? (root.children.at(-1) as NodeId) : null;
+
+    // Insert new node at the bottom (after last child)
+    insertAsSiblingInRoot(byId, root, lastChildId, DropSide.Bottom, newNode.id);
+
+    return { newNodeId: newNode.id, maybeNewRootId: rootId };
+  }
+
   if (!targetNode) {
     throw new Error(`applyDrop: target node ${dropEvent.nodeId} not found.`);
   }
@@ -175,7 +210,7 @@ export function applyDrop(
     throw new Error(`applyDrop: please specify the drop side direction.`);
   }
 
-  console.log(">>>>>>>>>>>>", { dropEvent });
+  console.log(">>>>>>>>>>>>", { kind: targetNode.kind, dropEvent });
 
   // Create the new node (blockRef example). In a real app, route by payload.kind.
   const newNode = createBlockRefFromPayload(byId, dropEvent.payload, null);

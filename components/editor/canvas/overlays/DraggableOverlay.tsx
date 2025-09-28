@@ -1,7 +1,7 @@
 "use client";
 
 import React, { memo, useLayoutEffect, useMemo, useRef } from "react";
-import { makeDragImageFrom } from "./helpers";
+import { browserZoomLevel, makeDragImageFrom } from "./helpers";
 import { OverlayId } from "@/interfaces/common";
 import { FIELD_DATA_FORMAT } from "@/dnd";
 import { usePage } from "../context/PageContext";
@@ -14,6 +14,7 @@ import {
 } from "@/utils/helpers/alignmentGuides";
 import { useAlignmentGuides } from "../../hooks/useAlignmentGuides";
 import { PageSize, Rect } from "@/interfaces";
+import { selectOverlayById } from "@/lib/features/overlay/overlaySlice";
 
 export type Point = { offsetX: number; offsetY: number };
 
@@ -26,29 +27,30 @@ export type OverlayDragPayload = {
 
 type DraggableOverlayProps = {
   overlayId: OverlayId;
-  offsetX: number;
-  offsetY: number;
-  scale?: number;
   children: React.ReactNode;
 };
 
-function DraggableOverlay({
-  overlayId,
-  offsetX,
-  offsetY,
-  scale = 1,
-  children,
-}: DraggableOverlayProps) {
+function DraggableOverlay({ overlayId, children }: DraggableOverlayProps) {
   const ref = useRef<HTMLDivElement>(null);
   const ghostRef = useRef<ReturnType<typeof makeDragImageFrom> | null>(null);
   const grabOffset = useRef<Point>({ offsetX: 0, offsetY: 0 });
   const rulerRootLayerRef = useRef<HTMLDivElement | null>(null);
   const rulerThrottlerAFRef = useRef<number | null>(null);
 
+  const overlay = useAppSelector((state) =>
+    selectOverlayById(state, overlayId),
+  );
+
   const { pageId } = usePage();
   const overlayIds = useAppSelector((state) =>
     selectPageOverlayIds(state, pageId),
   );
+
+  const scale = browserZoomLevel;
+
+  const { position } = overlay;
+  const offsetX = position?.offsetX ?? 0;
+  const offsetY = position?.offsetY ?? 0;
 
   const pageSize: PageSize = useMemo(() => getPageSize(pageId), [pageId]);
 

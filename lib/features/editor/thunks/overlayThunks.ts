@@ -1,13 +1,16 @@
 import { PageId } from "@/interfaces/common";
 import { AppDispatch, RootState } from "@/lib/store";
 import { newInstanceId, newOverlayId } from "@/utils/ids";
-import { insertFieldCommitted, InsertFieldPayload } from "../actions";
+import {
+  insertFieldCommitted,
+  InsertFieldPayload,
+  updateFieldSize,
+  UpdateFieldSizeType,
+} from "../actions";
 import { DropEvent } from "@/interfaces/dnd";
 
 interface InsertFieldFlowType {
   pageId: PageId;
-  offsetX: number;
-  offsetY: number;
   instance: DropEvent["payload"]["data"]["instance"];
   overlay: DropEvent["payload"]["data"]["overlay"];
 }
@@ -15,7 +18,11 @@ interface InsertFieldFlowType {
 export const insertFieldFlow =
   (args: InsertFieldFlowType) =>
   (dispatch: AppDispatch, getState: () => RootState) => {
-    const { instance, overlay, offsetX, offsetY, pageId } = args;
+    const { instance, overlay, pageId } = args;
+
+    // Get active recipient
+    const state = getState();
+    const selectedRecipientId = state.recipients.selectedId;
 
     // Generate IDs
     const instanceId = newInstanceId();
@@ -26,17 +33,20 @@ export const insertFieldFlow =
       instance: {
         ...instance!,
         id: instanceId,
+        recipientId: selectedRecipientId,
       },
       overlay: {
         ...overlay!,
         id: overlayId,
         instanceId,
-        position: {
-          offsetX,
-          offsetY,
-        },
       },
     };
 
     dispatch(insertFieldCommitted(payload));
+  };
+
+export const updateFieldSizeFlow =
+  (args: UpdateFieldSizeType) =>
+  (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(updateFieldSize(args));
   };

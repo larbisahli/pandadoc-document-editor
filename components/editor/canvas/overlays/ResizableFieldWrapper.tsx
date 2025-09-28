@@ -4,21 +4,18 @@ import React, { useCallback, useLayoutEffect, useRef } from "react";
 import clsx from "clsx";
 import { OverlayId } from "@/interfaces/common";
 import { usePage } from "../context/PageContext";
-import { clamp, getPageMetrics, num } from "./helpers";
-import { updateOverlaySize } from "@/lib/features/overlay/overlaySlice";
-import { useAppDispatch } from "@/lib/hooks";
+import { browserZoomLevel, clamp, getPageMetrics, num } from "./helpers";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { updateFieldSizeFlow } from "@/lib/features/editor/thunks/overlayThunks";
+import { selectInstance } from "@/lib/features/instance/instanceSlice";
+import { selectTemplate } from "@/lib/features/template/templateSlice";
+import { selectOverlayById } from "@/lib/features/overlay/overlaySlice";
+import { FieldTemplateType } from "@/interfaces/template";
 
 type Props = {
   overlayId: OverlayId;
-  width: number;
-  height: number;
-  minW?: number;
-  minH?: number;
-  scale?: number;
   onResizeEnd?: (w: number, h: number) => void;
   children?: React.ReactNode;
-  canResizeWidth: boolean;
-  canResizeHeight: boolean;
 };
 
 type Session = {
@@ -33,30 +30,44 @@ type Session = {
   nextH: number;
 };
 
-function ResizableFieldWrapper({
-  overlayId,
-  width,
-  height,
-  onResizeEnd,
-  children,
-  minW = 10,
-  minH = 30,
-  scale = 1,
-  canResizeWidth = true,
-  canResizeHeight = true,
-}: Props) {
+function ResizableFieldWrapper({ overlayId, onResizeEnd, children }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const sessionRef = useRef<Session | null>(null);
 
   const { pageId } = usePage();
   const dispatch = useAppDispatch();
 
+  const overlay = useAppSelector((state) =>
+    selectOverlayById(state, overlayId),
+  );
+  const instance = useAppSelector((state) =>
+    selectInstance(state, overlay?.instanceId),
+  );
+  const template = useAppSelector((state) =>
+    selectTemplate(state, instance?.templateId),
+  );
+
+  const scale = browserZoomLevel;
+  const { style: { width, height } = {} } = overlay;
+  const {
+    propsSchema: {
+      resizeWidth: canResizeWidth,
+      resizeHeight: canResizeHeight,
+      minWidth: minW,
+      minHeight: minH,
+    } = {},
+  } = template as FieldTemplateType;
+
   // keep DOM in sync with external state
   useLayoutEffect(() => {
     const element = ref.current;
     if (!element) return;
-    element.style.width = `${num(width)}px`;
-    element.style.height = `${num(height)}px`;
+    if (width) {
+      element.style.width = `${num(width)}px`;
+    }
+    if (height) {
+      element.style.height = `${num(height)}px`;
+    }
   }, [width, height]);
 
   const apply = useCallback(() => {
@@ -224,7 +235,12 @@ function ResizableFieldWrapper({
 
     // Dispatch with final values (unchanged axis sends previous size)
     dispatch(
-      updateOverlaySize({ overlayId, width: finalWidth, height: finalHeight }),
+      updateFieldSizeFlow({
+        overlay: { id: overlayId },
+        template: { id: template?.id },
+        width: finalWidth,
+        height: finalHeight,
+      }),
     );
     onResizeEnd?.(finalWidth, finalHeight);
   };

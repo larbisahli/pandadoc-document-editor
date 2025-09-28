@@ -4,10 +4,14 @@ import { Upload, Youtube } from "lucide-react";
 import clsx from "clsx";
 import { useClickOutside } from "../hooks/useClickOutside";
 import BorderWrapper from "./BorderWrapper";
+import { useAppSelector } from "@/lib/hooks";
+import { selectInstance } from "@/lib/features/instance/instanceSlice";
 
-function VideoBlock({ instance }: BaseBlockProps) {
+function VideoBlock({ instanceId }: BaseBlockProps) {
+  const instance = useAppSelector((state) => selectInstance(state, instanceId));
+
   const blockRef = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(false);
+  const [active, setActive] = useState(true);
   useClickOutside(blockRef, () => setActive(false));
 
   return (

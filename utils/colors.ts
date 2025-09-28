@@ -38,7 +38,10 @@ export function generateUniqueUserColor(existing: string[]): string {
 /**
  * Given a stored hex, generate avatar colors (bg with opacity, strong text, subtle ring).
  */
-export function generateAvatarColors(hex: string, opacity = 0.35) {
+export function generateAvatarColors(
+  hex: string = "#cc5a0ed6",
+  opacity = 0.35,
+) {
   const rgb = hexToRgb(hex);
   if (!rgb) throw new Error("Invalid hex");
 
@@ -66,21 +69,18 @@ export function generateAvatarColors(hex: string, opacity = 0.35) {
 
 // ---- Helpers ----
 
+export function hexToRgba(hex: string, alpha: number) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 function hexToRgb(hex: string): RGB | null {
-  const m = hex.replace("#", "");
-  if (m.length === 3) {
-    const r = parseInt(m[0] + m[0], 16);
-    const g = parseInt(m[1] + m[1], 16);
-    const b = parseInt(m[2] + m[2], 16);
-    return { r, g, b };
-  }
-  if (m.length === 6) {
-    const r = parseInt(m.slice(0, 2), 16);
-    const g = parseInt(m.slice(2, 4), 16);
-    const b = parseInt(m.slice(4, 6), 16);
-    return { r, g, b };
-  }
-  return null;
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return { r, g, b };
 }
 
 function rgbToHex({ r, g, b }: RGB) {

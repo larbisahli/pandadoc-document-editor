@@ -39,10 +39,15 @@ function OverlayLayer() {
     (e: React.DragEvent) => {
       e.preventDefault();
 
+      // TODO WORK ON OVERLAY PAYLOAD
       const data = e.dataTransfer.getData(PALETTE_DATA_FORMAT);
       if (!data) return;
       const payload = JSON.parse(data) as DropPayload;
-      const { overlay, instance } = payload.data;
+
+      const {
+        data: { overlay, instance },
+        style,
+      } = payload;
 
       // Measure pointer offset within the drop target
       const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
@@ -50,8 +55,8 @@ function OverlayLayer() {
       const rawY = e.clientY - rect.top;
 
       // Determine field size (use whatever your payload provides)
-      const fieldW = overlay?.style?.width as number;
-      const fieldH = overlay?.style?.height as number;
+      const fieldW = style?.width as number;
+      const fieldH = style?.height as number;
 
       const clamped = clampPlacementToPageBounds(
         pageId,
@@ -67,10 +72,18 @@ function OverlayLayer() {
       dispatch(
         insertFieldFlow({
           pageId,
-          offsetX: clamped.x,
-          offsetY: clamped.y,
           instance,
-          overlay,
+          overlay: {
+            ...overlay,
+            position: {
+              offsetX: clamped.x,
+              offsetY: clamped.y,
+            },
+            style: {
+              width: fieldW,
+              height: fieldH,
+            },
+          },
         }),
       );
     },

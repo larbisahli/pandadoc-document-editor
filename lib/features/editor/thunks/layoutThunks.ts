@@ -26,5 +26,7 @@ export const dropCommitted =
       },
     } as DropEvent;
 
+    console.log({ dropEvent });
+
     dispatch(dropApplied(payload));
   };

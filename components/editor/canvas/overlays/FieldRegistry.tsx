@@ -1,6 +1,5 @@
-import { OverlayId } from "@/interfaces/common";
+import { InstanceId, OverlayId } from "@/interfaces/common";
 import { FieldKind } from "@/interfaces/enum";
-import { InstanceType } from "@/interfaces/instance";
 import dynamic from "next/dynamic";
 import React, { ComponentType } from "react";
 
@@ -20,15 +19,15 @@ export const isFieldKind = (v: unknown): v is FieldKind =>
   typeof v === "string" && (FIELD_KINDS as readonly string[]).includes(v);
 
 export interface BaseFieldProps {
+  instanceId: InstanceId;
   overlayId: OverlayId;
-  instance: InstanceType;
 }
 
 export type AnyFieldComponent = ComponentType<BaseFieldProps>;
 
 // Fallback for unknown kinds
 const UnknownField: AnyFieldComponent = ({ overlayId }) => (
-  <div className="text-xs text-red-800">Unknown field: {overlayId}</div>
+  <div className="text-xs text-red-800">Unknown overlay: {overlayId}</div>
 );
 
 // Static or lazy component imports

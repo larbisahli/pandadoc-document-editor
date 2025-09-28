@@ -7,7 +7,7 @@ const DocumentFooter = () => {
       <div className="mx-[50px] bg-transparent">
         <div
           className={clsx(
-            "border border-gray-200 px-[50px] py-[14px]",
+            "px-[50px] py-[14px]",
             !isDoubleClicked && "pointer-events-none",
           )}
         >

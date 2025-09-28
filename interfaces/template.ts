@@ -1,5 +1,8 @@
 import { BlockKind, FieldKind, Templates, TemplateTypes } from "./enum";
 
+// ** Template → “What kind of field is this?” (rules, defaults).
+
+// field/block definition blueprint.
 export type TemplateType = BlockTemplateType | FieldTemplateType;
 
 export interface BlockTemplateType {
@@ -13,7 +16,14 @@ export interface FieldTemplateType {
   type: TemplateTypes;
   kind: FieldKind;
   valueSchema?: Record<string, unknown>;
-  propsSchema?: Record<string, unknown>;
+  propsSchema: {
+    width?: number;
+    height?: number;
+    minWidth?: number;
+    minHeight?: number;
+    resizeWidth: boolean;
+    resizeHeight: boolean;
+  };
 }
 
 export type TemplatesTypes =

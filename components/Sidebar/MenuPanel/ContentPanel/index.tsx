@@ -29,7 +29,11 @@ const ContentPanel = () => {
         </div>
         <div className="grid grid-cols-2 gap-2">
           {fillableFields.map((field) => (
-            <FieldTile key={field.id} field={field} />
+            <FieldTile
+              key={field.id}
+              field={field}
+              templateId={field?.templateId}
+            />
           ))}
         </div>
       </div>

@@ -22,138 +22,67 @@ const initialState: LayoutSliceState = {
           parentId: null,
           kind: "container" as NodeKind,
           direction: "column" as NodeDirection,
-          children: ["rowTop", "rowBottom"] as NodeId[],
+          children: [] as NodeId[],
           layoutStyle: {},
         },
-        ["rowTop"]: {
-          id: "rowTop" as NodeId,
-          parentId: "root_1" as NodeId,
-          kind: "container" as NodeKind,
-          direction: "row" as NodeDirection,
-          children: ["colTopLeft", "colTopMiddle", "colTopRight"] as NodeId[],
-          layoutStyle: {},
-        },
-        ["colTopRight"]: {
-          id: "colTopRight" as NodeId,
-          parentId: "rowTop" as NodeId,
-          kind: "container" as NodeKind,
-          direction: "row" as NodeDirection,
-          children: ["colTopRight-left", "colTopRight-right"] as NodeId[],
-          layoutStyle: {
-            width: "33.33%",
-          },
-        },
-        ["colTopRight-left"]: {
-          id: "colTopRight-left" as NodeId,
-          parentId: "colTopRight" as NodeId,
-          kind: "blockRef" as NodeKind,
-          instanceId: "inst-title" as InstanceId,
-          layoutStyle: {
-            width: "50%",
-          },
-        },
-        ["colTopRight-right"]: {
-          id: "colTopRight-right" as NodeId,
-          parentId: "colTopRight" as NodeId,
-          kind: "blockRef" as NodeKind,
-          instanceId: "inst-title" as InstanceId,
-          layoutStyle: {
-            width: "50%",
-          },
-        },
-        ["rowBottom"]: {
-          id: "rowBottom" as NodeId,
-          parentId: "root_1" as NodeId,
-          kind: "container" as NodeKind,
-          direction: "row" as NodeDirection,
-          children: ["colBottomLeft", "colBottomRight"] as NodeId[],
-          layoutStyle: {},
-        },
-        ["colTopLeft"]: {
-          id: "colTopLeft" as NodeId,
-          parentId: "rowTop" as NodeId,
+      },
+      overlayIds: [] as OverlayId[],
+    },
+    ["page_2"]: {
+      rootId: "root_2" as NodeId,
+      byId: {
+        ["root_2"]: {
+          id: "root_2" as NodeId,
+          parentId: null,
           kind: "container" as NodeKind,
           direction: "column" as NodeDirection,
-          children: ["titleLeaf", "introLeaf"] as NodeId[],
-          layoutStyle: {
-            width: "33.33%",
-          },
+          children: [] as NodeId[],
+          layoutStyle: {},
         },
-        ["colBottomLeft"]: {
-          id: "colBottomLeft" as NodeId,
-          parentId: "rowBottom" as NodeId,
+      },
+      overlayIds: [] as OverlayId[],
+    },
+    ["page_3"]: {
+      rootId: "root_3" as NodeId,
+      byId: {
+        ["root_3"]: {
+          id: "root_3" as NodeId,
+          parentId: null,
           kind: "container" as NodeKind,
           direction: "column" as NodeDirection,
-          children: ["titleLeaf2", "introLeaf2"] as NodeId[],
-          layoutStyle: {
-            width: "50%",
-          },
-        },
-        ["colBottomRight"]: {
-          id: "colBottomRight" as NodeId,
-          parentId: "rowBottom" as NodeId,
-          kind: "blockRef" as NodeKind,
-          instanceId: "inst-title" as InstanceId,
-          layoutStyle: {
-            width: "50%",
-          },
-        },
-        ["titleLeaf"]: {
-          id: "titleLeaf" as NodeId,
-          parentId: "colTopLeft" as NodeId,
-          kind: "blockRef" as NodeKind,
-          instanceId: "inst-title" as InstanceId,
+          children: [] as NodeId[],
           layoutStyle: {},
         },
-        ["titleLeaf2"]: {
-          id: "titleLeaf2" as NodeId,
-          parentId: "colBottomLeft" as NodeId,
-          kind: "blockRef" as NodeKind,
-          instanceId: "inst-title" as InstanceId,
+      },
+      overlayIds: [] as OverlayId[],
+    },
+    ["page_4"]: {
+      rootId: "root_4" as NodeId,
+      byId: {
+        ["root_4"]: {
+          id: "root_4" as NodeId,
+          parentId: null,
+          kind: "container" as NodeKind,
+          direction: "column" as NodeDirection,
+          children: [] as NodeId[],
           layoutStyle: {},
-        },
-        ["introLeaf"]: {
-          id: "introLeaf" as NodeId,
-          parentId: "colTopLeft" as NodeId,
-          kind: "blockRef" as NodeKind,
-          instanceId: "inst-title" as InstanceId,
-          layoutStyle: {},
-        },
-        ["introLeaf2"]: {
-          id: "introLeaf2" as NodeId,
-          parentId: "colBottomLeft" as NodeId,
-          kind: "blockRef" as NodeKind,
-          instanceId: "inst-title" as InstanceId,
-          layoutStyle: {},
-        },
-        ["colTopMiddle"]: {
-          id: "colTopMiddle" as NodeId,
-          parentId: "rowTop" as NodeId,
-          kind: "blockRef" as NodeKind,
-          instanceId: "inst-title" as InstanceId,
-          layoutStyle: {
-            width: "33.33%",
-          },
         },
       },
       overlayIds: [] as OverlayId[],
     },
   },
+  visiblePageId: null,
 };
 
 export const layoutSlice = createAppSlice({
   name: "layout",
   initialState,
   reducers: (create) => ({
-    // add: {
-    //   reducer(state, action: PayloadAction<{ id: string; text: string }>) {
-    //     state.push(action.payload);
-    //   },
-    //   prepare(text: string) {
-    //     // Generate ID here
-    //     return { payload: { id: nanoid(), text } };
-    //   }
-    // },
+    setVisiblePageId: create.reducer(
+      (state, action: PayloadAction<PageId | null>) => {
+        state.visiblePageId = action.payload;
+      },
+    ),
     updateLayoutCalculatedWidth: create.reducer(
       (
         state,
@@ -171,6 +100,15 @@ export const layoutSlice = createAppSlice({
         }
       },
     ),
+    // add: {
+    //   reducer(state, action: PayloadAction<{ id: string; text: string }>) {
+    //     state.push(action.payload);
+    //   },
+    //   prepare(text: string) {
+    //     // Generate ID here
+    //     return { payload: { id: nanoid(), text } };
+    //   }
+    // },
   }),
   extraReducers: (builder) => {
     builder
@@ -189,15 +127,21 @@ export const layoutSlice = createAppSlice({
   },
   selectors: {
     selectAllPages: (state) => state.pages,
+    selectVisiblePageId: (state) => state.visiblePageId,
     selectPageById: (state, pageId: PageId) => state.pages[pageId],
     selectPageRootId: (state, pageId: PageId) => state.pages[pageId]?.rootId,
   },
 });
 
-export const { updateLayoutCalculatedWidth } = layoutSlice.actions;
+export const { setVisiblePageId, updateLayoutCalculatedWidth } =
+  layoutSlice.actions;
 
-export const { selectPageRootId, selectPageById, selectAllPages } =
-  layoutSlice.selectors;
+export const {
+  selectVisiblePageId,
+  selectPageRootId,
+  selectPageById,
+  selectAllPages,
+} = layoutSlice.selectors;
 
 /**
  * If neither byId nor nodeId changes, the memoized result is returned,

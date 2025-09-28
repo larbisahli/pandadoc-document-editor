@@ -1,21 +1,38 @@
-import { OverlayId, TextDataType } from "@/interfaces/common";
-import { InstanceType } from "@/interfaces/instance";
-import { updateTextAreaFieldContent } from "@/lib/features/instance/instanceSlice";
-import { useAppDispatch } from "@/lib/hooks";
+import { TextDataType } from "@/interfaces/common";
+import {
+  selectInstance,
+  updateInstanceDataField,
+} from "@/lib/features/instance/instanceSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import clsx from "clsx";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { BaseFieldProps } from "../canvas/overlays/FieldRegistry";
+import { useClickOutside } from "../hooks/useClickOutside";
+import { generateAvatarColors } from "@/utils/colors";
+import { selectRecipientsById } from "@/lib/features/recipient/recipientSlice";
 
-interface Props {
-  overlayId: OverlayId;
-  instance: InstanceType;
-}
+function TextArea({ overlayId, instanceId }: BaseFieldProps) {
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const fieldRef = useRef<HTMLDivElement>(null);
 
-function TextArea({ overlayId, instance }: Props) {
-  const ref = useRef<HTMLTextAreaElement>(null);
+  const instance = useAppSelector((state) => selectInstance(state, instanceId));
+
+  const byId = useAppSelector(selectRecipientsById);
+  const fieldRecipient = instance?.recipientId
+    ? byId[instance.recipientId]
+    : undefined;
+
+  const color = useMemo(
+    () => generateAvatarColors(fieldRecipient?.color, 0.9),
+    [fieldRecipient?.color],
+  );
+
   const dispatch = useAppDispatch();
 
+  const [active, setActive] = useState(false);
+  useClickOutside(fieldRef, () => setActive(false));
+
   const content = (instance.data as TextDataType).content || "";
-  const instanceId = instance.id;
 
   const [isActive, setIsActive] = useState(false);
   const [value, setValue] = useState<string>(content);
@@ -23,7 +40,7 @@ function TextArea({ overlayId, instance }: Props) {
   const onCommit = useCallback(
     (value: string) => {
       dispatch(
-        updateTextAreaFieldContent({
+        updateInstanceDataField({
           data: { content: value },
           instanceId,
         }),
@@ -43,14 +60,15 @@ function TextArea({ overlayId, instance }: Props) {
   }, [value, content, onCommit]);
 
   useEffect(() => {
-    if (isActive && ref.current) {
-      ref.current.focus();
+    if (isActive && inputRef.current) {
+      inputRef.current.focus();
     }
   }, [isActive]);
 
   const handleOnclick = () => {
     setIsActive(true);
     handleResizePoint("visible");
+    setActive(true);
   };
 
   const handleResizePoint = (visibility: string) => {
@@ -60,21 +78,30 @@ function TextArea({ overlayId, instance }: Props) {
 
   return (
     <div
+      ref={fieldRef}
       onClick={handleOnclick}
       onMouseLeave={() => setIsActive(false)}
       onBlur={() => handleResizePoint("")}
-      className="relative flex h-full w-full border border-orange-500 outline-none"
+      style={{
+        borderColor: color.ringHex,
+        background: active || value ? "transparent" : color.bgRgba,
+        color: color.textHex,
+      }}
+      className={clsx(
+        "relative flex h-full w-full rounded-[2px] border outline-none",
+        active && "z-50 border-transparent! ring-2 ring-current ring-inset",
+      )}
     >
       <textarea
-        ref={ref}
+        ref={inputRef}
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder="Enter value"
         className={clsx(
-          "absolute inset-0 resize-none overflow-hidden p-1 text-sm text-black outline-none",
+          "absolute inset-0 resize-none overflow-hidden p-[6px] text-sm text-black outline-none",
           !isActive && "pointer-events-none",
         )}
       />
+      {!active && !value && <div className="p-1 text-sm">Enter value</div>}
     </div>
   );
 }

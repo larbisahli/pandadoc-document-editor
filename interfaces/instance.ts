@@ -1,7 +1,9 @@
-import { DataType, InstanceId } from "./common";
+import { DataType, InstanceId, RecipientId } from "./common";
 import { Templates } from "./enum";
 import { ContentStyleType, LayoutStyleType } from "./style";
 
+// ** Instance → “What does this field contain in this document?” (the data).
+// Logical field in a document (data + behavior, from template)
 export interface InstanceType {
   id: InstanceId;
   templateId: Templates;
@@ -10,4 +12,8 @@ export interface InstanceType {
   meta?: Record<string, unknown>;
   contentStyle?: ContentStyleType;
   layoutStyle?: LayoutStyleType;
+  recipientId?: RecipientId;
+  assignedAt?: string;
+  assignedBy?: string;
+  required?: boolean;
 }

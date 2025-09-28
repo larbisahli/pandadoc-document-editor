@@ -62,3 +62,10 @@ export enum DropSide {
   Top = "top",
   Bottom = "bottom",
 }
+
+export enum RecipientRoles {
+  Signer = "signer",
+  Viewer = "viewer",
+  Approver = "approver",
+  CC = "cc",
+}

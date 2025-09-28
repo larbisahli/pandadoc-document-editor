@@ -1,8 +1,13 @@
+import { RecipientId } from "./common";
+import { RecipientRoles } from "./enum";
+
 export interface RecipientType {
-  id: string;
+  id: RecipientId;
   email?: string;
   number?: string;
   firstName: string;
   lastName: string;
-  userColor: string;
+  color: string;
+  role?: RecipientRoles;
+  order?: number;
 }

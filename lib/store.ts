@@ -5,6 +5,7 @@ import { layoutSlice } from "./features/layout/layoutSlice";
 import { instancesSlice } from "./features/instance/instanceSlice";
 import { templatesSlice } from "./features/template/templateSlice";
 import { overlaySlice } from "./features/overlay/overlaySlice";
+import { RecipientSlice } from "./features/recipient/recipientSlice";
 
 // `combineSlices` automatically combines the reducers using
 const rootReducer = combineSlices(
@@ -13,6 +14,7 @@ const rootReducer = combineSlices(
   instancesSlice,
   templatesSlice,
   overlaySlice,
+  RecipientSlice,
 );
 
 // Infer the `RootState` type from the root reducer

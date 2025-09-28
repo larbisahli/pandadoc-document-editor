@@ -21,6 +21,7 @@ type WithDraggableProps = {
   children: React.ReactNode;
   handleOnDragStart: (e: React.DragEvent) => void;
   handleOnDragEnd: (e: React.DragEvent) => void;
+  onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
 };
 
 // Check if pointer inside page bounds
@@ -48,6 +49,7 @@ function WithDraggable({
   effectAllowed = "copyMove",
   handleOnDragStart,
   handleOnDragEnd,
+  onClick,
   className,
   kind,
   children,
@@ -171,6 +173,7 @@ function WithDraggable({
       onDrag={onDrag}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
+      onClick={onClick}
       className={className}
       role="listitem"
       tabIndex={0}

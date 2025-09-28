@@ -1,6 +1,7 @@
 import { InstanceId, OverlayId } from "./common";
-import { RecipientType } from "./recipient";
 
+// ** Overlay → “Where does it appear on the page?” (layout/position/size).
+// Visual representation of an instance on a page
 export interface OverlayItem {
   id: OverlayId;
   instanceId: InstanceId;
@@ -15,5 +16,4 @@ export interface OverlayItem {
     color?: string;
   };
   settings?: Record<string, unknown>;
-  recipient: RecipientType;
 }

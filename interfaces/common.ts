@@ -7,6 +7,7 @@ export type NodeId = Id<"node">;
 export type InstanceId = Id<"inst">;
 export type FieldId = Id<"fld">;
 export type OverlayId = Id<"ov">;
+export type RecipientId = Id<"recipient">;
 
 export interface TextDataType {
   content?: string;

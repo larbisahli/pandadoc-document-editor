@@ -1,3 +1,4 @@
+import { InstanceId, OverlayId } from "@/interfaces/common";
 import { BlockKind } from "@/interfaces/enum";
 import { InstanceType } from "@/interfaces/instance";
 import dynamic from "next/dynamic";
@@ -14,7 +15,7 @@ export const isFieldKind = (v: unknown): v is BlockKind =>
   typeof v === "string" && (BLOCK_KINDS as readonly string[]).includes(v);
 
 export interface BaseBlockProps {
-  instance: InstanceType;
+  instanceId: InstanceId;
 }
 
 export type AnyBlockComponent = ComponentType<BaseBlockProps>;

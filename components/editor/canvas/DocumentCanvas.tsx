@@ -3,20 +3,22 @@
 import React, { memo } from "react";
 import { useAppSelector } from "@/lib/hooks";
 import DocumentPage from "./pages/DocumentPage";
-import EmptyDocument from "./pages/EmptyDocument";
 import { selectDocPageIds } from "@/lib/features/document/documentSlice";
+import { usePageVisibilityObserver } from "../hooks/usePageVisibilityObserver";
 
 const DocumentCanvas = () => {
   const pageIds = useAppSelector(selectDocPageIds);
 
-  // TODO Think about initial default blank page in redux state
-  if (!pageIds?.length) {
-    return <EmptyDocument />;
-  }
+  // This help us know what document page is currently visible
+  usePageVisibilityObserver(pageIds, {
+    root: null,
+    majorityThreshold: 0.5,
+    debounceMs: 80, // smooth out rapid changes
+  });
 
   return (
     <div
-      id="document-canvas" // Important
+      id="document-canvas"
       className="relative"
       role="region"
       aria-label="Document canvas"

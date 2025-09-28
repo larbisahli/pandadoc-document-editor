@@ -1,10 +1,13 @@
 import {
   CalendarDays,
+  CircleDot,
   LetterText,
   LucideProps,
+  PanelTopOpen,
   PencilLine,
   SquareCheck,
   Stamp,
+  Upload,
 } from "lucide-react";
 import React from "react";
 import {
@@ -38,6 +41,7 @@ export interface FillableFieldType {
   icon: (props: LucideProps) => React.JSX.Element;
   dragPayload: DropPayload;
   dragImagePreview: React.FC<{ width: number; height: number }>;
+  templateId: Templates;
   handleComponentPreload: () => void;
 }
 
@@ -48,6 +52,7 @@ export const fillableFields: FillableFieldType[] = [
     icon: (props) => <LetterText {...props} />,
     dragImagePreview: TextImagePreview,
     handleComponentPreload: preloadTextAreaField,
+    templateId: Templates.Textarea,
     dragPayload: {
       kind: TemplateTypes.Field,
       data: {
@@ -63,14 +68,10 @@ export const fillableFields: FillableFieldType[] = [
             offsetY: 0,
           },
           style: {
-            width: 171,
-            height: 93,
-            // TODO add minW and minH here
+            width: 0,
+            height: 0,
           },
-          settings: {
-            resizeWidth: true,
-            resizeHeight: true,
-          },
+          settings: {},
         },
       },
     },
@@ -81,6 +82,7 @@ export const fillableFields: FillableFieldType[] = [
     icon: (props) => <PencilLine {...props} size={16} />,
     dragImagePreview: SignatureImagePreview,
     handleComponentPreload: preloadSignatureField,
+    templateId: Templates.Signature,
     dragPayload: {
       kind: TemplateTypes.Field,
       data: {
@@ -96,13 +98,10 @@ export const fillableFields: FillableFieldType[] = [
             offsetY: 0,
           },
           style: {
-            width: 129,
-            height: 62,
+            width: 0,
+            height: 0,
           },
-          settings: {
-            resizeWidth: true,
-            resizeHeight: true,
-          },
+          settings: {},
         },
       },
     },
@@ -113,6 +112,7 @@ export const fillableFields: FillableFieldType[] = [
     icon: (props) => <LetterText {...props} />,
     dragImagePreview: InitialsImagePreview,
     handleComponentPreload: preloadInitialsField,
+    templateId: Templates.Initials,
     dragPayload: {
       kind: TemplateTypes.Field,
       data: {
@@ -128,13 +128,10 @@ export const fillableFields: FillableFieldType[] = [
             offsetY: 0,
           },
           style: {
-            width: 100,
-            height: 68,
+            width: 0,
+            height: 0,
           },
-          settings: {
-            resizeWidth: true,
-            resizeHeight: true,
-          },
+          settings: {},
         },
       },
     },
@@ -145,6 +142,7 @@ export const fillableFields: FillableFieldType[] = [
     icon: (props) => <CalendarDays {...props} />,
     dragImagePreview: DateImagePreview,
     handleComponentPreload: preloadDateField,
+    templateId: Templates.Date,
     dragPayload: {
       kind: TemplateTypes.Field,
       data: {
@@ -160,13 +158,10 @@ export const fillableFields: FillableFieldType[] = [
             offsetY: 0,
           },
           style: {
-            width: 149,
-            height: 26,
+            width: 0,
+            height: 0,
           },
-          settings: {
-            resizeWidth: true,
-            resizeHeight: false,
-          },
+          settings: {},
         },
       },
     },
@@ -177,6 +172,7 @@ export const fillableFields: FillableFieldType[] = [
     icon: (props) => <SquareCheck {...props} />,
     dragImagePreview: CheckboxImagePreview,
     handleComponentPreload: preloadCheckboxField,
+    templateId: Templates.Checkbox,
     dragPayload: {
       kind: TemplateTypes.Field,
       data: {
@@ -192,13 +188,10 @@ export const fillableFields: FillableFieldType[] = [
             offsetY: 0,
           },
           style: {
-            width: 25,
-            height: 25,
+            width: 0,
+            height: 0,
           },
-          settings: {
-            resizeWidth: true,
-            resizeHeight: true,
-          },
+          settings: {},
         },
       },
     },
@@ -206,9 +199,10 @@ export const fillableFields: FillableFieldType[] = [
   {
     id: "field-radio",
     label: "Radio buttons",
-    icon: (props) => <Stamp {...props} />,
+    icon: (props) => <CircleDot {...props} />,
     dragImagePreview: RadioImagePreview,
     handleComponentPreload: preloadRadioField,
+    templateId: Templates.Radio,
     dragPayload: {
       kind: TemplateTypes.Field,
       data: {
@@ -224,13 +218,10 @@ export const fillableFields: FillableFieldType[] = [
             offsetY: 0,
           },
           style: {
-            width: 117,
-            height: 90,
+            width: 0,
+            height: 0,
           },
-          settings: {
-            resizeWidth: false,
-            resizeHeight: false,
-          },
+          settings: {},
         },
       },
     },
@@ -238,9 +229,10 @@ export const fillableFields: FillableFieldType[] = [
   {
     id: "field-dropdown",
     label: "Dropdown",
-    icon: (props) => <Stamp {...props} />,
+    icon: (props) => <PanelTopOpen {...props} />,
     dragImagePreview: DropdownImagePreview,
     handleComponentPreload: preloadDropdownField,
+    templateId: Templates.Dropdown,
     dragPayload: {
       kind: TemplateTypes.Field,
       data: {
@@ -256,13 +248,10 @@ export const fillableFields: FillableFieldType[] = [
             offsetY: 0,
           },
           style: {
-            width: 160,
-            height: 26,
+            width: 0,
+            height: 0,
           },
-          settings: {
-            resizeWidth: true,
-            resizeHeight: false,
-          },
+          settings: {},
         },
       },
     },
@@ -270,9 +259,10 @@ export const fillableFields: FillableFieldType[] = [
   {
     id: "field-collect-files",
     label: "Collect files",
-    icon: (props) => <Stamp {...props} />,
+    icon: (props) => <Upload {...props} />,
     dragImagePreview: CollectFilesImagePreview,
     handleComponentPreload: preloadCollectFilesField,
+    templateId: Templates.CollectFiles,
     dragPayload: {
       kind: TemplateTypes.Field,
       data: {
@@ -288,13 +278,10 @@ export const fillableFields: FillableFieldType[] = [
             offsetY: 0,
           },
           style: {
-            width: 180,
-            height: 28,
+            width: 0,
+            height: 0,
           },
-          settings: {
-            resizeWidth: true,
-            resizeHeight: false,
-          },
+          settings: {},
         },
       },
     },
@@ -305,6 +292,7 @@ export const fillableFields: FillableFieldType[] = [
     icon: (props) => <Stamp {...props} />,
     dragImagePreview: StampImagePreview,
     handleComponentPreload: preloadStampField,
+    templateId: Templates.Stamp,
     dragPayload: {
       kind: TemplateTypes.Field,
       data: {
@@ -320,13 +308,10 @@ export const fillableFields: FillableFieldType[] = [
             offsetY: 0,
           },
           style: {
-            width: 150,
-            height: 150,
+            width: 0,
+            height: 0,
           },
-          settings: {
-            resizeWidth: true,
-            resizeHeight: true,
-          },
+          settings: {},
         },
       },
     },

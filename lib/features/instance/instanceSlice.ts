@@ -1,6 +1,5 @@
-import { InstanceId } from "@/interfaces/common";
+import { DataType, InstanceId } from "@/interfaces/common";
 import { Normalized } from "@/interfaces/document";
-import { Templates } from "@/interfaces/enum";
 import { InstanceType } from "@/interfaces/instance";
 import { createAppSlice } from "@/lib/createAppSlice";
 import { RootState } from "@/lib/store";
@@ -13,29 +12,18 @@ import {
 type InstanceSliceState = Normalized<InstanceType>;
 
 const initialState: InstanceSliceState = {
-  byId: {
-    ["inst-title"]: {
-      id: "inst-title" as InstanceId,
-      templateId: Templates.Text,
-      data: {
-        content: "",
-      },
-      props: { variant: "h1" },
-      contentStyle: {},
-      layoutStyle: {},
-    },
-  },
+  byId: {},
 };
 
 export const instancesSlice = createAppSlice({
   name: "instances",
   initialState,
   reducers: (create) => ({
-    updateTextAreaFieldContent: create.reducer(
+    updateInstanceDataField: create.reducer(
       (
         state,
         action: PayloadAction<{
-          data: { content: string };
+          data: DataType;
           instanceId: InstanceId;
         }>,
       ) => {
@@ -63,7 +51,7 @@ export const instancesSlice = createAppSlice({
   },
 });
 
-export const { updateTextAreaFieldContent } = instancesSlice.actions;
+export const { updateInstanceDataField } = instancesSlice.actions;
 
 export const { selectInstancesById } = instancesSlice.selectors;
 
