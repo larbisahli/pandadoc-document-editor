@@ -1,6 +1,5 @@
-import { InstanceId, OverlayId } from "@/interfaces/common";
+import { InstanceId, NodeId } from "@/interfaces/common";
 import { BlockKind } from "@/interfaces/enum";
-import { InstanceType } from "@/interfaces/instance";
 import dynamic from "next/dynamic";
 import React, { ComponentType } from "react";
 
@@ -16,6 +15,7 @@ export const isFieldKind = (v: unknown): v is BlockKind =>
 
 export interface BaseBlockProps {
   instanceId: InstanceId;
+  nodeId: NodeId;
 }
 
 export type AnyBlockComponent = ComponentType<BaseBlockProps>;

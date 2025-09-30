@@ -1,18 +1,33 @@
 import { memo, useRef, useState } from "react";
 import { BaseBlockProps } from "../canvas/blocks/BlockRegistry";
-import { Upload, Youtube } from "lucide-react";
+import { Trash2, Upload, Youtube } from "lucide-react";
 import clsx from "clsx";
 import { useClickOutside } from "../hooks/useClickOutside";
 import BorderWrapper from "./BorderWrapper";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { selectInstance } from "@/lib/features/instance/instanceSlice";
+import { ActionsTooltip } from "@/components/ui/ActionsTooltip";
+import { usePage } from "../canvas/context/PageContext";
+import { deleteBlockRef } from "@/lib/features/editor/thunks/documentThunks";
 
-function VideoBlock({ instanceId }: BaseBlockProps) {
+function VideoBlock({ nodeId, instanceId }: BaseBlockProps) {
+  const { pageId } = usePage();
   const instance = useAppSelector((state) => selectInstance(state, instanceId));
+  const dispatch = useAppDispatch();
 
   const blockRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(true);
   useClickOutside(blockRef, () => setActive(false));
+
+  const handleDelete = () => {
+    dispatch(
+      deleteBlockRef({
+        pageId,
+        nodeId,
+        instanceId,
+      }),
+    );
+  };
 
   return (
     <div
@@ -35,6 +50,18 @@ function VideoBlock({ instanceId }: BaseBlockProps) {
           </div>
         </div>
       </BorderWrapper>
+      <ActionsTooltip
+        active={active}
+        actions={[
+          {
+            key: "delete",
+            label: "Delete",
+            icon: <Trash2 size={18} />,
+            danger: true,
+            onSelect: handleDelete,
+          },
+        ]}
+      />
     </div>
   );
 }

@@ -1,20 +1,24 @@
 "use client";
 
-import React, { memo, useLayoutEffect, useMemo, useRef } from "react";
+import React, { memo, useEffect, useLayoutEffect, useRef } from "react";
 import { browserZoomLevel, makeDragImageFrom } from "./helpers";
 import { OverlayId } from "@/interfaces/common";
 import { FIELD_DATA_FORMAT } from "@/dnd";
 import { usePage } from "../context/PageContext";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { selectPageOverlayIds } from "@/lib/features/layout/layoutSlice";
 import {
   collectRectsByIds,
   getCurrentRect,
-  getPageSize,
 } from "@/utils/helpers/alignmentGuides";
 import { useAlignmentGuides } from "../../hooks/useAlignmentGuides";
-import { PageSize, Rect } from "@/interfaces";
-import { selectOverlayById } from "@/lib/features/overlay/overlaySlice";
+import { Rect } from "@/interfaces";
+import {
+  selectOverlayById,
+  updateFiledPosition,
+} from "@/lib/features/overlay/overlaySlice";
+import clsx from "clsx";
+import { useElementSizesById } from "../../hooks/useElementSizesById";
 
 export type Point = { offsetX: number; offsetY: number };
 
@@ -41,18 +45,110 @@ function DraggableOverlay({ overlayId, children }: DraggableOverlayProps) {
     selectOverlayById(state, overlayId),
   );
 
+  const dispatch = useAppDispatch();
+
+  const scale = browserZoomLevel;
+
+  const { position, style } = overlay;
+  const offsetX = position?.offsetX ?? 0;
+  const offsetY = position?.offsetY ?? 0;
+
   const { pageId } = usePage();
   const overlayIds = useAppSelector((state) =>
     selectPageOverlayIds(state, pageId),
   );
 
-  const scale = browserZoomLevel;
+  const prevHRef = useRef<number | null>(null);
 
-  const { position } = overlay;
-  const offsetX = position?.offsetX ?? 0;
-  const offsetY = position?.offsetY ?? 0;
+  // how much gap you want to keep from the bottom (set 0 if not needed)
+  const MIN_BOTTOM_GAP = 8;
+  const EPS = 0.5; // avoid thrashy re-dispatch due to sub-px rounding
 
-  const pageSize: PageSize = useMemo(() => getPageSize(pageId), [pageId]);
+  const pageSize = useElementSizesById(pageId, {
+    throttle: 200,
+    onChanges: ({ height }) => {
+      // ** Adaptation of field's offsetY when the page height shrinks (block ref deletion) **
+      const prev = prevHRef.current;
+      prevHRef.current = height;
+
+      // shrink-only
+      if (prev == null || height >= prev) return;
+
+      // current top position
+      const y = position?.offsetY ?? 0;
+      // field height
+      const fieldHeight = style?.height ?? 0;
+
+      // bottom distance under the previous height
+      const bottomDist = Math.max(0, prev - (y + fieldHeight));
+
+      // how much the page shrank
+      const shrink = prev - height;
+      // bottom distance under the previous height
+      const prevBottomDist = Math.max(
+        0,
+        prev - (y + fieldHeight) - MIN_BOTTOM_GAP,
+      );
+
+      // TODO WORK ON SAFEGUARD MORE (deletion case)
+      // ✅ safeguard: if we still have enough space at the bottom, do nothing
+      if (prevBottomDist > shrink) return;
+
+      // new offsetY that preserves the same bottom distance under the new height
+      const newOffsetY = height - fieldHeight - bottomDist;
+
+      // clamp to [0, h - fh]
+      const clampedY = Math.max(
+        0,
+        Math.min(newOffsetY, Math.max(0, height - fieldHeight)),
+      );
+
+      if (clampedY !== y) {
+        dispatch(
+          updateFiledPosition({
+            overlayId,
+            offsetX: position?.offsetX ?? 0,
+            offsetY: clampedY,
+          }),
+        );
+      }
+    },
+    onChange: ({ height }) => {
+      const prev = prevHRef.current;
+      prevHRef.current = height;
+
+      console.log(">>>>>", { height }, prev == null || height >= prev);
+
+      // only when page height shrinks
+      if (prev == null || height >= prev) return;
+
+      // defer a tick so layout settles before measuring element height
+      requestAnimationFrame(() => {
+        const y = Number(position?.offsetY ?? 0);
+        const fh = style?.height;
+
+        // max allowed top so the field fits in the new page height
+        const maxY = Math.max(0, height - fh - MIN_BOTTOM_GAP);
+
+        // if y is already valid, don't move; if it overflows, clamp
+        const newY = Math.min(Math.max(0, y), maxY);
+
+        if (Math.abs(newY - y) > EPS) {
+          dispatch(
+            updateFiledPosition({
+              overlayId,
+              offsetX: position?.offsetX ?? 0,
+              offsetY: newY,
+            }),
+          );
+        }
+      });
+    },
+  });
+
+  useLayoutEffect(() => {
+    prevHRef.current = pageSize?.height;
+  }, [pageSize]);
 
   const {
     guides,
@@ -264,7 +360,10 @@ function DraggableOverlay({ overlayId, children }: DraggableOverlayProps) {
     <div
       ref={ref}
       id={overlayId}
-      className="pointer-events-auto absolute h-fit w-fit origin-top-left"
+      className={clsx(
+        "pointer-events-auto absolute h-fit w-fit origin-top-left",
+        !pageSize?.width && !pageSize?.height && "hidden", // to prevent flicker
+      )}
       draggable
       onDragStart={onDragStart}
       onDrag={onDrag}

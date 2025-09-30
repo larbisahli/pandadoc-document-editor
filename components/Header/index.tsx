@@ -9,20 +9,37 @@ import {
   Folder,
 } from "lucide-react";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Tooltip from "../ui/Tooltip";
 import GithubIcon from "../ui/icons/github";
-import { useAppSelector } from "@/lib/hooks";
-import { selectDocTitle } from "@/lib/features/document/documentSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import {
+  selectDocTitle,
+  updateDocTitle,
+} from "@/lib/features/document/documentSlice";
+import { useDebounceCallback } from "@/hooks/useDebounceCallback";
 
 const Header = () => {
   const ref = useRef<HTMLDivElement>(null);
-  const [documentName, setDocumentName] = useState("");
+
   const title = useAppSelector(selectDocTitle);
+  const dispatch = useAppDispatch();
+
+  // Keep UI in sync with external store updates
+  useEffect(() => {
+    if (ref.current && ref.current.innerText !== title) {
+      ref.current.innerText = title;
+    }
+  }, [title]);
+
+  // Debounced handler
+  const debouncedUpdate = useDebounceCallback((title: string) => {
+    dispatch(updateDocTitle({ title }));
+  }, 300);
 
   const handleInput = () => {
     if (ref.current) {
-      setDocumentName(ref.current.innerText);
+      debouncedUpdate(ref.current.innerText);
     }
   };
 
@@ -40,13 +57,9 @@ const Header = () => {
               ref={ref}
               contentEditable
               suppressContentEditableWarning
+              className="rounded-[4px] border border-transparent px-1 text-[15px] font-semibold text-gray-800 outline-none focus:border focus:border-green-500"
               onInput={handleInput}
-              className="rounded-[4px] border border-transparent px-1 outline-none focus:border focus:border-green-500"
-            >
-              <span className="text-[15px] font-semibold text-gray-800">
-                {title}
-              </span>
-            </div>
+            />
             <div className="ml-5">
               <div className="rounded-[2px] bg-[#9fa1a7] px-[4px] py-[2px] text-[9px] font-semibold text-white uppercase">
                 documents

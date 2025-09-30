@@ -1,4 +1,4 @@
-import { OverlayId, PageId } from "@/interfaces/common";
+import { InstanceId, NodeId, OverlayId, PageId } from "@/interfaces/common";
 import { DropEvent } from "@/interfaces/dnd";
 import { Templates } from "@/interfaces/enum";
 import { InstanceType } from "@/interfaces/instance";
@@ -18,10 +18,36 @@ export interface UpdateFieldSizeType {
   height: number;
 }
 
+export interface AddBlankPageType {
+  pageId: PageId;
+  rootId: NodeId;
+  nodeId: NodeId;
+  instanceId: InstanceId;
+  beforePageId: PageId | false;
+  afterPageId: PageId | false;
+}
+
+export interface DeleteBlockRefType {
+  pageId: PageId;
+  nodeId: NodeId;
+  instanceId: InstanceId;
+}
+
 export const insertFieldCommitted = createAction<InsertFieldPayload>(
-  "editor/insertFieldCommitted",
+  "document/insertFieldCommitted",
 );
 export const dropApplied = createAction<DropEvent>("layout/dropApplied");
 export const updateFieldSize = createAction<UpdateFieldSizeType>(
   "overlay/updateFieldSize",
 );
+export const addBlankPage = createAction<AddBlankPageType>(
+  "document/addBlankPage",
+);
+export const deleteBlockRefAction = createAction<DeleteBlockRefType>(
+  "document/deleteBlockRefAction",
+);
+export const deletePageAction = createAction<{
+  pageId: PageId;
+  instanceIds: string[];
+  overlayIds: string[];
+}>("document/deletePageAction");

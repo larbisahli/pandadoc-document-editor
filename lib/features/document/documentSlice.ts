@@ -3,13 +3,15 @@ import { DocumentMeta } from "@/interfaces/document";
 import { createAppSlice } from "@/lib/createAppSlice";
 import { RootState } from "@/lib/store";
 import { createSelector, type PayloadAction } from "@reduxjs/toolkit";
+import { addBlankPage, deletePageAction } from "../editor/actions";
 
 type DocumentSliceState = DocumentMeta;
 
+// Default blank page
 const initialState: DocumentSliceState = {
-  id: "doc_1" as DocumentId,
+  id: "doc_aabwbtdbgk5c" as DocumentId,
   title: "Simple invoice",
-  pageIds: ["page_1"] as PageId[],
+  pageIds: ["page_n261uo3yzqhq"] as PageId[],
 };
 
 export const documentSlice = createAppSlice({
@@ -22,6 +24,27 @@ export const documentSlice = createAppSlice({
       },
     ),
   }),
+  extraReducers: (builder) => {
+    builder
+      .addCase(addBlankPage, (state, action) => {
+        const { pageId, beforePageId, afterPageId } = action.payload;
+        let index = state.pageIds.length;
+        if (beforePageId) {
+          const i = state.pageIds.indexOf(beforePageId);
+          if (i !== -1) index = i;
+        } else if (afterPageId) {
+          const j = state.pageIds.indexOf(afterPageId);
+          if (j !== -1) index = j + 1;
+        }
+        state.pageIds.splice(index, 0, pageId);
+      })
+      .addCase(deletePageAction, (state, action) => {
+        const { pageId } = action.payload;
+        const idx = state.pageIds.indexOf(pageId);
+        if (idx === -1) return;
+        state.pageIds.splice(idx, 1);
+      });
+  },
   selectors: {
     selectDocTitle: (state) => state.title,
   },

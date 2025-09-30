@@ -244,4 +244,4 @@ function DropBlockOverlayWrapper({
   );
 }
 
-export default memo(DropBlockOverlayWrapper);
+export default DropBlockOverlayWrapper;

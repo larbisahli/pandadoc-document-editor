@@ -1,17 +1,39 @@
-import { memo, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { BaseBlockProps } from "../canvas/blocks/BlockRegistry";
 import { useClickOutside } from "../hooks/useClickOutside";
 import clsx from "clsx";
 import BorderWrapper from "./BorderWrapper";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { selectInstance } from "@/lib/features/instance/instanceSlice";
+import { ActionsTooltip } from "@/components/ui/ActionsTooltip";
+import { Trash2 } from "lucide-react";
+import { deleteBlockRef } from "@/lib/features/editor/thunks/documentThunks";
+import { usePage } from "../canvas/context/PageContext";
 
-function TableContentBlock({ instanceId }: BaseBlockProps) {
+function TableContentBlock({ nodeId, instanceId }: BaseBlockProps) {
+  const { pageId } = usePage();
   const instance = useAppSelector((state) => selectInstance(state, instanceId));
+  const dispatch = useAppDispatch();
 
   const blockRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(true);
   useClickOutside(blockRef, () => setActive(false));
+
+  // useEffect(() => {
+  //   if(!instance?.data?.content) {
+  //     setActive(true)
+  //   }
+  // }, [])
+
+  const handleDelete = () => {
+    dispatch(
+      deleteBlockRef({
+        pageId,
+        nodeId,
+        instanceId,
+      }),
+    );
+  };
 
   return (
     <div
@@ -34,6 +56,18 @@ function TableContentBlock({ instanceId }: BaseBlockProps) {
           </button>
         </div>
       </BorderWrapper>
+      <ActionsTooltip
+        active={active}
+        actions={[
+          {
+            key: "delete",
+            label: "Delete",
+            icon: <Trash2 size={18} />,
+            danger: true,
+            onSelect: handleDelete,
+          },
+        ]}
+      />
     </div>
   );
 }

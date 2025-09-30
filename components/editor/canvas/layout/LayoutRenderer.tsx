@@ -58,7 +58,7 @@ function LayoutRenderer({ nodeId }: LayoutRendererProps) {
       const leaf = node as BlockRefNode;
       return (
         <DocBlock nodeId={leaf.id}>
-          <BlockFactory instanceId={leaf.instanceId} />
+          <BlockFactory nodeId={leaf.id} instanceId={leaf.instanceId} />
         </DocBlock>
       );
     }

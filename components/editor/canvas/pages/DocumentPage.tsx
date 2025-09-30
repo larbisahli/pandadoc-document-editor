@@ -4,7 +4,7 @@ import { useAppSelector } from "@/lib/hooks";
 import { selectPageRootId } from "@/lib/features/layout/layoutSlice";
 import { memo, useMemo } from "react";
 import { PageId } from "@/interfaces/common";
-import ContentHeader from "../../ui/ContentHeader";
+import ContentControl from "../../ui/ContentControl";
 import DocumentHeader from "./DocumentHeader";
 import DocumentFooter from "./DocumentFooter";
 import LayoutRenderer from "../layout/LayoutRenderer";
@@ -25,10 +25,10 @@ const DocumentPage = ({ pageId }: DocumentPageProps) => {
   return (
     <PageContext value={value}>
       <RootDropBoundary>
-        <div className="relative h-full last:mb-[50px]">
+        <div className="relative h-full last:mb-[5px]">
           <div className="h-full">
             {/* Content-head */}
-            <ContentHeader />
+            <ContentControl />
             <div className="relative mx-auto flex h-full min-h-[1065px] w-[816px] flex-col bg-white shadow-lg transition-all will-change-transform">
               {/* Document-header */}
               <DocumentHeader />
@@ -53,6 +53,7 @@ const DocumentPage = ({ pageId }: DocumentPageProps) => {
               {/* Document-footer */}
               <DocumentFooter />
             </div>
+            <ContentControl renderIfLast />
           </div>
         </div>
       </RootDropBoundary>

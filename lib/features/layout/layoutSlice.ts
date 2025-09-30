@@ -1,35 +1,141 @@
-import { NodeId, OverlayId, PageId } from "@/interfaces/common";
+import { InstanceId, NodeId, OverlayId, PageId } from "@/interfaces/common";
 import { LayoutMultiPageState } from "@/interfaces/document";
 import { NodeDirection, NodeKind } from "@/interfaces/enum";
 import {
+  addBlankPage,
+  deleteBlockRefAction,
+  deletePageAction,
   dropApplied,
   insertFieldCommitted,
 } from "@/lib/features/editor/actions";
 import { createAppSlice } from "@/lib/createAppSlice";
 import { RootState } from "@/lib/store";
 import { createSelector, type PayloadAction } from "@reduxjs/toolkit";
-import { applyDrop } from "@/utils/layout-apply-drop";
+import { applyDrop } from "./layout-apply-drop";
+import { detachFromParent } from "./helpers";
 
 type LayoutSliceState = LayoutMultiPageState;
 
 const initialState: LayoutSliceState = {
   pages: {
-    ["page_1"]: {
-      rootId: "root_1" as NodeId,
+    ["page_n261uo3yzqhq"]: {
+      rootId: "root_ts7vv3b74iuk" as NodeId,
       byId: {
-        ["root_1"]: {
-          id: "root_1" as NodeId,
+        root_ts7vv3b74iuk: {
+          id: "root_ts7vv3b74iuk" as NodeId,
           parentId: null,
-          kind: "container" as NodeKind,
+          kind: NodeKind.Container,
           direction: "column" as NodeDirection,
-          children: [] as NodeId[],
+          children: [
+            "node_qm5dtiyiavdu",
+            "node_h3we1pxjocxs",
+            "node_afy1wtix7o10",
+            "node_528orq9449vv",
+            "node_h08ytrswfewv",
+            "node_00gxfdrc05u5",
+            "node_m0jc8fg8dd83",
+            "node_4775hdsugncy",
+            "node_3g3rp5d4s3hr",
+            "node_yh258tobiy5d",
+            "node_v917j07err3k",
+            "node_n5zo4uf3sw4n",
+          ] as NodeId[],
+          layoutStyle: {},
+        },
+        node_v917j07err3k: {
+          id: "node_v917j07err3k" as NodeId,
+          kind: NodeKind.BlockRef,
+          parentId: "root_ts7vv3b74iuk" as NodeId,
+          instanceId: "inst_g3uzinxt1muh" as InstanceId,
+          layoutStyle: {},
+        },
+        node_qm5dtiyiavdu: {
+          id: "node_qm5dtiyiavdu" as NodeId,
+          kind: NodeKind.BlockRef,
+          parentId: "root_ts7vv3b74iuk" as NodeId,
+          instanceId: "inst_z0w6lgm234iq" as InstanceId,
+          layoutStyle: {},
+        },
+        node_afy1wtix7o10: {
+          id: "node_afy1wtix7o10" as NodeId,
+          kind: NodeKind.BlockRef,
+          parentId: "root_ts7vv3b74iuk" as NodeId,
+          instanceId: "inst_ie9fuca37qas" as InstanceId,
+          layoutStyle: {},
+        },
+        node_528orq9449vv: {
+          id: "node_528orq9449vv" as NodeId,
+          kind: NodeKind.BlockRef,
+          parentId: "root_ts7vv3b74iuk" as NodeId,
+          instanceId: "inst_k3s8sgj6xx91" as InstanceId,
+          layoutStyle: {},
+        },
+        node_h08ytrswfewv: {
+          id: "node_h08ytrswfewv" as NodeId,
+          kind: NodeKind.BlockRef,
+          parentId: "root_ts7vv3b74iuk" as NodeId,
+          instanceId: "inst_b5q12b803p75" as InstanceId,
+          layoutStyle: {},
+        },
+        node_00gxfdrc05u5: {
+          id: "node_00gxfdrc05u5" as NodeId,
+          kind: NodeKind.BlockRef,
+          parentId: "root_ts7vv3b74iuk" as NodeId,
+          instanceId: "inst_y00dveakfssm" as InstanceId,
+          layoutStyle: {},
+        },
+        node_m0jc8fg8dd83: {
+          id: "node_m0jc8fg8dd83" as NodeId,
+          kind: NodeKind.BlockRef,
+          parentId: "root_ts7vv3b74iuk" as NodeId,
+          instanceId: "inst_u2ptimo8qq0i" as InstanceId,
+          layoutStyle: {},
+        },
+        node_n5zo4uf3sw4n: {
+          id: "node_n5zo4uf3sw4n" as NodeId,
+          kind: NodeKind.BlockRef,
+          parentId: "root_ts7vv3b74iuk" as NodeId,
+          instanceId: "inst_6r6iqi7aodud" as InstanceId,
+          layoutStyle: {},
+        },
+        node_h3we1pxjocxs: {
+          id: "node_h3we1pxjocxs" as NodeId,
+          kind: NodeKind.BlockRef,
+          parentId: "root_ts7vv3b74iuk" as NodeId,
+          instanceId: "inst_02e4r54z6nci" as InstanceId,
+          layoutStyle: {},
+        },
+        node_4775hdsugncy: {
+          id: "node_4775hdsugncy" as NodeId,
+          kind: NodeKind.BlockRef,
+          parentId: "root_ts7vv3b74iuk" as NodeId,
+          instanceId: "inst_nhftttmlcsil" as InstanceId,
+          layoutStyle: {},
+        },
+        node_3g3rp5d4s3hr: {
+          id: "node_3g3rp5d4s3hr" as NodeId,
+          kind: NodeKind.BlockRef,
+          parentId: "root_ts7vv3b74iuk" as NodeId,
+          instanceId: "inst_cghz17z8fwew" as InstanceId,
+          layoutStyle: {},
+        },
+        node_yh258tobiy5d: {
+          id: "node_yh258tobiy5d" as NodeId,
+          kind: NodeKind.BlockRef,
+          parentId: "root_ts7vv3b74iuk" as NodeId,
+          instanceId: "inst_f1za9fxraxap" as InstanceId,
           layoutStyle: {},
         },
       },
-      overlayIds: [] as OverlayId[],
+      overlayIds: [
+        "ov_5c0v2vfbfd30",
+        "ov_520vspjf9j1a",
+        "ov_h3v6s8f5l4j9",
+        "ov_c9zmx9tew63h",
+      ] as OverlayId[],
     },
   },
-  visiblePageId: null,
+  visiblePageId: "page_n261uo3yzqhq" as PageId,
 };
 
 export const layoutSlice = createAppSlice({
@@ -80,6 +186,65 @@ export const layoutSlice = createAppSlice({
         const dropEvent = action.payload;
         const page = state.pages[dropEvent.pageId];
         applyDrop(page.byId, dropEvent, page.rootId);
+      })
+      .addCase(addBlankPage, (state, action) => {
+        const event = action.payload;
+        state.pages[event.pageId] = {
+          rootId: event?.rootId,
+          byId: {
+            [event?.rootId]: {
+              id: event?.rootId as NodeId,
+              parentId: null,
+              kind: NodeKind.Container,
+              direction: NodeDirection.Column,
+              children: [event?.nodeId],
+              layoutStyle: {},
+            },
+            [event?.nodeId]: {
+              id: event?.nodeId,
+              kind: NodeKind.BlockRef,
+              parentId: event?.rootId,
+              instanceId: event.instanceId,
+              layoutStyle: {},
+            },
+          },
+          overlayIds: [],
+        };
+      })
+      .addCase(deleteBlockRefAction, (state, action) => {
+        const { nodeId, pageId } = action.payload;
+
+        const page = state.pages?.[pageId];
+        if (!page) return;
+
+        const node = page.byId?.[nodeId];
+        if (!node) return;
+
+        // Detach from parent and fix siblings/parent structure
+        detachFromParent(page, nodeId);
+
+        // Delete the node itself
+        delete page.byId[nodeId];
+      })
+      .addCase(deletePageAction, (state, { payload }) => {
+        const { pageId } = payload;
+        const total = Object.keys(state.pages).length;
+
+        if (!state.pages[pageId]) return;
+
+        if (total <= 1) {
+          // Only page present: keep it; you can log/warn in dev if desired.
+          return;
+        }
+
+        // Remove the page layout
+        delete state.pages[pageId];
+
+        // If it was visible, pick a replacement (first remaining)
+        if (state.visiblePageId === pageId) {
+          const remaining = Object.keys(state.pages);
+          state.visiblePageId = remaining[0] as PageId;
+        }
       });
   },
   selectors: {

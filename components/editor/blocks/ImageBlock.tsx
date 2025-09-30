@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef, useState } from "react";
 import { BaseBlockProps } from "../canvas/blocks/BlockRegistry";
-import { Image as ImageIcon, Upload } from "lucide-react";
+import { Image as ImageIcon, Trash2, Upload } from "lucide-react";
 import { useClickOutside } from "../hooks/useClickOutside";
 import clsx from "clsx";
 import BorderWrapper from "./BorderWrapper";
@@ -11,11 +11,16 @@ import {
 } from "@/lib/features/instance/instanceSlice";
 import Image from "next/image";
 import { ImageDataType } from "@/interfaces/common";
+import { ActionsTooltip } from "@/components/ui/ActionsTooltip";
+import { deleteBlockRef } from "@/lib/features/editor/thunks/documentThunks";
+import { usePage } from "../canvas/context/PageContext";
 
-function ImageBlock({ instanceId }: BaseBlockProps) {
+function ImageBlock({ nodeId, instanceId }: BaseBlockProps) {
   const blockRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const { pageId } = usePage();
 
   const instance = useAppSelector((state) => selectInstance(state, instanceId));
   const dispatch = useAppDispatch();
@@ -36,9 +41,15 @@ function ImageBlock({ instanceId }: BaseBlockProps) {
   const [previewUrl, setPreviewUrl] = useState<string | undefined | null>(
     data?.url,
   );
-  const [active, setActive] = useState(true);
+  const [active, setActive] = useState(false);
 
   useClickOutside(blockRef, () => setActive(false));
+
+  useEffect(() => {
+    if (!data?.url) {
+      setActive(true);
+    }
+  }, []);
 
   // Revoke the object URL when it changes or on unmount
   useEffect(() => {
@@ -119,6 +130,16 @@ function ImageBlock({ instanceId }: BaseBlockProps) {
 
   const openFileDialog = () => inputRef.current?.click();
 
+  const handleDelete = () => {
+    dispatch(
+      deleteBlockRef({
+        pageId,
+        nodeId,
+        instanceId,
+      }),
+    );
+  };
+
   return (
     <div onClick={() => setActive(true)} className="group relative">
       <BorderWrapper active={active}>
@@ -136,12 +157,12 @@ function ImageBlock({ instanceId }: BaseBlockProps) {
           className={clsx(
             "relative flex w-full cursor-pointer items-center justify-center overflow-hidden bg-[#f7f7f7] text-[#767676]",
             !previewUrl && "min-h-[64px]",
-            active && "bg-[#e7e7e7]!",
+            active && "sbg-[#e7e7e7]!",
           )}
           aria-label="Click to upload an image"
-          style={
-            previewUrl && heightPx ? { height: `${heightPx}px` } : undefined
-          }
+          // style={
+          //   previewUrl && heightPx ? { height: `${heightPx}px` } : undefined
+          // }
         >
           <input
             ref={inputRef}
@@ -164,15 +185,27 @@ function ImageBlock({ instanceId }: BaseBlockProps) {
             <Image
               src={previewUrl}
               alt="Selected image preview"
-              fill
-              unoptimized
-              priority
-              sizes="100vw"
+              width={data.width}
+              height={data.height}
+              placeholder="blur"
+              blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y6vYf8AAAAASUVORK5CYII="
               className="object-contain"
             />
           )}
         </div>
       </BorderWrapper>
+      <ActionsTooltip
+        active={active}
+        actions={[
+          {
+            key: "delete",
+            label: "Delete",
+            icon: <Trash2 size={18} />,
+            danger: true,
+            onSelect: handleDelete,
+          },
+        ]}
+      />
     </div>
   );
 }

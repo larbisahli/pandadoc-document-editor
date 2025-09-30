@@ -13,9 +13,7 @@ This project was created as part of my preparation for **system design and front
 
 <!-- TODO -->
 
-- add block on page in general
-- add block and field on click in the middle for field
-
 - Block hover drop lines get close to edge problem
 
 - add filed by click (middle)
+- move thunk and action types

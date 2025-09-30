@@ -1,9 +1,11 @@
 import { PageSize, Rect } from "@/interfaces";
 
 export function getPageSize(pageId: string): PageSize {
+  if (typeof window === "undefined" || typeof document === "undefined") {
+    return { width: 0, height: 0 };
+  }
   const el = document.getElementById(pageId);
-  if (!el) return { width: 0, height: 0 };
-  return { width: el.clientWidth, height: el.clientHeight };
+  return { width: el?.clientWidth ?? 0, height: el?.clientHeight ?? 0 };
 }
 
 export function getCurrentRect(
