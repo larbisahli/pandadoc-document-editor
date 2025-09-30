@@ -20,7 +20,7 @@ const initialState: InstanceSliceState = {
     inst_g3uzinxt1muh: {
       templateId: Templates.Image,
       data: {
-        url: "http://localhost:3000/editor-diagram.png",
+        url: "/editor-diagram.png",
         name: "Screenshot 2025-08-08 at 02.37.10.png",
         type: "image/png",
         size: 306629,
