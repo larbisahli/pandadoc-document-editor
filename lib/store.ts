@@ -6,6 +6,8 @@ import { instancesSlice } from "./features/instance/instanceSlice";
 import { templatesSlice } from "./features/template/templateSlice";
 import { overlaySlice } from "./features/overlay/overlaySlice";
 import { RecipientSlice } from "./features/recipient/recipientSlice";
+import { editorUiSlice } from "./features/rich-editor-ui/richEditorUiSlice";
+import { uiSlice } from "./features/ui/uiSlice";
 
 // `combineSlices` automatically combines the reducers using
 const rootReducer = combineSlices(
@@ -15,6 +17,8 @@ const rootReducer = combineSlices(
   templatesSlice,
   overlaySlice,
   RecipientSlice,
+  editorUiSlice,
+  uiSlice,
 );
 
 // Infer the `RootState` type from the root reducer

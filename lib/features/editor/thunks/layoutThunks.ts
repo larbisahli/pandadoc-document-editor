@@ -2,6 +2,7 @@ import { DropEvent } from "@/interfaces/dnd";
 import { AppDispatch, RootState } from "@/lib/store";
 import { dropApplied } from "../actions";
 import { newInstanceId } from "@/utils/ids";
+import { requestFocusOnDrop } from "@/lib/features/ui/uiSlice";
 
 export const dropCommitted =
   (dropEvent: DropEvent) =>
@@ -25,8 +26,6 @@ export const dropCommitted =
         },
       },
     } as DropEvent;
-
-    console.log({ dropEvent });
-
     dispatch(dropApplied(payload));
+    dispatch(requestFocusOnDrop({ instanceId }));
   };

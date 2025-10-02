@@ -1,5 +1,6 @@
 "use client";
 
+import RichEditorToolbar from "@/components/ui/RichEditorToolbar";
 import Tooltip from "@/components/ui/Tooltip";
 import { Files, Plus, Redo, Undo } from "lucide-react";
 
@@ -29,7 +30,9 @@ const EditorToolbar = () => {
           <div className="mr-[2px] ml-[8px] h-[28px] w-[1px] bg-gray-200"></div>
           <HistoryBar />
         </div>
-        {/* <div className="flex-1 flex justify-end"></div> */}
+        <div className="flex-1">
+          <RichEditorToolbar />
+        </div>
         <div className="ml-auto rounded-[2px] bg-green-100 px-3 py-1 text-sm font-semibold text-green-700">
           Editing
         </div>

@@ -1,47 +1,73 @@
-import * as React from "react";
+import { useEffect, RefObject } from "react";
 
-/**
- * useClickOutside
- * Detects clicks/taps outside of the given ref(s) and runs `onOutside`.
- *
- * @param refs - a single ref or an array of refs to check against
- * @param onOutside - callback fired when a click/touch is outside
- */
+type Options = {
+  enabled?: boolean; // run only when true
+  ignoreRefs?: Array<RefObject<HTMLElement>>;
+  ignoreSelectors?: string[]; // e.g. ['[data-rich-editor-toolbar]', '#RichEditorToolbar']
+  events?: Array<"mousedown" | "touchstart" | "pointerdown">;
+  capture?: boolean; // default true so it runs even if others stopPropagation
+  onlyLeftMouse?: boolean; // ignore right/middle clicks
+};
+
 export function useClickOutside<
   T extends HTMLElement | HTMLDivElement | HTMLButtonElement | null,
 >(
-  refs: React.RefObject<T> | React.RefObject<T>[],
-  onOutside: (event: MouseEvent | TouchEvent | PointerEvent) => void,
+  ref: RefObject<T> | RefObject<T>[],
+  onOutside: (e: MouseEvent | TouchEvent) => void,
+  {
+    enabled = true,
+    ignoreRefs = [],
+    ignoreSelectors = [],
+    events = ["mousedown", "touchstart"],
+    capture = true,
+    onlyLeftMouse = true,
+  }: Options = {},
 ) {
-  const handlerRef = React.useRef(onOutside);
+  useEffect(() => {
+    if (!enabled) return;
 
-  // always keep the latest callback without reattaching listeners
-  React.useEffect(() => {
-    handlerRef.current = onOutside;
-  }, [onOutside]);
+    const targets = Array.isArray(ref) ? ref : [ref];
 
-  React.useEffect(() => {
-    const refArray = Array.isArray(refs) ? refs : [refs];
+    const handler = (e: MouseEvent | TouchEvent) => {
+      if (onlyLeftMouse && e instanceof MouseEvent && e.button !== 0) return;
 
-    const handleEvent = (event: MouseEvent | TouchEvent | PointerEvent) => {
-      for (const ref of refArray) {
-        const el = ref.current;
-        if (el && el.contains(event.target as Node)) {
-          return; // inside one of the refs → ignore
-        }
-      }
-      handlerRef.current(event);
+      const target = e.target as Node | null;
+      if (!target) return;
+
+      // inside any target? -> ignore
+      if (targets.some((r) => r.current && r.current.contains(target))) return;
+
+      // inside any ignored ref? -> ignore
+      if (ignoreRefs.some((r) => r.current && r.current.contains(target)))
+        return;
+
+      // inside any ignored selector? (supports portals/shadow via composedPath)
+      const path = e.composedPath?.() as EventTarget[] | undefined;
+      const matchesIgnoredSelector = (el: Element) =>
+        ignoreSelectors.some((sel) => !!el.closest(sel));
+
+      if (path?.some((n) => n instanceof Element && matchesIgnoredSelector(n)))
+        return;
+      if (!path && target instanceof Element && matchesIgnoredSelector(target))
+        return;
+
+      onOutside(e);
     };
 
-    // use capture phase to catch early
-    document.addEventListener("mousedown", handleEvent, true);
-    document.addEventListener("touchstart", handleEvent, true);
-    document.addEventListener("pointerdown", handleEvent, true);
-
+    for (const ev of events)
+      document.addEventListener(ev, handler, { capture });
     return () => {
-      document.removeEventListener("mousedown", handleEvent, true);
-      document.removeEventListener("touchstart", handleEvent, true);
-      document.removeEventListener("pointerdown", handleEvent, true);
+      for (const ev of events)
+        document.removeEventListener(ev, handler, { capture });
     };
-  }, [refs]);
+  }, [
+    enabled,
+    onOutside,
+    capture,
+    onlyLeftMouse,
+    events,
+    ignoreRefs,
+    ref,
+    ignoreSelectors,
+  ]);
 }

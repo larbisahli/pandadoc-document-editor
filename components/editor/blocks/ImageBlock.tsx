@@ -128,7 +128,12 @@ function ImageBlock({ nodeId, instanceId }: BaseBlockProps) {
     if (inputRef.current) inputRef.current.value = "";
   };
 
-  const openFileDialog = () => inputRef.current?.click();
+  const openFileDialog = () => {
+    console.log({ active });
+    if (active) {
+      inputRef.current?.click();
+    }
+  };
 
   const handleDelete = () => {
     dispatch(
@@ -141,19 +146,17 @@ function ImageBlock({ nodeId, instanceId }: BaseBlockProps) {
   };
 
   return (
-    <div onClick={() => setActive(true)} className="group relative">
+    <div
+      ref={blockRef}
+      onClick={() => setActive(true)}
+      className="group relative"
+    >
       <BorderWrapper active={active}>
         <div
           ref={wrapperRef}
           role="button"
           tabIndex={0}
           onClick={openFileDialog}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              openFileDialog();
-            }
-          }}
           className={clsx(
             "relative flex w-full cursor-pointer items-center justify-center overflow-hidden bg-[#f7f7f7] text-[#767676]",
             !previewUrl && "min-h-[64px]",

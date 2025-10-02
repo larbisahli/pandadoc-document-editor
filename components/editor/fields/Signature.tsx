@@ -8,6 +8,8 @@ import { selectInstance } from "@/lib/features/instance/instanceSlice";
 import { useClickOutside } from "../hooks/useClickOutside";
 import clsx from "clsx";
 
+// https://github.com/uiwjs/react-signature
+
 function Signature({ overlayId, instanceId }: BaseFieldProps) {
   const fieldRef = useRef<HTMLDivElement>(null);
 

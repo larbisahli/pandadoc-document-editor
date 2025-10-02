@@ -1,3 +1,5 @@
+import { RawDraftContentState } from "draft-js";
+
 // IDs
 export type Id<T extends string> = string & { __brand: T };
 
@@ -10,9 +12,8 @@ export type OverlayId = Id<"ov">;
 export type RecipientId = Id<"recipient">;
 
 export interface TextDataType {
-  content?: string;
+  content?: RawDraftContentState | null;
 }
-
 export interface ImageDataType {
   url?: string;
   name?: string;

@@ -1,6 +1,6 @@
 import { memo, useRef, useState } from "react";
 import { BaseBlockProps } from "../canvas/blocks/BlockRegistry";
-import { Trash2, Upload, Youtube } from "lucide-react";
+import { Trash2, Upload, Youtube as YoutubeIcon } from "lucide-react";
 import clsx from "clsx";
 import { useClickOutside } from "../hooks/useClickOutside";
 import BorderWrapper from "./BorderWrapper";
@@ -9,6 +9,7 @@ import { selectInstance } from "@/lib/features/instance/instanceSlice";
 import { ActionsTooltip } from "@/components/ui/ActionsTooltip";
 import { usePage } from "../canvas/context/PageContext";
 import { deleteBlockRef } from "@/lib/features/editor/thunks/documentThunks";
+import YouTube, { YouTubeProps } from "react-youtube";
 
 function VideoBlock({ nodeId, instanceId }: BaseBlockProps) {
   const { pageId } = usePage();
@@ -18,6 +19,9 @@ function VideoBlock({ nodeId, instanceId }: BaseBlockProps) {
   const blockRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(true);
   useClickOutside(blockRef, () => setActive(false));
+
+  const videoId = "69bkCjl4jkQ";
+  const autoplay = 0;
 
   const handleDelete = () => {
     dispatch(
@@ -29,26 +33,45 @@ function VideoBlock({ nodeId, instanceId }: BaseBlockProps) {
     );
   };
 
+  const onPlayerReady: YouTubeProps["onReady"] = (event) => {
+    // access to player in all event handlers via event.target
+    // event.target.pauseVideo();
+  };
+
   return (
     <div
       ref={blockRef}
       onClick={() => setActive(true)}
-      className="group relative"
+      className="group relative z-10"
     >
       <BorderWrapper active={active}>
-        <div
-          className={clsx(
-            "flex min-h-[64px] cursor-pointer items-center justify-center bg-[#f7f7f7] text-[#767676]",
-            active && "bg-[#e7e7e7]!",
-          )}
-        >
-          <div className="mx-2 text-[#626262]">
-            {active ? <Upload size={20} /> : <Youtube size={20} />}
+        {!videoId ? (
+          <div
+            className={clsx(
+              "flex min-h-[64px] cursor-pointer items-center justify-center bg-[#f7f7f7] text-[#767676]",
+              active && "bg-[#e7e7e7]!",
+            )}
+          >
+            <div className="mx-2 text-[#626262]">
+              {active ? <Upload size={20} /> : <YoutubeIcon size={20} />}
+            </div>
+            <div className="overflow-hidden text-sm text-ellipsis whitespace-nowrap">
+              Click to add a video
+            </div>
           </div>
-          <div className="overflow-hidden text-sm text-ellipsis whitespace-nowrap">
-            Click to add a video
+        ) : (
+          <div className={clsx(!active && "pointer-events-none")}>
+            <YouTube
+              videoId={videoId}
+              opts={{
+                height: "403",
+                width: "100%",
+                playerVars: { autoplay },
+              }}
+              onReady={onPlayerReady}
+            />
           </div>
-        </div>
+        )}
       </BorderWrapper>
       <ActionsTooltip
         active={active}
