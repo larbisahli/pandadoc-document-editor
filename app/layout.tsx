@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { StoreProvider } from "./StoreProvider";
 import Header from "@/components/header";
 import Head from "next/head";

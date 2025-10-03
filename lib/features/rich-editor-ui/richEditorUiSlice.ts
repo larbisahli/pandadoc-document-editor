@@ -66,7 +66,6 @@ export const editorUiSlice = createSlice({
       a: PayloadAction<{ instanceId: InstanceId; patch: Partial<TypingStyle> }>,
     ) {
       const { instanceId, patch } = a.payload;
-      // console.log("!!!!!!!!",JSON.parse(JSON.stringify(inline)))
       state.typingByInstance[instanceId] = {
         ...state.typingByInstance[instanceId],
         ...patch,

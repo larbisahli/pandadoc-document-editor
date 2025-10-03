@@ -75,3 +75,51 @@ button {
   border-color: #e5e5e5;
   opacity: 1;
 }
+
+/* Headings */
+.re-h1 {
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  font-size: 2rem;
+  line-height: 2.5rem;
+  margin: 0.75rem 0 0.5rem;
+}
+.re-h2 {
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  margin: 0.6rem 0 0.4rem;
+}
+.re-h3 {
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  margin: 0.5rem 0 0.35rem;
+}
+.re-quote {
+  border-left: 3px solid #e5e7eb;
+  padding-left: 0.75rem;
+  color: #6b7280;
+}
+
+/* Alignment */
+.re-align-left {
+  text-align: left;
+}
+.re-align-center {
+  text-align: center;
+}
+.re-align-right {
+  text-align: right;
+}
+.re-align-justify {
+  text-align: justify;
+}
+
+.re-editor-wrapper .re-align-left > div,
+.re-editor-wrapper .re-align-center > div,
+.re-editor-wrapper .re-align-right > div,
+.re-editor-wrapper .re-align-justify > div {
+  display: inline;
+}

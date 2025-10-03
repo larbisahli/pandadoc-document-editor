@@ -19,4 +19,5 @@ This project was created as part of my preparation for **system design and front
 - move thunk and action types
 - useClickOutside in all blocks and fields
 - editor slice more types
-- fix root container not found
+- fix root container not found (adding to blank page)
+- clean up junk code from editor

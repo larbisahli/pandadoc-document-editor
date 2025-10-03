@@ -45,67 +45,32 @@ import { useClickOutside } from "../hooks/useClickOutside";
 import BorderWrapper from "./BorderWrapper";
 import { ActionsTooltip } from "@/components/ui/ActionsTooltip";
 import { BaseBlockProps } from "../canvas/blocks/BlockRegistry";
+import clsx from "clsx";
+import InlineControls from "./controls/InlineControls";
 
-/* ========== RDW Editor (client-only, forwarded ref) ========== */
+// RDW editor (client only) with forwarded ref so we can focus
 type RDWEditorHandle = {
   focusEditor?: () => void;
   editor?: { focus?: () => void };
 };
-
-const RDWEditor = dynamic(
-  async () => {
-    const mod = await import("react-draft-wysiwyg");
-    const Inner = mod.Editor;
-    const ReactF = (await import("react")).forwardRef<
-      RDWEditorHandle,
-      EditorProps
-    >((props, ref) => <Inner ref={ref as any} {...props} />);
-    ReactF.displayName = "RDWEditorForward";
-    return ReactF;
-  },
+export const RDWEditor = dynamic(
+  () => import("react-draft-wysiwyg").then((m) => m.Editor),
   { ssr: false },
 );
-
-/* ========== Inline style keys & mapping ========== */
-const FONT_FAMILY_PREFIX = "FONTFAM_";
-const FONT_SIZE_PREFIX = "FONTSIZE_";
-const COLOR_PREFIX = "COLOR_"; // COLOR_rrggbb
-const BGCOLOR_PREFIX = "BGCOLOR_"; // BGCOLOR_rrggbb
-
-const famKey = (fam: string) => FONT_FAMILY_PREFIX + encodeURIComponent(fam);
-const sizeKey = (px: number) => `${FONT_SIZE_PREFIX}${px}`;
-const hexToKey = (hex: string) => hex.replace("#", "").toLowerCase();
-
-function customStyleFn(styleSet: DraftInlineStyle): React.CSSProperties {
-  const css: React.CSSProperties = {};
-  styleSet.forEach((s: string) => {
-    if (s.startsWith(FONT_FAMILY_PREFIX)) {
-      css.fontFamily = decodeURIComponent(s.slice(FONT_FAMILY_PREFIX.length));
-    } else if (s.startsWith(FONT_SIZE_PREFIX)) {
-      const px = Number(s.slice(FONT_SIZE_PREFIX.length));
-      if (Number.isFinite(px)) css.fontSize = px;
-    } else if (s.startsWith(COLOR_PREFIX)) {
-      css.color = "#" + s.slice(COLOR_PREFIX.length);
-    } else if (s.startsWith(BGCOLOR_PREFIX)) {
-      css.backgroundColor = "#" + s.slice(BGCOLOR_PREFIX.length);
-    }
-  });
-  return css;
+// small debounce
+function useDebounced<T extends (...args: any[]) => void>(fn: T, ms = 250) {
+  const t = useRef<number | null>(null);
+  return useCallback(
+    (...args: Parameters<T>) => {
+      if (t.current) window.clearTimeout(t.current);
+      t.current = window.setTimeout(() => fn(...args), ms) as unknown as number;
+    },
+    [fn, ms],
+  );
 }
 
-/* ========== Block alignment ========== */
-function setAlignment(
-  state: EditorState,
-  align: "left" | "center" | "right" | "justify",
-) {
-  const content = state.getCurrentContent();
-  const sel = state.getSelection();
-  const block = content.getBlockForKey(sel.getStartKey());
-  const data = block.getData().set("text-align", align);
-  const nextContent = Modifier.setBlockData(content, sel, data);
-  return EditorState.push(state, nextContent, "change-block-data");
-}
-function blockStyleFn(block: ContentBlock) {
+// alignment classes for RDW textAlign control (RDW stores blockData: text-align)
+function blockStyleFns(block: ContentBlock) {
   const a = block.getData()?.get("text-align");
   if (a === "center") return "align-center";
   if (a === "right") return "align-right";
@@ -113,109 +78,70 @@ function blockStyleFn(block: ContentBlock) {
   return "align-left";
 }
 
-/* ========== small utils ========== */
-function useDebounced<T extends (...args: any[]) => void>(fn: T, ms = 250) {
-  const tRef = useRef<number | null>(null);
-  return useCallback(
-    (...args: Parameters<T>) => {
-      if (tRef.current) window.clearTimeout(tRef.current);
-      tRef.current = window.setTimeout(
-        () => fn(...args),
-        ms,
-      ) as unknown as number;
-    },
-    [fn, ms],
-  );
+export function blockStyleFn(block: DraftInlineStyle): React.CSSProperties {
+  const classes: string[] = [];
+
+  // Headings (semantic; you style them with CSS)
+  switch (block.getType()) {
+    case "header-one":
+      classes.push("re-h1");
+      break;
+    case "header-two":
+      classes.push("re-h2");
+      break;
+    case "header-three":
+      classes.push("re-h3");
+      break;
+    // (optional)
+    case "header-four":
+      classes.push("re-h4");
+      break;
+    case "header-five":
+      classes.push("re-h5");
+      break;
+    case "header-six":
+      classes.push("re-h6");
+      break;
+    case "blockquote":
+      classes.push("re-quote");
+      break;
+    default:
+      break;
+  }
+
+  // Alignment — RDW stores in block data; support multiple key names
+  const data = block.getData?.();
+  const align =
+    data?.get("text-align") ??
+    data?.get("textAlign") ??
+    data?.get("textAlignment") ??
+    "left";
+
+  if (align === "center" || align === "right" || align === "justify") {
+    classes.push(`re-align-${align}`);
+  } else {
+    classes.push("re-align-left");
+  }
+
+  return classes.join(" ");
 }
-const safeFocus = (ref: React.RefObject<RDWEditorHandle>) => {
-  try {
-    ref.current?.focusEditor?.();
-    ref.current?.editor?.focus?.();
-  } catch {}
-};
-
-/* ========== helpers to modify inline styles (no immutable import needed) ========== */
-const INLINE_KEYS = [
-  "BOLD",
-  "ITALIC",
-  "UNDERLINE",
-  "STRIKETHROUGH",
-  "CODE",
-] as const;
-type InlineKey = (typeof INLINE_KEYS)[number];
-
-const Helpers = {
-  getAllKeysWithPrefix(state: EditorState, prefix: string) {
-    const keys = new Set<string>();
-    state
-      .getCurrentContent()
-      .getBlockMap()
-      .forEach((block) => {
-        block.getCharacterList().forEach((ch) => {
-          ch.getStyle().forEach((s: string) => {
-            if (s.startsWith(prefix)) keys.add(s);
-          });
-        });
-      });
-    return keys;
-  },
-  removeKeysInSelection(state: EditorState, keys: Iterable<string>) {
-    const sel = state.getSelection();
-    let content = state.getCurrentContent();
-    for (const k of keys) content = Modifier.removeInlineStyle(content, sel, k);
-    return EditorState.push(state, content, "change-inline-style");
-  },
-  /** remove all keys with a prefix from the override set (caret) */
-  removeFromOverrideByPrefix(override: DraftInlineStyle, prefix: string) {
-    let out = override as any;
-    override.forEach((s: string) => {
-      if (s.startsWith(prefix)) out = out.remove(s);
-    });
-    return out as DraftInlineStyle;
-  },
-  /** remove specific keys (BOLD, etc.) from override */
-  removeSpecificFromOverride(override: DraftInlineStyle, keys: InlineKey[]) {
-    let out = override as any;
-    keys.forEach((k) => {
-      if ((override as any).has?.(k)) out = out.remove(k);
-    });
-    return out as DraftInlineStyle;
-  },
-  /** Add keys into override */
-  addIntoOverride(override: DraftInlineStyle, keys: string[]) {
-    let out = override as any;
-    keys.forEach((k) => {
-      out = out.add(k);
-    });
-    return out as DraftInlineStyle;
-  },
-  /** signature string to avoid infinite loops without immutable.equals */
-  sig(override: DraftInlineStyle) {
-    const arr: string[] = [];
-    (override as any).forEach?.((k: string) => arr.push(k));
-    if (arr.length === 0) {
-      // fallback via iterator
-      for (const k of override as any as Iterable<string>) arr.push(k);
-    }
-    return arr.sort().join("|");
-  },
-};
-
-/* ==================== Component ==================== */
 
 function TextBlock({ nodeId, instanceId }: BaseBlockProps) {
   const { pageId } = usePage();
   const dispatch = useAppDispatch();
 
-  const blockRef = useRef<HTMLDivElement>(null);
+  const editorReadyRef = React.useRef(false);
+  const pendingFocusRef = React.useRef(false);
+
+  const editorApiRef = React.useRef<{ focus?: () => void } | null>(null);
+
   const editorRef = useRef<RDWEditorHandle | null>(null);
+  const blockRef = useRef<HTMLDivElement>(null);
   const hydratedOnce = useRef(false);
 
-  const pendingInstanceId = useAppSelector(selectPendingFocusInstanceId);
-  const command = useAppSelector((s) => selectNextCommandFor(s, instanceId));
+  const pendingFocusId = useAppSelector(selectPendingFocusInstanceId);
   const instance = useAppSelector((s) => selectInstance(s, instanceId));
   const raw = useAppSelector((s) => selectInstanceEditorRaw(s, instanceId));
-  const typing = useAppSelector((s) => selectTypingStyleFor(s, instanceId)); // persistent caret style
 
   const [editorState, setEditorState] = useState(() =>
     raw
@@ -224,32 +150,47 @@ function TextBlock({ nodeId, instanceId }: BaseBlockProps) {
   );
   const [active, setActive] = useState(false);
 
-  const handleBlockFocus = useCallback(() => {
+  // call this whenever you want to focus
+  const requestEditorFocus = () => {
+    if (editorReadyRef.current) {
+      editorApiRef.current?.focus?.();
+    } else {
+      pendingFocusRef.current = true; // run when ref becomes available
+    }
+  };
+
+  useEffect(() => {
+    if (active) {
+      editorApiRef.current?.focus?.();
+    }
+  }, [active]);
+
+  const onActivate = useCallback(() => {
     dispatch(setActiveInstance(instanceId));
     setActive(true);
   }, [dispatch, instanceId]);
 
-  /* Focus once when this block was just dropped */
+  // Focus once when freshly dropped
   useEffect(() => {
-    if (pendingInstanceId !== instanceId) return;
-    const id = requestAnimationFrame(() => {
-      safeFocus(editorRef);
-      handleBlockFocus();
+    if (pendingFocusId !== instanceId) return;
+    const raf = requestAnimationFrame(() => {
+      requestEditorFocus();
+      onActivate();
       dispatch(consumePendingFocus({ instanceId }));
     });
-    return () => cancelAnimationFrame(id);
-  }, [pendingInstanceId, instanceId, dispatch, handleBlockFocus]);
+    return () => cancelAnimationFrame(raf);
+  }, [pendingFocusId, instanceId, dispatch, onActivate, requestEditorFocus]);
 
-  /* Ensure initial raw once */
+  // Ensure initial raw once
   useEffect(() => {
     if (!instance) return;
-    if (typeof raw === "undefined") {
-      const initialRaw = convertToRaw(ContentState.createFromText(""));
-      dispatch(ensureInstanceEditorRaw({ instanceId, raw: initialRaw }));
+    if (typeof raw === "undefined" || !raw) {
+      const initial = convertToRaw(ContentState.createFromText(""));
+      dispatch(ensureInstanceEditorRaw({ instanceId, raw: initial }));
     }
   }, [dispatch, instance, instanceId, raw]);
 
-  /* Hydrate local EditorState once from raw */
+  // Hydrate local state once
   useEffect(() => {
     if (hydratedOnce.current) return;
     if (raw) {
@@ -258,248 +199,25 @@ function TextBlock({ nodeId, instanceId }: BaseBlockProps) {
     }
   }, [raw]);
 
-  /* Persist content (debounced) */
-  const saveDebounced = useDebounced((state: EditorState) => {
+  // Save content (debounced) on changes
+  const saveDebounced = useDebounced((es: EditorState) => {
     dispatch(
       saveInstanceEditorRaw({
         instanceId,
-        raw: convertToRaw(state.getCurrentContent()),
+        raw: convertToRaw(es.getCurrentContent()),
       }),
     );
   }, 220);
 
-  useEffect(() => {
-    saveDebounced(editorState);
-  }, [editorState, saveDebounced]);
-
-  const buildDesiredOverrideFromCurrent = useCallback(
-    (current: DraftInlineStyle) => {
-      console.log({ typing });
-      // start from current override, strip our keys, then add desired
-      let ov = current;
-      ov = Helpers.removeFromOverrideByPrefix(ov, FONT_FAMILY_PREFIX);
-      ov = Helpers.removeFromOverrideByPrefix(ov, FONT_SIZE_PREFIX);
-      ov = Helpers.removeFromOverrideByPrefix(ov, COLOR_PREFIX);
-      ov = Helpers.removeFromOverrideByPrefix(ov, BGCOLOR_PREFIX);
-      ov = Helpers.removeSpecificFromOverride(ov, [
-        "BOLD",
-        "ITALIC",
-        "UNDERLINE",
-        "STRIKETHROUGH",
-        "CODE",
-      ]);
-
-      const add: string[] = [];
-      if (typing.family) add.push(famKey(typing.family));
-      if (typing.size) add.push(sizeKey(typing.size));
-      if (typing.color) add.push(`${COLOR_PREFIX}${hexToKey(typing.color)}`);
-      if (typing.bg) add.push(`${BGCOLOR_PREFIX}${hexToKey(typing.bg)}`);
-      if (typing.inline?.BOLD) add.push("BOLD");
-      if (typing.inline?.ITALIC) add.push("ITALIC");
-      if (typing.inline?.UNDERLINE) add.push("UNDERLINE");
-      if (typing.inline?.STRIKETHROUGH) add.push("STRIKETHROUGH");
-      if (typing.inline?.CODE) add.push("CODE");
-
-      return Helpers.addIntoOverride(ov, add);
-    },
-    [typing],
-  );
-
-  /* Keep caret inline override always in sync with persistent typing style — NO immutable import */
-  useEffect(() => {
-    // return
-    setEditorState((prev) => {
-      const sel = prev.getSelection();
-      // only enforce on caret (optional: && sel.getHasFocus())
-      if (!sel.isCollapsed()) return prev;
-
-      const current = prev.getCurrentInlineStyle(); // current override set
-      const desired = buildDesiredOverrideFromCurrent(current);
-
-      // compare current vs desired; only set when different
-      if (Helpers.sig(current) !== Helpers.sig(desired)) {
-        return EditorState.setInlineStyleOverride(prev, desired);
-      }
-      return prev;
-    });
-    // depend on typingSig ONLY (or selector with shallowEqual)
-  }, [typing, buildDesiredOverrideFromCurrent]);
-
-  /* Handle external commands (selection application + focus) */
-  useEffect(() => {
-    if (!command) return;
-
-    const rawPayload = command.payload as unknown;
-
-    setEditorState((prev) => {
-      const sel = prev.getSelection();
-      let next = prev;
-
-      const applyInline = (prefix: string, key: string) => {
-        if (sel.isCollapsed()) {
-          // caret only: change override (future typing)
-          let override = prev.getCurrentInlineStyle();
-          override = Helpers.removeFromOverrideByPrefix(override, prefix);
-          const updated = Helpers.addIntoOverride(override, [key]);
-          if (Helpers.sig(updated) !== Helpers.sig(override)) {
-            return EditorState.setInlineStyleOverride(prev, updated);
-          }
-          return prev;
-        }
-        // selection: clear then apply
-        const toRemove = Helpers.getAllKeysWithPrefix(prev, prefix);
-        const cleared = Helpers.removeKeysInSelection(prev, toRemove);
-        return RichUtils.toggleInlineStyle(cleared, key);
-      };
-
-      console.log(">>>>>OOOO", command.type);
-
-      switch (command.type) {
-        case "FOCUS": {
-          safeFocus(editorRef);
-          return prev;
-        }
-
-        // case "TOGGLE_INLINE": {
-        //   const style =
-        //     typeof rawPayload === "string"
-        //       ? rawPayload
-        //       : (rawPayload && typeof rawPayload === "object" ? (rawPayload as any).style : "");
-        //   next = RichUtils.toggleInlineStyle(prev, String(style ?? ""));
-        //   break;
-        // }
-
-        case "SET_FONT_FAMILY": {
-          const fam =
-            typeof rawPayload === "string"
-              ? rawPayload
-              : rawPayload && typeof rawPayload === "object"
-                ? (rawPayload as any).family
-                : "";
-          if (!fam) return prev;
-          next = applyInline(FONT_FAMILY_PREFIX, famKey(String(fam)));
-          break;
-        }
-
-        case "SET_FONT_SIZE": {
-          const n =
-            typeof rawPayload === "number"
-              ? rawPayload
-              : Number(
-                  rawPayload && typeof rawPayload === "object"
-                    ? (rawPayload as any).size
-                    : 0,
-                );
-          if (!Number.isFinite(n) || n <= 0) return prev;
-          next = applyInline(FONT_SIZE_PREFIX, sizeKey(n));
-          break;
-        }
-
-        case "SET_COLOR": {
-          const hex =
-            typeof rawPayload === "string"
-              ? rawPayload
-              : rawPayload && typeof rawPayload === "object"
-                ? (rawPayload as any).hex
-                : "";
-          if (!hex) return prev;
-          next = applyInline(
-            COLOR_PREFIX,
-            `${COLOR_PREFIX}${hexToKey(String(hex))}`,
-          );
-          break;
-        }
-
-        case "SET_BG_COLOR": {
-          const hex =
-            typeof rawPayload === "string"
-              ? rawPayload
-              : rawPayload && typeof rawPayload === "object"
-                ? (rawPayload as any).hex
-                : "";
-          if (!hex) return prev;
-          next = applyInline(
-            BGCOLOR_PREFIX,
-            `${BGCOLOR_PREFIX}${hexToKey(String(hex))}`,
-          );
-          break;
-        }
-
-        case "SET_ALIGNMENT": {
-          const align = (
-            rawPayload && typeof rawPayload === "object"
-              ? (rawPayload as any).align
-              : "left"
-          ) as "left" | "center" | "right" | "justify";
-          next = setAlignment(prev, align);
-          break;
-        }
-
-        case "CLEAR_INLINE": {
-          const all = new Set<string>([
-            ...Helpers.getAllKeysWithPrefix(prev, FONT_FAMILY_PREFIX),
-            ...Helpers.getAllKeysWithPrefix(prev, FONT_SIZE_PREFIX),
-            ...Helpers.getAllKeysWithPrefix(prev, COLOR_PREFIX),
-            ...Helpers.getAllKeysWithPrefix(prev, BGCOLOR_PREFIX),
-          ]);
-          next = Helpers.removeKeysInSelection(prev, all);
-          // also clear override (caret) for our prefixes + inline keys
-          let ov = prev.getCurrentInlineStyle();
-          ov = Helpers.removeFromOverrideByPrefix(ov, FONT_FAMILY_PREFIX);
-          ov = Helpers.removeFromOverrideByPrefix(ov, FONT_SIZE_PREFIX);
-          ov = Helpers.removeFromOverrideByPrefix(ov, COLOR_PREFIX);
-          ov = Helpers.removeFromOverrideByPrefix(ov, BGCOLOR_PREFIX);
-          ov = Helpers.removeSpecificFromOverride(ov, [...INLINE_KEYS]);
-          next = EditorState.setInlineStyleOverride(next, ov);
-          break;
-        }
-
-        case "SPLIT_BLOCK": {
-          const content = prev.getCurrentContent();
-          const selNow = prev.getSelection();
-          const nextContent = Modifier.splitBlock(content, selNow);
-          next = EditorState.push(prev, nextContent, "split-block");
-          next = EditorState.forceSelection(
-            next,
-            nextContent.getSelectionAfter(),
-          );
-          break;
-        }
-
-        case "TOGGLE_BLOCK": {
-          const type =
-            typeof rawPayload === "string"
-              ? rawPayload
-              : rawPayload && typeof rawPayload === "object"
-                ? (rawPayload as any).type
-                : "";
-          next = RichUtils.toggleBlockType(prev, String(type ?? ""));
-          break;
-        }
-
-        default:
-          return prev;
-      }
-
-      console.log(next);
-
-      return next;
-    });
-
-    // ack + refocus so typing continues with the override
-    dispatch(consumeCommand({ id: command.id }));
-    if (command.type !== "FOCUS") {
-      const raf = requestAnimationFrame(() => safeFocus(editorRef));
-      return () => cancelAnimationFrame(raf);
+  const handleStateChange = (next: EditorState) => {
+    setEditorState(next);
+    // save only on content change
+    if (next.getCurrentContent() !== editorState.getCurrentContent()) {
+      saveDebounced(next);
     }
-  }, [command, command?.id, dispatch]);
-
-  /* Delete block */
-  const handleDelete = () => {
-    dispatch(deleteBlockRef({ pageId, nodeId, instanceId }));
   };
 
-  /* Outside clicks (ignore global toolbar via selectors) */
+  // Outside click => blur selection UI, hide borders
   const onOutside = useCallback(() => {
     setActive(false);
     dispatch(setActiveInstance(null));
@@ -507,58 +225,326 @@ function TextBlock({ nodeId, instanceId }: BaseBlockProps) {
 
   const ignoreSelectors = useMemo(
     () => [
+      ".rdw-editor-toolbar", // RDW toolbar
       "[data-rich-editor-toolbar]",
-      "#richEditorToolbar",
+      "#richEditorToolbar", // any external you might still have
       ".rdw-editor-toolbar",
+      ".rdw-dropdown-wrapper",
+      ".rdw-dropdown-optionwrapper",
+      ".rdw-link-modal",
+      ".rdw-colorpicker-modal",
+      ".rdw-emoji-modal",
+      ".rdw-image-modal",
     ],
     [],
   );
-
   useClickOutside(blockRef, onOutside, { enabled: active, ignoreSelectors });
+
+  const handleDelete = () => {
+    dispatch(deleteBlockRef({ pageId, nodeId, instanceId }));
+  };
+
+  // Built-in toolbar config (with your BlockType options)
+  const toolbar = useMemo<EditorProps["toolbar"]>(
+    () => ({
+      options: [
+        "blockType",
+        "inline",
+        "fontSize",
+        "fontFamily",
+        "colorPicker",
+        "list",
+        "textAlign",
+        "link",
+        "history",
+      ],
+      blockType: {
+        inDropdown: true,
+        options: [
+          "Normal",
+          "H1",
+          "H2",
+          "H3",
+          "H4",
+          "H5",
+          "H6",
+          "Blockquote",
+          "Code",
+        ],
+      },
+      inline: {
+        classname: "bg-red-400!",
+        inDropdown: false,
+        // Prefer "monospace" for RDW 1.x; or use "code" **and** add `code: {}`
+        options: ["bold", "italic", "underline", "strikethrough", "monospace"],
+        bold: {},
+        italic: {},
+        underline: {},
+        strikethrough: {},
+        monospace: {}, // or: code: {}  (if you keep "code" above)
+        // (optional) className: "", dropdownClassName: ""
+      },
+      fontSize: {
+        options: [12, 13, 14, 16, 18, 20, 24, 28, 32, 36].map(String),
+      },
+      fontFamily: {
+        options: [
+          "Inter",
+          "Roboto",
+          "Arial",
+          "Helvetica",
+          "Times New Roman",
+          "Georgia",
+          "Courier New",
+          "Menlo",
+        ],
+      },
+      colorPicker: {
+        colors: DOC_COLORS,
+        className: "re-tooltip",
+        popupClassName: "re-tooltip-dropdown",
+      },
+      list: { inDropdown: true },
+      // textAlign: { inDropdown: true }, // RDW sets blockData{text-align}
+      textAlign: {
+        inDropdown: false,
+        options: ["left", "center", "right", "justify"],
+        left: {},
+        center: {},
+        right: {},
+        justify: {}, // important: provide keys
+      },
+      history: { inDropdown: false },
+    }),
+    [],
+  );
+
+  console.log({ toolbar });
+
+  React.useEffect(() => {
+    const h = (e: MouseEvent) => {
+      if ((e as any).defaultPrevented) {
+        console.warn(
+          "⚠️ mousedown defaultPrevented by:",
+          (e.target as HTMLElement)?.closest("*")?.className,
+        );
+      }
+    };
+    document.addEventListener("mousedown", h, true); // capture
+    return () => document.removeEventListener("mousedown", h, true);
+  }, []);
+
+  function blockStyleFns(block: any) {
+    switch (block.getType()) {
+      case "header-one":
+        return "re-h1";
+      case "header-two":
+        return "re-h2";
+      case "header-three":
+        return "re-h3";
+      default:
+        return "";
+    }
+  }
 
   return (
     <div
       ref={blockRef}
-      onClick={handleBlockFocus}
-      onFocus={handleBlockFocus}
-      className="group relative"
+      onClick={() => {
+        onActivate();
+        requestEditorFocus();
+      }}
+      onFocus={onActivate}
+      className="group relatives"
     >
       <BorderWrapper active={active}>
-        <RDWEditor
-          ref={editorRef}
-          editorState={editorState}
-          onEditorStateChange={setEditorState}
-          toolbarHidden
-          customStyleFn={customStyleFn}
-          blockStyleFn={blockStyleFn}
-          wrapperClassName="m-0"
-          editorClassName="px-0 py-1 min-h-[24px]"
-          toolbarOnFocus
-          stripPastedStyles={false}
-          placeholder=""
-        />
+        <div className="rdw-editor-wrapper rbelative">
+          {" "}
+          {/* makes toolbar absolute relative to this */}
+          <RDWEditor
+            editorRef={(inst) => {
+              editorApiRef.current = inst;
+            }}
+            editorState={editorState}
+            onEditorStateChange={handleStateChange}
+            blockStyleFn={blockStyleFn}
+            toolbarClassName={clsx(
+              "re-tooltip w-[800px]", // <-- scope styles
+              "absolute left-1/2 -translate-x-1/2 -top-[110px]", // position like a tooltip
+              "transition-opacity duration-150 z-[70] shadow-xs",
+              active
+                ? "opacity-100 pointer-events-auto"
+                : "opacity-0 pointer-events-none",
+            )}
+            // classes
+            wrapperClassName="relative relative overflow-visible rdw-editor-wrapper"
+            editorClassName={`
+              rdw-editor-main re-editor re-editor-wrapper
+              mb-0!
+              [&_.public-DraftStyleDefault-block]:m-0!
+            `}
+            toolbar={toolbar}
+            toolbarOnFocus={false}
+            placeholder="type"
+            toolbarCustomButtons={[
+              <DeleteToolbarButton key="del" onDelete={handleDelete} />,
+            ]}
+          />
+        </div>
         <style>{`
-          .align-left { text-align: left; }
-          .align-center { text-align: center; }
-          .align-right { text-align: right; }
-          .align-justify { text-align: justify; }
-        `}</style>
-      </BorderWrapper>
+      /* base palette (scoped) */
+      .re-tooltip {
+        --re-border: #cbcbcb;
+        --re-hover: #f2f2f2;
+        --re-active: #f2f2f2;
+        border: 1px solid var(--re-border);
+        border-radius: 5px;
+        padding: 6px 8px;
+        width: 100%;
+      }
 
-      <ActionsTooltip
-        active={active}
-        actions={[
-          {
-            key: "delete",
-            label: "Delete",
-            icon: <Trash2 size={18} />,
-            danger: true,
-            onSelect: handleDelete,
-          },
-        ]}
-      />
+      /* RDW buttons */
+      .re-tooltip .rdw-option-wrapper {
+        border: 1px solid var(--re-border);
+        border-radius: 2px;
+        height: 30px;
+        min-width: 32px;
+        margin: 1px !important;
+      }
+
+      .re-tooltip .rdw-option-wrapper:hover { background: var(--re-hover); }
+      .re-tooltip .rdw-option-wrapper.rdw-option-active {
+        background: var(--re-active) !important;
+        border-color: var(--re-border) !important;
+      }
+
+      /* dropdown triggers */
+      .re-tooltip .rdw-dropdown-wrapper {
+        border: 1px solid var(--re-border);
+        border-radius: 2px;s
+        height: 30px;
+        min-width: 38px;
+        margin: 1px !important;
+      }
+
+      .re-tooltip .rdw-dropdown-wrapper:hover { background: var(--re-hover); }
+      .re-tooltip .rdw-dropdown-carettoclose,
+
+      /* dropdown menu */
+      .re-tooltip .rdw-dropdown-optionwrapper {
+        border: 1px solid var(--re-border);
+        border-radius: 2px;
+        z-index: 800000;
+        top: 5px;
+      }
+      .re-tooltip .rdw-dropdownoption-default {
+        padding: 6px;
+      }
+        .re-tooltip .rdw-dropdownoption-default {
+         border-bottom: 1px solid var(--re-hover);
+        }
+      .re-tooltip .rdw-dropdownoption-default:hover { background: var(--re-hover); }
+      .re-tooltip .rdw-dropdownoption-active { background: var(--re-active); }
+
+      /* color picker modal */
+      .re-tooltip .rdw-colorpicker-modal {
+        border: 1px solid var(--re-border);
+        border-radius: 5px;
+      }
+
+      .re-tooltip .rdw-colorpicker-option { border-radius: 1px; height: 30px; width; 30px; box-shadow: none !important; }
+      .re-tooltip .rdw-colorpicker-option span { border-radius: 100%; }
+      .re-tooltip .rdw-colorpicker-option:hover { outline: 2px solid var(--re-focus); outline-offset: 2px; }
+
+      /* pick whatever “big” means for your theme: */
+      .re-h1 { font-size: 2rem; line-height: 2.5rem; }   /* Tailwind-ish: text-2xl */
+      .re-h2 { font-size: 1.5rem; line-height: 2rem; }   /* text-xl */
+      .re-h3 { font-size: 1.25rem; line-height: 1.75rem; }/* text-lg */
+
+      .re-align-left    { text-align: left; }
+        .re-align-center  { text-align: center !important; }
+        .re-align-right   { text-align: right; }
+        .re-align-justify { text-align: justify; }
+    `}</style>
+      </BorderWrapper>
     </div>
   );
 }
+
+export function DeleteToolbarButton({ onDelete }: { onDelete: () => void }) {
+  return (
+    <button
+      type="button"
+      title="Delete block"
+      aria-label="Delete block"
+      className="rdw-option-wrapper" // RDW style
+      onMouseDown={(e) => e.preventDefault()} // keep selection/focus
+      onClick={onDelete}
+    >
+      <Trash2 size={16} />
+    </button>
+  );
+}
+
+export const DOC_COLORS: string[] = [
+  // neutrals (text-friendly)
+  "#000000",
+  "#111827",
+  "#374151",
+  "#6B7280",
+  "#9CA3AF",
+  "#D1D5DB",
+  "#F3F4F6",
+  "#FFFFFF",
+
+  // red
+  "#DC2626",
+  "#F87171",
+  "#FECACA",
+  // orange
+  "#EA580C",
+  "#FB923C",
+  "#FED7AA",
+  // yellow / amber (mostly for highlights)
+  "#CA8A04",
+  "#FACC15",
+  "#FEF08A",
+  // green
+  "#16A34A",
+  "#4ADE80",
+  "#BBF7D0",
+  // teal
+  "#0D9488",
+  "#2DD4BF",
+  "#99F6E4",
+  // cyan / sky
+  "#0891B2",
+  "#22D3EE",
+  "#A5F3FC",
+  // blue
+  "#2563EB",
+  "#60A5FA",
+  "#BFDBFE",
+  // indigo
+  "#4F46E5",
+  "#818CF8",
+  "#C7D2FE",
+  // purple
+  "#7C3AED",
+  "#A78BFA",
+  "#DDD6FE",
+  // pink
+  "#DB2777",
+  "#F472B6",
+  "#FBCFE8",
+  // rose
+  "#E11D48",
+  "#FB7185",
+  "#FECDD3",
+  // brownish (stone)
+  "#44403C",
+  "#78716C",
+  "#E7E5E4",
+];
 
 export default memo(TextBlock);
