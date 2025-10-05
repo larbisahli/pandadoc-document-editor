@@ -253,7 +253,6 @@ const RichEditorToolbar = () => {
       >
         <Bold strokeWidth={2.5} size={15} />
       </button>
-      <div className="mx-[1px] h-[25px] w-[1px] bg-gray-300" />
       <button
         className={btn(isOn("italic"))}
         aria-pressed={isOn("italic")}
@@ -261,7 +260,6 @@ const RichEditorToolbar = () => {
       >
         <Italic strokeWidth={2.5} size={15} />
       </button>
-      <div className="mx-[1px] h-[25px] w-[1px] bg-gray-300" />
       <button
         className={btn(isOn("underline"))}
         aria-pressed={isOn("underline")}
@@ -273,7 +271,7 @@ const RichEditorToolbar = () => {
       <div className="mx-[1px] h-[25px] w-[1px] bg-gray-300" />
 
       {/* Highlight */}
-      <Dropdown align="center">
+      <Dropdown align="center" className="mx-1">
         <Dropdown.Trigger
           asChild
           className="relative h-full w-full p-1 text-gray-600"
@@ -303,8 +301,6 @@ const RichEditorToolbar = () => {
           ))}
         </Dropdown.Content>
       </Dropdown>
-      <div className="mx-[1px] h-[25px] w-[1px] bg-gray-300" />
-
       {/* Text color */}
       <div className="relative">
         <input
@@ -322,7 +318,7 @@ const RichEditorToolbar = () => {
           onClick={openPicker}
           aria-label="Text color"
           title="Text color"
-          className="relative"
+          className="relative mx-1"
         >
           <div className="px-2">A</div>
           <div
@@ -341,7 +337,6 @@ const RichEditorToolbar = () => {
       >
         <ListOrdered size={20} strokeWidth={2} />
       </button>
-      <div className="mx-[1px] h-[25px] w-[1px] bg-gray-300" />
       <button
         className={btn(isOn("list", "bullet"))}
         aria-pressed={isOn("list", "bullet")}
@@ -360,7 +355,6 @@ const RichEditorToolbar = () => {
       >
         <TextAlignStart width={18} height={18} />
       </button>
-      <div className="mx-[1px] h-[25px] w-[1px] bg-gray-300" />
       <button
         className={btn(isOn("align", "center"))}
         aria-pressed={isOn("align", "center")}
@@ -370,7 +364,6 @@ const RichEditorToolbar = () => {
       >
         <TextAlignCenter width={18} height={18} />
       </button>
-      <div className="mx-[1px] h-[25px] w-[1px] bg-gray-300" />
       <button
         className={btn(isOn("align", "right"))}
         aria-pressed={isOn("align", "right")}
@@ -380,7 +373,6 @@ const RichEditorToolbar = () => {
       >
         <TextAlignLeft width={18} height={18} />
       </button>
-      <div className="mx-[1px] h-[25px] w-[1px] bg-gray-300" />
       <button
         className={btn(isOn("align", "justify"))}
         aria-pressed={isOn("align", "justify")}
@@ -389,6 +381,21 @@ const RichEditorToolbar = () => {
         }
       >
         <TextAlignJustify width={18} height={18} />
+      </button>
+      <div className="mx-[1px] h-[25px] w-[1px] bg-gray-300" />
+      <button
+        className={clsx(btn(), "flex items-center")}
+        aria-pressed={Boolean(formats.linkHref)}
+        onClick={setLinkFlow}
+      >
+        <Link className="text-gray-500" size={16} strokeWidth={2} />
+      </button>
+      <button
+        className={clsx(btn(), "flex items-center")}
+        disabled={!formats.linkHref}
+        onClick={() => dispatch(unsetLink({ editorId: targetId }))}
+      >
+        <Unlink className="text-gray-500" size={16} strokeWidth={2} />
       </button>
       <div className="mx-[1px] h-[25px] w-[1px] bg-gray-300" />
       <Dropdown align="center">
@@ -411,24 +418,6 @@ const RichEditorToolbar = () => {
           <Dropdown.Separator />
           <Dropdown.Item
             className="group text-gray-600"
-            aria-pressed={Boolean(formats.linkHref)}
-            onSelect={setLinkFlow}
-          >
-            <Link className="text-gray-500" size={18} strokeWidth={2} />
-            Link
-          </Dropdown.Item>
-          <Dropdown.Separator />
-          <Dropdown.Item
-            disabled={!formats.linkHref}
-            className="group text-gray-600"
-            onSelect={() => dispatch(unsetLink({ editorId: targetId }))}
-          >
-            <Unlink className="text-gray-500" size={18} strokeWidth={2} />
-            Unlink
-          </Dropdown.Item>
-          <Dropdown.Separator />
-          <Dropdown.Item
-            className="group text-gray-600"
             onSelect={() => dispatch(undo({ editorId: targetId }))}
           >
             <Undo className="text-gray-500" size={18} strokeWidth={2} />
@@ -444,6 +433,7 @@ const RichEditorToolbar = () => {
           </Dropdown.Item>
         </Dropdown.Content>
       </Dropdown>
+      <div className="mx-[1px] h-[25px] w-[1px] bg-gray-300" />
     </div>
   );
 };
