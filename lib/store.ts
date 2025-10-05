@@ -24,9 +24,10 @@ const rootReducer = combineSlices(
 // Infer the `RootState` type from the root reducer
 export type RootState = ReturnType<typeof rootReducer>;
 
-export function makeStore() {
+export function makeStore(preloadedState?: Partial<RootState>) {
   return configureStore({
     reducer: rootReducer,
+    preloadedState,
     devTools: true,
   });
 }

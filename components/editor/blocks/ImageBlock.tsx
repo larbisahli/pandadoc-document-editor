@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BaseBlockProps } from "../canvas/blocks/BlockRegistry";
 import { Image as ImageIcon, Trash2, Upload } from "lucide-react";
 import { useClickOutside } from "../hooks/useClickOutside";
@@ -14,6 +14,8 @@ import { ImageDataType } from "@/interfaces/common";
 import { ActionsTooltip } from "@/components/ui/ActionsTooltip";
 import { usePage } from "../canvas/context/PageContext";
 import { deleteBlockRef } from "@/lib/features/thunks/documentThunks";
+import { setActiveInstance } from "@/lib/features/rich-editor-ui/richEditorUiSlice";
+import { selectPendingFocusInstanceId } from "@/lib/features/ui/uiSlice";
 
 function ImageBlock({ nodeId, instanceId }: BaseBlockProps) {
   const blockRef = useRef<HTMLDivElement>(null);
@@ -23,6 +25,8 @@ function ImageBlock({ nodeId, instanceId }: BaseBlockProps) {
   const { pageId } = usePage();
 
   const instance = useAppSelector((state) => selectInstance(state, instanceId));
+  const pendingFocusId = useAppSelector(selectPendingFocusInstanceId);
+
   const dispatch = useAppDispatch();
 
   const data = instance.data as ImageDataType;
@@ -43,13 +47,23 @@ function ImageBlock({ nodeId, instanceId }: BaseBlockProps) {
   );
   const [active, setActive] = useState(false);
 
-  useClickOutside(blockRef, () => setActive(false));
+  const onOutside = useCallback(() => {
+    setActive(false);
+    dispatch(setActiveInstance(null));
+  }, [dispatch]);
+
+  const ignoreSelectors = useMemo(
+    () => ["[data-rich-editor-toolbar]", "#richEditorToolbar"],
+    [],
+  );
+
+  useClickOutside(blockRef, onOutside, { enabled: active, ignoreSelectors });
 
   useEffect(() => {
-    if (!data?.url) {
+    if (pendingFocusId === instanceId) {
       setActive(true);
     }
-  }, []);
+  }, [instanceId, pendingFocusId]);
 
   // Revoke the object URL when it changes or on unmount
   useEffect(() => {
@@ -129,7 +143,6 @@ function ImageBlock({ nodeId, instanceId }: BaseBlockProps) {
   };
 
   const openFileDialog = () => {
-    console.log({ active });
     if (active) {
       inputRef.current?.click();
     }

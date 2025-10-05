@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "./StoreProvider";
-import Header from "@/components/header";
 import Head from "next/head";
 import { Inter } from "next/font/google";
+import { RootState } from "@/lib/store";
+import clsx from "clsx";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,25 +24,34 @@ export const metadata: Metadata = {
   description: "Customize your documents faster",
 };
 
-export default function RootLayout({
+async function getBootstrapFromAPI() {
+  const res = await fetch(process.env.URL_BASE + "/api/editor/bootstrap", {
+    cache: "force-cache",
+  });
+  if (!res.ok) throw new Error("Bootstrap failed");
+  return res.json() as Promise<RootState>;
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const preloaded = await getBootstrapFromAPI();
   return (
-    <StoreProvider>
+    <StoreProvider preloadedState={preloaded}>
       <Head>
         <meta charSet="utf-8" />
       </Head>
-      <html lang="en" className={inter.className}>
-        <body className="relative box-border h-screen w-full">
-          <div className="flex h-full w-full flex-col">
-            <Header />
-            <main className="relative h-full w-full flex-1">{children}</main>
-            <div id="portal-root" />
-            <div id="portal-dialog" />
-          </div>
-        </body>
+      <html
+        lang="en"
+        className={clsx(
+          inter.className,
+          geistMono.variable,
+          geistSans.variable,
+        )}
+      >
+        <body className="relative box-border h-screen w-full">{children}</body>
       </html>
     </StoreProvider>
   );

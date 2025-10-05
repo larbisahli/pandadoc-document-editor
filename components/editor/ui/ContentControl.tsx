@@ -63,7 +63,7 @@ const ContentControl = ({ renderIfLast }: Props) => {
           !renderIfLast ? "justify-between" : "justify-center",
         )}
       >
-        <p className={clsx("text-muted text-sm")}>
+        <p className={clsx("text-sm font-medium text-gray-800")}>
           {isFirst &&
             !renderIfLast &&
             `${total} ${total > 1 ? "pages" : "page"}`}

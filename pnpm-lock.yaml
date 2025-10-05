@@ -46,6 +46,9 @@ importers:
       "@tiptap/extension-underline":
         specifier: ^3.6.5
         version: 3.6.5(@tiptap/core@3.6.5(@tiptap/pm@3.6.5))
+      "@tiptap/html":
+        specifier: ^3.6.5
+        version: 3.6.5(@tiptap/core@3.6.5(@tiptap/pm@3.6.5))(@tiptap/pm@3.6.5)(happy-dom@18.0.1)
       "@tiptap/react":
         specifier: ^3.6.5
         version: 3.6.5(@floating-ui/dom@1.7.4)(@tiptap/core@3.6.5(@tiptap/pm@3.6.5))(@tiptap/pm@3.6.5)(@types/react-dom@19.2.0(@types/react@19.2.0))(@types/react@19.2.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -1068,6 +1071,16 @@ packages:
       "@tiptap/core": ^3.6.5
       "@tiptap/pm": ^3.6.5
 
+  "@tiptap/html@3.6.5":
+    resolution:
+      {
+        integrity: sha512-w37vPb5o/sKFbmnSGS2YE8yfWh2CAtmXnVFVg/tO1UYIVifVsfVVjOkfcbAQNZcHve+7NSwcIeI6oDh7FeYyIw==,
+      }
+    peerDependencies:
+      "@tiptap/core": ^3.6.5
+      "@tiptap/pm": ^3.6.5
+      happy-dom: ^18.0.1
+
   "@tiptap/pm@3.6.5":
     resolution:
       {
@@ -1177,6 +1190,12 @@ packages:
     resolution:
       {
         integrity: sha512-zFDAD+tlpf2r4asuHEj0XH6pY6i0g5NeAHPn+15wk3BV6JA69eERFXC1gyGThDkVa1zCyKr5jox1+2LbV/AMLg==,
+      }
+
+  "@types/whatwg-mimetype@3.0.2":
+    resolution:
+      {
+        integrity: sha512-c2AKvDT8ToxLIOUlN51gTiHXflsfIFisS4pO7pDPoKouJCESkhZnEy623gwP9laCy5lnLDAw1vAzu2vM2YLOrA==,
       }
 
   "@types/yauzl@2.10.3":
@@ -2474,6 +2493,13 @@ packages:
       {
         integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==,
       }
+
+  happy-dom@18.0.1:
+    resolution:
+      {
+        integrity: sha512-qn+rKOW7KWpVTtgIUi6RVmTBZJSe2k0Db0vh1f7CWrWclkkc7/Q+FrOfkZIb2eiErLyqu5AXEzE7XthO9JVxRA==,
+      }
+    engines: { node: ">=20.0.0" }
 
   has-bigints@1.1.0:
     resolution:
@@ -4215,6 +4241,13 @@ packages:
         integrity: sha512-mlGndEOA9yK9YAbvtxaPTqdi/kaCWYYfwrZvGzcmkr/3lWM+tQj53BxtpVd6qbC6+E5OnHXgCcAhre6AkXzxjA==,
       }
 
+  whatwg-mimetype@3.0.0:
+    resolution:
+      {
+        integrity: sha512-nt+N2dzIutVRxARx1nghPKGv1xHikU7HKdfafKkLNLindmPU/ch3U31NOCGGA/dmPcmb1VlofO0vnKAcsm0o/Q==,
+      }
+    engines: { node: ">=12" }
+
   which-boxed-primitive@1.1.1:
     resolution:
       {
@@ -4853,6 +4886,12 @@ snapshots:
       "@tiptap/core": 3.6.5(@tiptap/pm@3.6.5)
       "@tiptap/pm": 3.6.5
 
+  "@tiptap/html@3.6.5(@tiptap/core@3.6.5(@tiptap/pm@3.6.5))(@tiptap/pm@3.6.5)(happy-dom@18.0.1)":
+    dependencies:
+      "@tiptap/core": 3.6.5(@tiptap/pm@3.6.5)
+      "@tiptap/pm": 3.6.5
+      happy-dom: 18.0.1
+
   "@tiptap/pm@3.6.5":
     dependencies:
       prosemirror-changeset: 2.3.1
@@ -4963,6 +5002,8 @@ snapshots:
       csstype: 3.1.3
 
   "@types/use-sync-external-store@0.0.6": {}
+
+  "@types/whatwg-mimetype@3.0.2": {}
 
   "@types/yauzl@2.10.3":
     dependencies:
@@ -5910,6 +5951,12 @@ snapshots:
   graceful-fs@4.2.11: {}
 
   graphemer@1.4.0: {}
+
+  happy-dom@18.0.1:
+    dependencies:
+      "@types/node": 20.19.19
+      "@types/whatwg-mimetype": 3.0.2
+      whatwg-mimetype: 3.0.0
 
   has-bigints@1.1.0: {}
 
@@ -7044,6 +7091,8 @@ snapshots:
   w3c-keyname@2.2.8: {}
 
   webdriver-bidi-protocol@0.3.6: {}
+
+  whatwg-mimetype@3.0.0: {}
 
   which-boxed-primitive@1.1.1:
     dependencies:

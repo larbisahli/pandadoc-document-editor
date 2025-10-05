@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BaseBlockProps } from "../canvas/blocks/BlockRegistry";
 import { useClickOutside } from "../hooks/useClickOutside";
 import clsx from "clsx";
@@ -9,21 +9,38 @@ import { ActionsTooltip } from "@/components/ui/ActionsTooltip";
 import { Trash2 } from "lucide-react";
 import { usePage } from "../canvas/context/PageContext";
 import { deleteBlockRef } from "@/lib/features/thunks/documentThunks";
+import { setActiveInstance } from "@/lib/features/rich-editor-ui/richEditorUiSlice";
+import { selectPendingFocusInstanceId } from "@/lib/features/ui/uiSlice";
 
 function TableContentBlock({ nodeId, instanceId }: BaseBlockProps) {
+  const blockRef = useRef<HTMLDivElement>(null);
+
   const { pageId } = usePage();
+
   const instance = useAppSelector((state) => selectInstance(state, instanceId));
+  const pendingFocusId = useAppSelector(selectPendingFocusInstanceId);
+
   const dispatch = useAppDispatch();
 
-  const blockRef = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(true);
-  useClickOutside(blockRef, () => setActive(false));
+  const [active, setActive] = useState(false);
 
-  // useEffect(() => {
-  //   if(!instance?.data?.content) {
-  //     setActive(true)
-  //   }
-  // }, [])
+  const onOutside = useCallback(() => {
+    setActive(false);
+    dispatch(setActiveInstance(null));
+  }, [dispatch]);
+
+  const ignoreSelectors = useMemo(
+    () => ["[data-rich-editor-toolbar]", "#richEditorToolbar"],
+    [],
+  );
+
+  useClickOutside(blockRef, onOutside, { enabled: active, ignoreSelectors });
+
+  useEffect(() => {
+    if (pendingFocusId === instanceId) {
+      setActive(true);
+    }
+  }, [instanceId, pendingFocusId]);
 
   const handleDelete = () => {
     dispatch(

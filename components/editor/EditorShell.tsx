@@ -8,7 +8,7 @@ import { useAppSelector } from "@/lib/hooks";
 const EditorShell = () => {
   const title = useAppSelector(selectDocTitle);
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden bg-[#efedec]">
+    <div className="bg-dots flex h-full w-full flex-col overflow-hidden">
       <EditorToolbar />
       <div id="editor" className="relative flex-1 overflow-auto">
         <div className="mx-auto table px-6">

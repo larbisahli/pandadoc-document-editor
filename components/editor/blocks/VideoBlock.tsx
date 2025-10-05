@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BaseBlockProps } from "../canvas/blocks/BlockRegistry";
 import { Trash2, Upload, Youtube as YoutubeIcon } from "lucide-react";
 import clsx from "clsx";
@@ -10,15 +10,37 @@ import { ActionsTooltip } from "@/components/ui/ActionsTooltip";
 import { usePage } from "../canvas/context/PageContext";
 import YouTube, { YouTubeProps } from "react-youtube";
 import { deleteBlockRef } from "@/lib/features/thunks/documentThunks";
+import { selectPendingFocusInstanceId } from "@/lib/features/ui/uiSlice";
+import { setActiveInstance } from "@/lib/features/rich-editor-ui/richEditorUiSlice";
 
 function VideoBlock({ nodeId, instanceId }: BaseBlockProps) {
   const { pageId } = usePage();
+
   const instance = useAppSelector((state) => selectInstance(state, instanceId));
+  const pendingFocusId = useAppSelector(selectPendingFocusInstanceId);
+
   const dispatch = useAppDispatch();
 
   const blockRef = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(true);
-  useClickOutside(blockRef, () => setActive(false));
+  const [active, setActive] = useState(false);
+
+  const onOutside = useCallback(() => {
+    setActive(false);
+    dispatch(setActiveInstance(null));
+  }, [dispatch]);
+
+  const ignoreSelectors = useMemo(
+    () => ["[data-rich-editor-toolbar]", "#richEditorToolbar"],
+    [],
+  );
+
+  useClickOutside(blockRef, onOutside, { enabled: active, ignoreSelectors });
+
+  useEffect(() => {
+    if (pendingFocusId === instanceId) {
+      setActive(true);
+    }
+  }, [instanceId, pendingFocusId]);
 
   const videoId = "69bkCjl4jkQ";
   const autoplay = 0;

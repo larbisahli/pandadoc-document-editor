@@ -43,6 +43,39 @@ import { TextDataType } from "@/interfaces/common";
 import type { JSONContent } from "@tiptap/core";
 import { ActionsTooltip } from "@/components/ui/ActionsTooltip";
 import { Trash2 } from "lucide-react";
+import { generateHTML } from "@tiptap/html";
+
+export function getExtensions() {
+  return [
+    StarterKit.configure({
+      heading: { levels: [1, 2, 3, 4, 5] },
+      bulletList: { keepMarks: true, keepAttributes: true },
+      orderedList: { keepMarks: true },
+      listItem: {},
+    }),
+    TextStyle, // required by Color / FontSize / FontFamily
+    Color.configure({ types: ["textStyle"] }),
+    Highlight.configure({
+      multicolor: true, // allow custom colors
+    }),
+    Link.configure({
+      openOnClick: false,
+      autolink: true,
+      defaultProtocol: "https",
+      HTMLAttributes: {
+        rel: "noopener noreferrer nofollow",
+        target: "_blank",
+        class: "editor-link", // optional extra class
+      },
+    }),
+    ListItem,
+    BulletList,
+    OrderedList,
+    FontFamily,
+    FontSize,
+    TextAlign.configure({ types: ["heading", "paragraph"] }),
+  ];
+}
 
 function computeFormats(editor: Editor) {
   const is = (ext: string, attrs?: string) => editor.isActive(ext, attrs);
@@ -91,49 +124,20 @@ function TextBlock({ nodeId, instanceId }: BaseBlockProps) {
 
   const [active, setActive] = useState(false);
 
+  const content = (instance?.data as TextDataType)?.content;
+
   const saveDebounced = useDebouncedCallback((json: JSONContent) => {
     dispatch(saveInstanceEditorRaw({ instanceId, raw: json }));
   }, 300);
 
   const editor = useEditor({
-    content: (instance?.data as TextDataType)?.content ?? {
-      type: "doc",
-      content: [],
-    },
+    content,
     onUpdate: ({ editor }) => {
       const json = editor.getJSON();
       saveDebounced(json);
     },
     immediatelyRender: false, // important for SSR
-    extensions: [
-      StarterKit.configure({
-        heading: { levels: [1, 2, 3, 4, 5] },
-        bulletList: { keepMarks: true, keepAttributes: true },
-        orderedList: { keepMarks: true },
-        listItem: {},
-      }),
-      TextStyle, // required by Color / FontSize / FontFamily
-      Color.configure({ types: ["textStyle"] }),
-      Highlight.configure({
-        multicolor: true, // allow custom colors
-      }),
-      Link.configure({
-        openOnClick: false,
-        autolink: true,
-        defaultProtocol: "https",
-        HTMLAttributes: {
-          rel: "noopener noreferrer nofollow",
-          target: "_blank",
-          class: "editor-link", // optional extra class
-        },
-      }),
-      ListItem,
-      BulletList,
-      OrderedList,
-      FontFamily,
-      FontSize,
-      TextAlign.configure({ types: ["heading", "paragraph"] }),
-    ],
+    extensions: getExtensions(),
     onCreate: ({ editor }) => {
       TiptapRegistry.set(instanceId, editor);
       const sel = editor.state.selection;
@@ -225,7 +229,23 @@ function TextBlock({ nodeId, instanceId }: BaseBlockProps) {
     dispatch(deleteBlockRef({ pageId, nodeId, instanceId }));
   };
 
-  console.log({ active });
+  if (!editor) {
+    const previewHtml = generateHTML(
+      content ?? {
+        type: "doc",
+        content: [{ type: "paragraph" }],
+      },
+      getExtensions(),
+    );
+    // suppressHydrationWarning avoids React whining about replacing SSR HTML
+    return (
+      <div
+        className="tiptap"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{ __html: previewHtml }}
+      />
+    );
+  }
 
   return (
     <div

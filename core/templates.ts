@@ -89,9 +89,9 @@ export const defaultTemplates = {
     kind: FieldKind.Date,
     propsSchema: {
       width: 150,
-      height: 26,
+      height: 28,
       minWidth: 25,
-      minHeight: 26,
+      minHeight: 28,
       resizeWidth: true,
       resizeHeight: false,
     },
@@ -139,9 +139,9 @@ export const defaultTemplates = {
     kind: FieldKind.Dropdown,
     propsSchema: {
       width: 160,
-      height: 26,
+      height: 28,
       minWidth: 25,
-      minHeight: 26,
+      minHeight: 28,
       resizeWidth: true,
       resizeHeight: false,
     },

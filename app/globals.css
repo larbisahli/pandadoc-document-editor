@@ -5,6 +5,7 @@ body {
 @import "tailwindcss";
 
 :root {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
   --background: #ffffff;
   --foreground: #171717;
   --rulerBgColor: #0c0cf6;
@@ -20,6 +21,23 @@ body {
   --color-green-primary: #248567;
 }
 
+.code {
+  font-family:
+    var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.bg-dots {
+  position: relative;
+  z-index: auto;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 100%;
+  background-color: #efedec;
+  background-image: radial-gradient(rgba(33, 103, 198, 0.2) 8%, #efedec 5%);
+  background-size: 16px 16px;
+}
+
 /* -----< PDF PRINT >----- */
 
 @media print {
@@ -31,7 +49,7 @@ body {
   body {
     margin: 0;
     padding: 0;
-    background: red;
+    background: white;
   }
 }
 /* ---------- */

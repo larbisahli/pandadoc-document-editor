@@ -41,9 +41,9 @@ function Date({ overlayId, instanceId }: BaseFieldProps) {
       )}
     >
       <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-        Select date
+        MM / DD / YYYY
       </span>
-      <div className="h-[18px] w-[18px]">
+      <div className="h-[18px] w-[18px] text-gray-600">
         <CalendarDays size={18} />
       </div>
     </div>

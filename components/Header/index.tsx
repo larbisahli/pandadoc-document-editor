@@ -3,9 +3,9 @@
 import {
   AlignJustify,
   Check,
-  ChevronDown,
   CircleQuestionMark,
   Ellipsis,
+  FileDown,
   Folder,
 } from "lucide-react";
 import Link from "next/link";
@@ -18,6 +18,7 @@ import {
   updateDocTitle,
 } from "@/lib/features/document/documentSlice";
 import { useDebounceCallback } from "@/hooks/useDebounceCallback";
+import { exportPdf } from "../ui/download-pdf";
 
 const Header = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -84,9 +85,14 @@ const Header = () => {
           </div>
         </div>
         <div className="flex items-center">
-          <button className="bg-green-primary flex items-center rounded-[4px] px-3 py-[5px] text-white">
-            <span className="text-sm font-medium">Send</span>
-            <ChevronDown className="ml-2" size={20} />
+          <button
+            onClick={exportPdf}
+            className="bg-green-primary flex items-center rounded-[4px] px-3 py-[5px] text-white"
+          >
+            <span className="flex items-center text-sm font-medium">
+              Export
+            </span>
+            <FileDown className="ml-2" size={20} />
           </button>
           <button className="hover:bg-hover text-muted ml-3 flex items-center rounded-[4px] px-1 py-[5px]">
             <Ellipsis className="rotate-90" size={20} />

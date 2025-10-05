@@ -31,8 +31,6 @@ export async function GET(req: Request) {
     const url = new URL(req.url);
     const base = `${url.protocol}//${url.host}`;
 
-    console.log({ base });
-
     const browser = await getBrowser();
     const page = await browser.newPage();
 
@@ -45,6 +43,7 @@ export async function GET(req: Request) {
     const pdfBuffer = await page.pdf({
       format: "A4",
       printBackground: true,
+      waitForFonts: true,
       margin: { top: "16mm", right: "16mm", bottom: "16mm", left: "16mm" },
     });
 
