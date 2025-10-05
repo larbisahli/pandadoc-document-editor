@@ -7,8 +7,8 @@ import { DropSide, TemplateTypes } from "@/interfaces/enum";
 import { DropEvent } from "@/interfaces/dnd";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { selectVisiblePageId } from "@/lib/features/layout/layoutSlice";
-import { dropCommitted } from "@/lib/features/editor/thunks/layoutThunks";
 import { NodeId } from "@/interfaces/common";
+import { dropCommitted } from "@/lib/features/thunks/layoutThunks";
 
 interface BlockTileProps {
   block: ContentBlockType;

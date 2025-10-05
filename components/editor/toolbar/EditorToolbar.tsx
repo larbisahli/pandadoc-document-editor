@@ -30,11 +30,8 @@ const EditorToolbar = () => {
           <div className="mr-[2px] ml-[8px] h-[28px] w-[1px] bg-gray-200"></div>
           <HistoryBar />
         </div>
-        <div className="flex-1">
+        <div className="flex flex-1 justify-end">
           <RichEditorToolbar />
-        </div>
-        <div className="ml-auto rounded-[2px] bg-green-100 px-3 py-1 text-sm font-semibold text-green-700">
-          Editing
         </div>
       </div>
     </div>

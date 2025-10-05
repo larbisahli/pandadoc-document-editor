@@ -5,7 +5,7 @@ import { usePage } from "../../context/PageContext";
 import { useAppDispatch } from "@/lib/hooks";
 import { DropEvent, DropPayload } from "@/interfaces/dnd";
 import { DropSide } from "@/interfaces/enum";
-import { dropCommitted } from "@/lib/features/editor/thunks/layoutThunks";
+import { dropCommitted } from "@/lib/features/thunks/layoutThunks";
 
 interface Props {
   children: React.ReactNode;

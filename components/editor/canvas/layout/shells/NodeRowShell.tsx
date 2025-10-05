@@ -2,10 +2,10 @@ import { DropBlockOverlayWrapper } from "@/dnd";
 import { NodeId } from "@/interfaces/common";
 import { DropEvent, DropPayload } from "@/interfaces/dnd";
 import { DropSide } from "@/interfaces/enum";
-import { dropCommitted } from "@/lib/features/editor/thunks/layoutThunks";
 import React, { memo, useCallback } from "react";
 import { usePage } from "../../context/PageContext";
 import { useAppDispatch } from "@/lib/hooks";
+import { dropCommitted } from "@/lib/features/thunks/layoutThunks";
 
 interface Props {
   nodeId: NodeId;

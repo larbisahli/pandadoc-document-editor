@@ -1,4 +1,4 @@
-import { RawDraftContentState } from "draft-js";
+import type { JSONContent } from "@tiptap/core";
 
 // IDs
 export type Id<T extends string> = string & { __brand: T };
@@ -12,7 +12,7 @@ export type OverlayId = Id<"ov">;
 export type RecipientId = Id<"recipient">;
 
 export interface TextDataType {
-  content?: RawDraftContentState | null;
+  content?: JSONContent | null;
 }
 export interface ImageDataType {
   url?: string;

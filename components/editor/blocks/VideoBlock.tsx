@@ -8,8 +8,8 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { selectInstance } from "@/lib/features/instance/instanceSlice";
 import { ActionsTooltip } from "@/components/ui/ActionsTooltip";
 import { usePage } from "../canvas/context/PageContext";
-import { deleteBlockRef } from "@/lib/features/editor/thunks/documentThunks";
 import YouTube, { YouTubeProps } from "react-youtube";
+import { deleteBlockRef } from "@/lib/features/thunks/documentThunks";
 
 function VideoBlock({ nodeId, instanceId }: BaseBlockProps) {
   const { pageId } = usePage();

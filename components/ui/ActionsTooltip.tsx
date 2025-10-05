@@ -51,7 +51,7 @@ export function ActionsTooltip({
     }
     setTimeout(() => {
       setOpen(false);
-    }, 200);
+    }, 10);
   }, [active]);
 
   return (

@@ -7,8 +7,8 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { selectInstance } from "@/lib/features/instance/instanceSlice";
 import { ActionsTooltip } from "@/components/ui/ActionsTooltip";
 import { Trash2 } from "lucide-react";
-import { deleteBlockRef } from "@/lib/features/editor/thunks/documentThunks";
 import { usePage } from "../canvas/context/PageContext";
+import { deleteBlockRef } from "@/lib/features/thunks/documentThunks";
 
 function TableContentBlock({ nodeId, instanceId }: BaseBlockProps) {
   const { pageId } = usePage();

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { StoreProvider } from "./StoreProvider";
 import Header from "@/components/header";
 import Head from "next/head";
+import { Inter } from "next/font/google";
+
+const inter = Inter({ subsets: ["latin"] });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +33,7 @@ export default function RootLayout({
       <Head>
         <meta charSet="utf-8" />
       </Head>
-      <html lang="en">
+      <html lang="en" className={inter.className}>
         <body className="relative box-border h-screen w-full">
           <div className="flex h-full w-full flex-col">
             <Header />

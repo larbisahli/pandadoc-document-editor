@@ -1,8 +1,10 @@
 import { DropEvent } from "@/interfaces/dnd";
 import { AppDispatch, RootState } from "@/lib/store";
-import { dropApplied } from "../actions";
 import { newInstanceId } from "@/utils/ids";
 import { requestFocusOnDrop } from "@/lib/features/ui/uiSlice";
+import { createAction } from "@reduxjs/toolkit";
+
+export const dropApplied = createAction<DropEvent>("layout/dropApplied");
 
 export const dropCommitted =
   (dropEvent: DropEvent) =>

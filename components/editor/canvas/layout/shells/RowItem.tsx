@@ -4,9 +4,9 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import React, { memo, useCallback } from "react";
 import { usePage } from "../../context/PageContext";
 import { DropBlockOverlayWrapper } from "@/dnd";
-import { dropCommitted } from "@/lib/features/editor/thunks/layoutThunks";
 import { DropSide } from "@/interfaces/enum";
 import { DropEvent, DropPayload } from "@/interfaces/dnd";
+import { dropCommitted } from "@/lib/features/thunks/layoutThunks";
 
 interface Props {
   nodeId: NodeId;

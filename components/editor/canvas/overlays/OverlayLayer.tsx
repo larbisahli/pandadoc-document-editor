@@ -8,8 +8,8 @@ import { browserZoomLevel, clampPlacementToPageBounds } from "./helpers";
 import { OverlayId } from "@/interfaces/common";
 import { updateFiledPosition } from "@/lib/features/overlay/overlaySlice";
 import { DropPayload } from "@/interfaces/dnd";
-import { insertFieldFlow } from "@/lib/features/editor/thunks/overlayThunks";
 import { PALETTE_DATA_FORMAT } from "@/dnd";
+import { insertFieldFlow } from "@/lib/features/thunks/overlayThunks";
 
 function OverlayLayer() {
   const surfaceRef = useRef<HTMLDivElement>(null);

@@ -1,18 +1,18 @@
 import { InstanceId, NodeId, OverlayId, PageId } from "@/interfaces/common";
 import { LayoutMultiPageState } from "@/interfaces/document";
 import { NodeDirection, NodeKind } from "@/interfaces/enum";
-import {
-  addBlankPage,
-  deleteBlockRefAction,
-  deletePageAction,
-  dropApplied,
-  insertFieldCommitted,
-} from "@/lib/features/editor/actions";
 import { createAppSlice } from "@/lib/createAppSlice";
 import { RootState } from "@/lib/store";
 import { createSelector, type PayloadAction } from "@reduxjs/toolkit";
 import { applyDrop } from "./layout-apply-drop";
 import { detachFromParent } from "./helpers";
+import { insertFieldCommitted } from "../thunks/overlayThunks";
+import { dropApplied } from "../thunks/layoutThunks";
+import {
+  addBlankPage,
+  deleteBlockRefAction,
+  deletePageAction,
+} from "../thunks/documentThunks";
 
 type LayoutSliceState = LayoutMultiPageState;
 
@@ -37,12 +37,7 @@ const initialState: LayoutSliceState = {
           layoutStyle: {},
         },
       },
-      overlayIds: [
-        "ov_5c0v2vfbfd30",
-        "ov_520vspjf9j1a",
-        "ov_h3v6s8f5l4j9",
-        "ov_c9zmx9tew63h",
-      ] as OverlayId[],
+      overlayIds: [] as OverlayId[],
     },
   },
   visiblePageId: "page_n261uo3yzqhq" as PageId,

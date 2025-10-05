@@ -12,8 +12,8 @@ import {
 import Image from "next/image";
 import { ImageDataType } from "@/interfaces/common";
 import { ActionsTooltip } from "@/components/ui/ActionsTooltip";
-import { deleteBlockRef } from "@/lib/features/editor/thunks/documentThunks";
 import { usePage } from "../canvas/context/PageContext";
+import { deleteBlockRef } from "@/lib/features/thunks/documentThunks";
 
 function ImageBlock({ nodeId, instanceId }: BaseBlockProps) {
   const blockRef = useRef<HTMLDivElement>(null);

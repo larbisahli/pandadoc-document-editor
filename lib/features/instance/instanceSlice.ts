@@ -4,17 +4,22 @@ import { InstanceType } from "@/interfaces/instance";
 import { createAppSlice } from "@/lib/createAppSlice";
 import { RootState } from "@/lib/store";
 import { createSelector, PayloadAction } from "@reduxjs/toolkit";
+import { Templates } from "@/interfaces/enum";
+import type { JSONContent } from "@tiptap/core";
+import { dropApplied } from "../thunks/layoutThunks";
+import { insertFieldCommitted } from "../thunks/overlayThunks";
 import {
   addBlankPage,
   deleteBlockRefAction,
   deletePageAction,
-  dropApplied,
-  insertFieldCommitted,
-} from "@/lib/features/editor/actions";
-import { Templates } from "@/interfaces/enum";
-import { RawDraftContentState } from "draft-js";
+} from "../thunks/documentThunks";
 
 type InstanceSliceState = Normalized<InstanceType>;
+
+const EMPTY_DOC: JSONContent = {
+  type: "doc",
+  content: [{ type: "paragraph" }],
+};
 
 const initialState: InstanceSliceState = {
   byId: {
@@ -22,7 +27,7 @@ const initialState: InstanceSliceState = {
       id: "inst_z0w6lgm234iq" as InstanceId,
       templateId: Templates.Text,
       data: {
-        content: null,
+        content: EMPTY_DOC,
       },
     },
   },
@@ -48,26 +53,11 @@ export const instancesSlice = createAppSlice({
     ),
     saveInstanceEditorRaw(
       state,
-      {
-        payload,
-      }: PayloadAction<{ instanceId: InstanceId; raw: RawDraftContentState }>,
+      { payload }: PayloadAction<{ instanceId: InstanceId; raw: JSONContent }>,
     ) {
       const instance = state.byId[payload.instanceId] as { data: TextDataType };
       if (!instance.data.content) return;
       instance.data.content = payload.raw;
-    },
-
-    /** Initialize editor raw once if undefined (won't overwrite existing) */
-    ensureInstanceEditorRaw(
-      state,
-      {
-        payload,
-      }: PayloadAction<{ instanceId: InstanceId; raw: RawDraftContentState }>,
-    ) {
-      const instance = state.byId[payload.instanceId] as { data: TextDataType };
-      if (!instance?.data.content) {
-        instance.data.content = payload.raw;
-      }
     },
   }),
   extraReducers: (builder) => {
@@ -87,7 +77,7 @@ export const instancesSlice = createAppSlice({
           id: event.instanceId,
           templateId: Templates.Text,
           data: {
-            content: "",
+            content: { type: "doc", content: [{ type: "paragraph" }] },
           },
         };
       })
@@ -107,11 +97,8 @@ export const instancesSlice = createAppSlice({
   },
 });
 
-export const {
-  ensureInstanceEditorRaw,
-  saveInstanceEditorRaw,
-  updateInstanceDataField,
-} = instancesSlice.actions;
+export const { saveInstanceEditorRaw, updateInstanceDataField } =
+  instancesSlice.actions;
 
 export const { selectInstancesById } = instancesSlice.selectors;
 

@@ -9,6 +9,10 @@ function isContainer(node: LayoutNode): node is ContainerNode {
   return (node as ContainerNode).children !== undefined;
 }
 
+function isRoot(page: PageLayout, id: string) {
+  return id === page.rootId;
+}
+
 /** Recompute equal widths for a Row container's children */
 function redistributeRowWidths(page: PageLayout, rowId: string) {
   const row = page.byId[rowId] as ContainerNode | undefined;
@@ -28,11 +32,17 @@ function pruneEmptyContainer(page: PageLayout, containerId: string) {
   const container = page.byId[containerId] as ContainerNode | undefined;
   if (!container) return;
 
+  // Never delete the root container
+  if (isRoot(page, containerId)) {
+    container.children = [];
+    return;
+  }
+
   const parentId = container.parentId;
   // Remove container itself
   delete page.byId[containerId];
 
-  if (!parentId) return; // reached root (or detached)
+  if (parentId == null) return; // reached root or detached
 
   const parent = page.byId[parentId] as ContainerNode | undefined;
   if (!parent) return;
@@ -40,13 +50,13 @@ function pruneEmptyContainer(page: PageLayout, containerId: string) {
   // Detach from parent
   parent.children = parent.children.filter((id) => id !== containerId);
 
-  // If parent is a Row, rebalance remaining widths
+  // Rebalance if needed
   if (parent.direction === NodeDirection.Row) {
     redistributeRowWidths(page, parentId);
   }
 
-  // If parent became empty as well, prune it too
-  if (parent.children.length === 0) {
+  // If parent became empty as well, prune it (unless parent is root)
+  if (parent.children.length === 0 && !isRoot(page, parentId)) {
     pruneEmptyContainer(page, parentId);
   }
 }
@@ -57,25 +67,29 @@ export function detachFromParent(page: PageLayout, nodeId: string) {
   if (!node) return;
 
   const parentId = node.parentId;
-  if (!parentId) return;
+  if (parentId == null) return;
 
   const parent = page.byId[parentId] as ContainerNode | undefined;
   if (!parent || !isContainer(parent)) return;
 
-  // Remove the child from parent's children
   parent.children = parent.children.filter((id) => id !== nodeId);
 
   if (parent.direction === NodeDirection.Row) {
     if (parent.children.length > 0) {
       redistributeRowWidths(page, parentId);
-    } else {
-      // Row became empty -> prune it
+    } else if (!isRoot(page, parentId)) {
       pruneEmptyContainer(page, parentId);
+    } else {
+      // root row became empty: keep it, just clear children
+      parent.children = [];
     }
   } else {
-    // Column: if it became empty, prune it
     if (parent.children.length === 0) {
-      pruneEmptyContainer(page, parentId);
+      if (!isRoot(page, parentId)) {
+        pruneEmptyContainer(page, parentId);
+      } else {
+        parent.children = [];
+      }
     }
   }
 }

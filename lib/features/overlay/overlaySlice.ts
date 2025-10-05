@@ -1,72 +1,16 @@
-import { InstanceId, OverlayId } from "@/interfaces/common";
+import { OverlayId } from "@/interfaces/common";
 import { Normalized } from "@/interfaces/document";
 import { OverlayItem } from "@/interfaces/overlay";
-import {
-  deletePageAction,
-  insertFieldCommitted,
-  updateFieldSize,
-} from "@/lib/features/editor/actions";
 import { createAppSlice } from "@/lib/createAppSlice";
 import { RootState } from "@/lib/store";
 import { createSelector, type PayloadAction } from "@reduxjs/toolkit";
+import { insertFieldCommitted, updateFieldSize } from "../thunks/overlayThunks";
+import { deletePageAction } from "../thunks/documentThunks";
 
 type OverlaySliceState = Normalized<OverlayItem>;
 
 const initialState: OverlaySliceState = {
-  byId: {
-    ov_5c0v2vfbfd30: {
-      position: {
-        offsetX: 590,
-        offsetY: 934,
-      },
-      style: {
-        width: 117.49,
-        height: 59.85,
-      },
-      settings: {},
-      id: "ov_5c0v2vfbfd30" as OverlayId,
-      instanceId: "inst_ula95gy1j4st" as InstanceId,
-    },
-    ov_520vspjf9j1a: {
-      position: {
-        offsetX: 557.48,
-        offsetY: 895,
-      },
-      style: {
-        width: 150,
-        height: 26,
-      },
-      settings: {},
-      id: "ov_520vspjf9j1a" as OverlayId,
-      instanceId: "inst_u4864bhvokcy" as InstanceId,
-    },
-    ov_h3v6s8f5l4j9: {
-      position: {
-        offsetX: 8,
-        offsetY: 937.7,
-      },
-      style: {
-        width: 114.31,
-        height: 56.16,
-      },
-      settings: {},
-      id: "ov_h3v6s8f5l4j9" as OverlayId,
-      instanceId: "inst_n7qobwtza7wr" as InstanceId,
-    },
-    ov_c9zmx9tew63h: {
-      position: {
-        offsetX: 8,
-        offsetY: 895,
-      },
-      style: {
-        width: 150,
-        height: 26,
-      },
-      settings: {},
-      id: "ov_c9zmx9tew63h" as OverlayId,
-      instanceId: "inst_bju9zfz9yv7l" as InstanceId,
-    },
-  },
+  byId: {},
 };
 
 export const overlaySlice = createAppSlice({

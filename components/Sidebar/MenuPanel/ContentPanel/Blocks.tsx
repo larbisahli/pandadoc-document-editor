@@ -28,7 +28,7 @@ export const contentBlocks: ContentBlockType[] = [
         instance: {
           templateId: Templates.Text,
           data: {
-            content: "",
+            content: { type: "doc", content: [{ type: "paragraph" }] },
           },
         },
         template: {

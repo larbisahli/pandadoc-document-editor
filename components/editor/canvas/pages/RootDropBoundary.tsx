@@ -1,8 +1,8 @@
 import { PALETTE_DATA_FORMAT } from "@/dnd";
 import { DropEvent, DropPayload } from "@/interfaces/dnd";
 import { DropSide, TemplateTypes } from "@/interfaces/enum";
-import { dropCommitted } from "@/lib/features/editor/thunks/layoutThunks";
 import { selectVisiblePageId } from "@/lib/features/layout/layoutSlice";
+import { dropCommitted } from "@/lib/features/thunks/layoutThunks";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 
 type RootDropBoundaryProps = {

@@ -1,3 +1,7 @@
+body {
+  font-family: "Inter", sans-serif;
+}
+
 @import "tailwindcss";
 
 :root {
@@ -122,4 +126,106 @@ button {
 .re-editor-wrapper .re-align-right > div,
 .re-editor-wrapper .re-align-justify > div {
   display: inline;
+}
+
+/* TIPTAP */
+.tiptap {
+  /* optional base styles */
+  line-height: 1.6;
+}
+
+/* Global CSS (e.g., globals.css) */
+.tiptap ul {
+  list-style: disc;
+  padding-left: 1.5rem; /* indent bullets */
+  margin: 0.5rem 0;
+}
+
+.tiptap ol {
+  list-style: decimal;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.tiptap li {
+  margin: 0.25rem 0;
+}
+
+/* nicer nested levels */
+.tiptap ul ul {
+  list-style: circle;
+}
+.tiptap ul ul ul {
+  list-style: square;
+}
+.tiptap ol ol {
+  list-style: lower-alpha;
+}
+.tiptap ol ol ol {
+  list-style: lower-roman;
+}
+
+/* HEADING */
+.tiptap h1 {
+  font-size: 2rem;
+  font-weight: bold;
+}
+.tiptap h2 {
+  font-size: 1.75rem;
+  font-weight: bold;
+}
+.tiptap h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.tiptap h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+.tiptap h5 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0.6rem 0;
+}
+
+/* LINK */
+
+.tiptap a {
+  color: #0d6294;
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1px solid rgba(13, 148, 136, 0.4);
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.tiptap a:hover {
+  color: #0f4476;
+  border-color: currentColor;
+}
+
+/* remove any focus outline added by ProseMirror or resets */
+.tiptap .ProseMirror:focus {
+  outline: none;
+}
+.tiptap .ProseMirror:focus-visible {
+  outline: none;
+}
+.tiptap .ProseMirror-focused {
+  outline: none;
+}
+
+/* if your design system adds a ring/box-shadow on focus */
+.tiptap .ProseMirror:focus,
+.tiptap .ProseMirror:focus-visible,
+.tiptap .ProseMirror-focused {
+  box-shadow: none !important;
+}
+
+/* if the wrapper gets outlined via :focus-within */
+.tiptap:focus-within {
+  outline: none;
+  box-shadow: none;
 }

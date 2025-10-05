@@ -5,7 +5,7 @@ import { FieldTemplateType, TemplateType } from "@/interfaces/template";
 import { createAppSlice } from "@/lib/createAppSlice";
 import { RootState } from "@/lib/store";
 import { createSelector } from "@reduxjs/toolkit";
-import { updateFieldSize } from "../editor/actions";
+import { updateFieldSize } from "../thunks/overlayThunks";
 
 type TemplateSliceState = Normalized<TemplateType>;
 

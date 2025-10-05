@@ -1,107 +1,63 @@
-// store/richEditorUiSlice.ts (add to your existing slice)
-import { RootState } from "@/lib/store";
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { EditorUI, Formats } from "@/interfaces/rich-editor";
+import { InstanceId } from "@/interfaces/common";
+import { RootState } from "@/lib/store";
 
-export type InstanceId = string;
-
-export type TypingStyle = {
-  family?: string; // e.g. "Inter"
-  size?: number; // e.g. 16
-  color?: string; // "#rrggbb"
-  bg?: string; // "#rrggbb"
-  inline?: {
-    BOLD?: boolean;
-    ITALIC?: boolean;
-    UNDERLINE?: boolean;
-    STRIKETHROUGH?: boolean;
-    CODE?: boolean;
-  };
-  align?: "left" | "center" | "right" | "justify";
-};
-
-type State = {
+type EditorsState = {
   activeInstanceId: InstanceId | null;
-  queue: Array<{
-    id: string;
-    target: InstanceId | "active";
-    type: string;
-    payload?: unknown;
-  }>;
-  typingByInstance: Record<InstanceId, TypingStyle>;
+  byId: Record<string, EditorUI>;
 };
 
-const initialState: State = {
+const initialState: EditorsState = {
   activeInstanceId: null,
-  queue: [],
-  typingByInstance: {},
+  byId: {},
 };
 
 export const editorUiSlice = createSlice({
   name: "richEditorUi",
   initialState,
   reducers: {
-    setActiveInstance(state, a: PayloadAction<InstanceId | null>) {
-      state.activeInstanceId = a.payload;
+    setActiveInstance(state, action: PayloadAction<InstanceId | null>) {
+      state.activeInstanceId = action.payload;
     },
-    issueCommand(
+    ensureEditor(state, a: PayloadAction<{ editorId: string }>) {
+      const { editorId } = a.payload;
+      state.byId[editorId] ||= { selection: null, formats: {} };
+    },
+    setSelection(
       state,
-      a: PayloadAction<{
-        target: InstanceId | "active";
-        type: string;
-        payload?: unknown;
-      }>,
+      a: PayloadAction<{ editorId: string; selection: EditorUI["selection"] }>,
     ) {
-      state.queue.push({ id: crypto.randomUUID(), ...a.payload });
-      if (state.queue.length > 100)
-        state.queue.splice(0, state.queue.length - 100);
+      const { editorId, selection } = a.payload;
+      if (state.byId[editorId]) state.byId[editorId].selection = selection;
     },
-    consumeCommand(state, a: PayloadAction<{ id: string }>) {
-      const i = state.queue.findIndex((q) => q.id === a.payload.id);
-      if (i !== -1) state.queue.splice(i, 1);
-    },
-
-    // NEW: persist typing style per instance (partial merge)
-    setTypingStyle(
+    setFormats(
       state,
-      a: PayloadAction<{ instanceId: InstanceId; patch: Partial<TypingStyle> }>,
+      a: PayloadAction<{ editorId: string; formats: Formats }>,
     ) {
-      const { instanceId, patch } = a.payload;
-      state.typingByInstance[instanceId] = {
-        ...state.typingByInstance[instanceId],
-        ...patch,
-        inline: {
-          ...(state.typingByInstance[instanceId]?.inline ?? {}),
-          ...(patch.inline ?? {}),
-        },
-      };
+      const { editorId, formats } = a.payload;
+      if (state.byId[editorId]) state.byId[editorId].formats = formats;
     },
   },
 });
 
-export const {
-  setActiveInstance,
-  issueCommand,
-  consumeCommand,
-  setTypingStyle, // <— export
-} = editorUiSlice.actions;
+export const { setActiveInstance, ensureEditor, setSelection, setFormats } =
+  editorUiSlice.actions;
+
+const selectEditor = (store: RootState, id: string) =>
+  store.richEditorUi.byId[id];
 
 export const selectActiveInstanceId = (s: RootState) =>
   s.richEditorUi.activeInstanceId as InstanceId | null;
-export const selectNextCommandFor = (s: RootState, id: InstanceId) => {
-  const { queue, activeInstanceId } = s.richEditorUi as State;
-  return queue.find(
-    (c) =>
-      c.target === id || (c.target === "active" && activeInstanceId === id),
-  );
-};
 
-// Keep the same instance
-export const EMPTY_TYPING_STYLE: Readonly<TypingStyle> = Object.freeze({});
+const EMPTY_FORMATS = Object.freeze({});
 
-export const selectTypingStyleFor = createSelector(
-  [
-    (s: RootState) => s.richEditorUi.typingByInstance,
-    (_: RootState, id: InstanceId) => id,
-  ],
-  (map, id): TypingStyle => map?.[id] ?? EMPTY_TYPING_STYLE,
+export const selectFormats = createSelector(
+  [selectEditor],
+  (ui) => ui?.formats ?? EMPTY_FORMATS,
+);
+
+export const makeSelectHighlightColor = createSelector(
+  [selectEditor],
+  (ui) => ui?.formats?.highlightColor ?? "",
 );

@@ -3,7 +3,7 @@ import { DocumentMeta } from "@/interfaces/document";
 import { createAppSlice } from "@/lib/createAppSlice";
 import { RootState } from "@/lib/store";
 import { createSelector, type PayloadAction } from "@reduxjs/toolkit";
-import { addBlankPage, deletePageAction } from "../editor/actions";
+import { addBlankPage, deletePageAction } from "../thunks/documentThunks";
 
 type DocumentSliceState = DocumentMeta;
 

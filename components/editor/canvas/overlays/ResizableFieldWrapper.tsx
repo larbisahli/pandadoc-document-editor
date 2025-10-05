@@ -6,11 +6,11 @@ import { OverlayId } from "@/interfaces/common";
 import { usePage } from "../context/PageContext";
 import { browserZoomLevel, clamp, getPageMetrics, num } from "./helpers";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { updateFieldSizeFlow } from "@/lib/features/editor/thunks/overlayThunks";
 import { selectInstance } from "@/lib/features/instance/instanceSlice";
 import { selectTemplate } from "@/lib/features/template/templateSlice";
 import { selectOverlayById } from "@/lib/features/overlay/overlaySlice";
 import { FieldTemplateType } from "@/interfaces/template";
+import { updateFieldSizeFlow } from "@/lib/features/thunks/overlayThunks";
 
 type Props = {
   overlayId: OverlayId;

@@ -1,12 +1,39 @@
 import { AppDispatch, RootState } from "@/lib/store";
-import {
-  addBlankPage,
-  deleteBlockRefAction,
-  deletePageAction,
-} from "../actions";
 import { newInstanceId, newNodeId, newPageId } from "@/utils/ids";
 import { InstanceId, NodeId, PageId } from "@/interfaces/common";
 import { collectIdsFromLayoutPage } from "./helpers";
+import { createAction } from "@reduxjs/toolkit";
+
+export interface AddBlankPageType {
+  pageId: PageId;
+  rootId: NodeId;
+  nodeId: NodeId;
+  instanceId: InstanceId;
+  beforePageId: PageId | false;
+  afterPageId: PageId | false;
+}
+
+export interface DeleteBlockRefType {
+  pageId: PageId;
+  nodeId: NodeId;
+  instanceId: InstanceId;
+}
+
+export interface DeletePageRefType {
+  pageId: PageId;
+  instanceIds: string[];
+  overlayIds: string[];
+}
+
+export const addBlankPage = createAction<AddBlankPageType>(
+  "document/addBlankPage",
+);
+export const deleteBlockRefAction = createAction<DeleteBlockRefType>(
+  "document/deleteBlockRefAction",
+);
+export const deletePageAction = createAction<DeletePageRefType>(
+  "document/deletePageAction",
+);
 
 export const insertBlankPage =
   (event: { targetPageId: PageId; isLast: boolean }) =>

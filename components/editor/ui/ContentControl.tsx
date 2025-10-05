@@ -16,8 +16,7 @@ import { Dropdown } from "./DropdownMenu";
 import {
   deletePage,
   insertBlankPage,
-} from "@/lib/features/editor/thunks/documentThunks";
-import { deletePageAction } from "@/lib/features/editor/actions";
+} from "@/lib/features/thunks/documentThunks";
 
 interface Props {
   renderIfLast?: boolean;
