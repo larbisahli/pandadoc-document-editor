@@ -6,6 +6,8 @@ import Head from "next/head";
 import { Inter } from "next/font/google";
 import { RootState } from "@/lib/store";
 import clsx from "clsx";
+import { NodeKind, Templates } from "@/interfaces/enum";
+import { EMPTY_DOC } from "@/lib/features/instance/instanceSlice";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,11 +26,60 @@ export const metadata: Metadata = {
   description: "Customize your documents faster",
 };
 
+const url =
+  process.env.NODE_ENV === "production"
+    ? "https://pandadoc-document-editor.vercel.app"
+    : "http://localhost:3000";
+
 async function getBootstrapFromAPI() {
-  const res = await fetch(process.env.URL_BASE + "/api/editor/bootstrap", {
+  const res = await fetch(url + "/api/editor/bootstrap", {
     cache: "force-cache",
   });
-  if (!res.ok) throw new Error("Bootstrap failed");
+  if (!res.ok)
+    return {
+      document: {
+        id: "doc_aabwbtdbgk5c",
+        title: "Simple invoice",
+        pageIds: ["page_n261uo3yzqhq"],
+      },
+      layout: {
+        pages: {
+          ["page_n261uo3yzqhq"]: {
+            rootId: "root_ts7vv3b74iuk",
+            byId: {
+              root_ts7vv3b74iuk: {
+                id: "root_ts7vv3b74iuk",
+                parentId: null,
+                kind: NodeKind.Container,
+                direction: "column",
+                children: ["node_qm5dtiyiavdu"],
+                layoutStyle: {},
+              },
+              node_qm5dtiyiavdu: {
+                id: "node_qm5dtiyiavdu",
+                kind: NodeKind.BlockRef,
+                parentId: "root_ts7vv3b74iuk",
+                instanceId: "inst_z0w6lgm234iq",
+                layoutStyle: {},
+              },
+            },
+            overlayIds: [],
+          },
+        },
+        visiblePageId: "page_n261uo3yzqhq",
+      },
+      instances: {
+        byId: {
+          inst_z0w6lgm234iq: {
+            id: "inst_z0w6lgm234iq",
+            templateId: Templates.Text,
+            data: {
+              content: EMPTY_DOC,
+            },
+          },
+        },
+      },
+    };
   return res.json() as Promise<RootState>;
 }
 

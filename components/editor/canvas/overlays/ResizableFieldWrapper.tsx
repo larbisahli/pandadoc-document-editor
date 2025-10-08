@@ -259,7 +259,7 @@ function ResizableFieldWrapper({ overlayId, onResizeEnd, children }: Props) {
     <div
       ref={ref}
       id={`resizer-${overlayId}`}
-      className="group/resize-point box-border overflow-hidden"
+      className="group/resize-point box-border"
     >
       {children}
       {(canResizeWidth || canResizeHeight) && (

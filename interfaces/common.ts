@@ -12,7 +12,7 @@ export type OverlayId = Id<"ov">;
 export type RecipientId = Id<"recipient">;
 
 export interface TextDataType {
-  content?: JSONContent | null;
+  content?: JSONContent | string | null;
 }
 export interface ImageDataType {
   url?: string;

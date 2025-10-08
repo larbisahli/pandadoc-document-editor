@@ -27,10 +27,6 @@ import FontFamily from "@tiptap/extension-font-family";
 import { FontSize } from "../ui/RichEditor/extensions/FontSize";
 import { usePage } from "../canvas/context/PageContext";
 import {
-  consumePendingFocus,
-  selectPendingFocusInstanceId,
-} from "@/lib/features/ui/uiSlice";
-import {
   saveInstanceEditorRaw,
   selectInstance,
 } from "@/lib/features/instance/instanceSlice";
@@ -42,8 +38,17 @@ import { deleteBlockRef } from "@/lib/features/thunks/documentThunks";
 import { TextDataType } from "@/interfaces/common";
 import type { JSONContent } from "@tiptap/core";
 import { ActionsTooltip } from "@/components/ui/ActionsTooltip";
-import { Trash2 } from "lucide-react";
+import {
+  Copy,
+  CopyPlus,
+  ListPlus,
+  LockKeyholeOpen,
+  MessageSquarePlus,
+  SlidersHorizontal,
+  Trash2,
+} from "lucide-react";
 import { generateHTML } from "@tiptap/html";
+import { isFreshSince } from "@/utils";
 
 export function getExtensions() {
   return [
@@ -119,12 +124,11 @@ function TextBlock({ nodeId, instanceId }: BaseBlockProps) {
   const { pageId } = usePage();
   const dispatch = useAppDispatch();
 
-  const pendingFocusId = useAppSelector(selectPendingFocusInstanceId);
   const instance = useAppSelector((s) => selectInstance(s, instanceId));
 
   const [active, setActive] = useState(false);
 
-  const content = (instance?.data as TextDataType)?.content;
+  const content = (instance?.data as TextDataType)?.content as JSONContent;
 
   const saveDebounced = useDebouncedCallback((json: JSONContent) => {
     dispatch(saveInstanceEditorRaw({ instanceId, raw: json }));
@@ -203,14 +207,13 @@ function TextBlock({ nodeId, instanceId }: BaseBlockProps) {
 
   // Focus once when freshly dropped
   useEffect(() => {
-    if (pendingFocusId !== instanceId) return;
+    if (!isFreshSince(instance?.createdAt)) return;
     const raf = requestAnimationFrame(() => {
       requestEditorFocus();
       onActivate();
-      dispatch(consumePendingFocus({ instanceId }));
     });
     return () => cancelAnimationFrame(raf);
-  }, [pendingFocusId, instanceId, dispatch, onActivate, requestEditorFocus]);
+  }, [instance?.createdAt, onActivate, requestEditorFocus]);
 
   // Outside click => blur selection UI, hide borders
   const onOutside = useCallback(() => {
@@ -228,6 +231,8 @@ function TextBlock({ nodeId, instanceId }: BaseBlockProps) {
   const handleDelete = () => {
     dispatch(deleteBlockRef({ pageId, nodeId, instanceId }));
   };
+
+  const handleContentProperty = () => {};
 
   if (!editor) {
     const previewHtml = generateHTML(
@@ -266,9 +271,48 @@ function TextBlock({ nodeId, instanceId }: BaseBlockProps) {
         active={active}
         actions={[
           {
+            key: "add-to-library",
+            label: "Add to library",
+            icon: () => <ListPlus size={22} />,
+            onSelect: handleContentProperty,
+            line: true,
+          },
+          {
+            key: "copy-block",
+            label: "Copy (⌘+C)",
+            icon: () => <Copy size={22} />,
+            onSelect: handleContentProperty,
+          },
+          {
+            key: "duplicate-block",
+            label: "Duplicate block",
+            icon: () => <CopyPlus size={22} />,
+            onSelect: handleContentProperty,
+          },
+          {
+            key: "add-comment",
+            label: "Add a comment",
+            icon: () => <MessageSquarePlus size={22} />,
+            onSelect: handleContentProperty,
+            line: true,
+          },
+          {
+            key: "content-property",
+            label: "Properties",
+            icon: () => <SlidersHorizontal size={22} />,
+            onSelect: handleContentProperty,
+          },
+          {
+            key: "restriction",
+            label: "Restrict users from editing and/or removing this block",
+            icon: () => <LockKeyholeOpen size={22} />,
+            onSelect: handleContentProperty,
+            line: true,
+          },
+          {
             key: "delete",
             label: "Delete",
-            icon: <Trash2 size={18} />,
+            icon: () => <Trash2 size={22} />,
             danger: true,
             onSelect: handleDelete,
           },

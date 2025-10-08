@@ -1,8 +1,8 @@
 import { DropEvent } from "@/interfaces/dnd";
 import { AppDispatch, RootState } from "@/lib/store";
 import { newInstanceId } from "@/utils/ids";
-import { requestFocusOnDrop } from "@/lib/features/ui/uiSlice";
 import { createAction } from "@reduxjs/toolkit";
+import { nowUnixMs } from "@/utils";
 
 export const dropApplied = createAction<DropEvent>("layout/dropApplied");
 
@@ -24,10 +24,11 @@ export const dropCommitted =
           instance: {
             ...dropEvent?.payload?.data?.instance,
             id: instanceId,
+            createdAt: nowUnixMs(),
+            updatedAt: nowUnixMs(),
           },
         },
       },
     } as DropEvent;
     dispatch(dropApplied(payload));
-    dispatch(requestFocusOnDrop({ instanceId }));
   };

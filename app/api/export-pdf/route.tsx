@@ -3,20 +3,22 @@ import { NextResponse } from "next/server";
 import chromium from "@sparticuz/chromium";
 
 export const runtime = "nodejs"; // important: not Edge
+export const dynamic = "force-dynamic";
+// export const maxDuration = 60;
 
 const isDev = process.env.NODE_ENV !== "production";
 
-async function getBrowser() {
+export async function getBrowser() {
   if (isDev) {
-    // Local dev: use full puppeteer (bundled Chrome) — no executablePath needed
     const puppeteer = await import("puppeteer");
     return puppeteer.launch({
       headless: true,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
   } else {
-    // Prod/serverless: puppeteer-core + @sparticuz/chromium
     const puppeteer = await import("puppeteer-core");
+    // Optional: pin a known-good revision for puppeteer-core
+    // (make versions of puppeteer-core and @sparticuz/chromium compatible)
     return puppeteer.launch({
       args: chromium.args,
       defaultViewport: chromium.defaultViewport,
@@ -35,7 +37,7 @@ export async function GET(req: Request) {
     const page = await browser.newPage();
 
     // Go to the SSR page that renders your HTML
-    await page.goto(`${base}/pdf/print`, { waitUntil: "domcontentloaded" });
+    await page.goto(`${base}/pdf/print`, { waitUntil: "domcontentloaded" }); // or 'domcontentloaded' then extra waits
 
     // If you use web fonts, wait for them:
     await page.evaluateHandle("document.fonts && document.fonts.ready");

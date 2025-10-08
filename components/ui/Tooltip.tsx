@@ -1,38 +1,93 @@
-"use client";
+import React, { useState } from "react";
 import clsx from "clsx";
-import React from "react";
 
-interface TooltipProps {
+type Placement = "top" | "bottom" | "left" | "right";
+
+type TooltipProps = {
   children: React.ReactNode;
   content: React.ReactNode;
-  placement?: "top" | "bottom" | "left" | "right";
-  customClass?: string;
-}
+  placement?: Placement;
+  className?: string;
+  tooltipClassName?: string;
+  onOpenChange?: (open: boolean) => void;
+  offset?: number;
+};
 
-const Tooltip: React.FC<TooltipProps> = ({
+export const Tooltip: React.FC<TooltipProps> = ({
   children,
   content,
   placement = "top",
-  customClass = "",
+  className = "",
+  tooltipClassName = "",
+  onOpenChange,
+  offset = 8,
 }) => {
-  const baseClasses =
-    "absolute z-[100] pointer-events-none whitespace-nowrap rounded-[2px] bg-gray-800 px-2 py-1 text-xs text-gray-200 shadow-md opacity-0 transition-all duration-200 group-hover:opacity-100";
+  const [open, setOpen] = useState(false);
 
-  const placementClasses = {
-    top: "bottom-full left-1/2 -translate-x-1/2 mb-2 translate-y-2 group-hover:translate-y-0",
-    bottom:
-      "top-full left-1/2 -translate-x-1/2 mt-2 -translate-y-2 group-hover:translate-y-0",
-    left: "right-full top-1/2 -translate-y-1/2 mr-2 translate-x-2 group-hover:translate-x-0",
-    right:
-      "left-full top-1/2 -translate-y-1/2 ml-2 -translate-x-2 group-hover:translate-x-0",
+  const handleOpen = (v: boolean) => {
+    setOpen(v);
+    onOpenChange?.(v);
   };
 
+  const handleEnter = () => handleOpen(true);
+  const handleLeave = () => handleOpen(false);
+
+  const style: React.CSSProperties = (() => {
+    const base: React.CSSProperties = { position: "absolute" };
+    switch (placement) {
+      case "top":
+        return {
+          ...base,
+          bottom: `calc(100% + ${offset}px)`,
+          left: "50%",
+          transform: "translateX(-50%)",
+        };
+      case "bottom":
+        return {
+          ...base,
+          top: `calc(100% + ${offset}px)`,
+          left: "50%",
+          transform: "translateX(-50%)",
+        };
+      case "left":
+        return {
+          ...base,
+          right: `calc(100% + ${offset}px)`,
+          top: "50%",
+          transform: "translateY(-50%)",
+        };
+      case "right":
+      default:
+        return {
+          ...base,
+          left: `calc(100% + ${offset}px)`,
+          top: "50%",
+          transform: "translateY(-50%)",
+        };
+    }
+  })();
+
+  const transformOrigin =
+    placement === "top"
+      ? "bottom center"
+      : placement === "bottom"
+        ? "top center"
+        : placement === "left"
+          ? "center right"
+          : "center left";
+
   return (
-    <div className="group relative">
+    <div
+      className={clsx("relative", className)}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+    >
       {children}
       <div
         role="tooltip"
-        className={clsx(baseClasses, placementClasses[placement], customClass)}
+        aria-hidden={!open}
+        style={{ ...style, transformOrigin }}
+        className={clsx("tooltip", open && "tooltip--open", tooltipClassName)}
       >
         {content}
       </div>

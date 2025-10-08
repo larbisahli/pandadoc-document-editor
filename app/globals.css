@@ -247,3 +247,33 @@ button {
   outline: none;
   box-shadow: none;
 }
+
+/* --------------------- */
+
+/* Tooltip base + animation */
+.tooltip {
+  position: absolute;
+  z-index: 999999999;
+  white-space: nowrap;
+  background: #1f2937;
+  color: #e5e7eb;
+  font-size: 12px;
+  padding: 4px 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  opacity: 0;
+  transform: translateY(6px) scale(0.98);
+  transform-origin: bottom center;
+  pointer-events: none;
+  transition:
+    opacity 160ms ease,
+    transform 160ms cubic-bezier(0.22, 0.61, 0.36, 1); /* springy-ish */
+}
+
+/* When open: fade in + rise up slightly */
+.tooltip--open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* --------------------- */

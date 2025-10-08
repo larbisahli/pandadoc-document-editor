@@ -1,6 +1,25 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { BaseBlockProps } from "../canvas/blocks/BlockRegistry";
-import { Image as ImageIcon, Trash2, Upload } from "lucide-react";
+import {
+  Copy,
+  Image as ImageIcon,
+  Upload,
+  CopyPlus,
+  ListPlus,
+  LockKeyholeOpen,
+  MessageSquarePlus,
+  SlidersHorizontal,
+  Trash2,
+} from "lucide-react";
+
 import { useClickOutside } from "../hooks/useClickOutside";
 import clsx from "clsx";
 import BorderWrapper from "./BorderWrapper";
@@ -15,7 +34,7 @@ import { ActionsTooltip } from "@/components/ui/ActionsTooltip";
 import { usePage } from "../canvas/context/PageContext";
 import { deleteBlockRef } from "@/lib/features/thunks/documentThunks";
 import { setActiveInstance } from "@/lib/features/rich-editor-ui/richEditorUiSlice";
-import { selectPendingFocusInstanceId } from "@/lib/features/ui/uiSlice";
+import { isFreshSince } from "@/utils";
 
 function ImageBlock({ nodeId, instanceId }: BaseBlockProps) {
   const blockRef = useRef<HTMLDivElement>(null);
@@ -25,7 +44,6 @@ function ImageBlock({ nodeId, instanceId }: BaseBlockProps) {
   const { pageId } = usePage();
 
   const instance = useAppSelector((state) => selectInstance(state, instanceId));
-  const pendingFocusId = useAppSelector(selectPendingFocusInstanceId);
 
   const dispatch = useAppDispatch();
 
@@ -46,6 +64,7 @@ function ImageBlock({ nodeId, instanceId }: BaseBlockProps) {
     data?.url,
   );
   const [active, setActive] = useState(false);
+  const [, startTransition] = useTransition();
 
   const onOutside = useCallback(() => {
     setActive(false);
@@ -59,11 +78,13 @@ function ImageBlock({ nodeId, instanceId }: BaseBlockProps) {
 
   useClickOutside(blockRef, onOutside, { enabled: active, ignoreSelectors });
 
+  // Focus once when freshly dropped
   useEffect(() => {
-    if (pendingFocusId === instanceId) {
+    if (!isFreshSince(instance?.createdAt)) return;
+    startTransition(() => {
       setActive(true);
-    }
-  }, [instanceId, pendingFocusId]);
+    });
+  }, [instance?.createdAt]);
 
   // Revoke the object URL when it changes or on unmount
   useEffect(() => {
@@ -158,6 +179,8 @@ function ImageBlock({ nodeId, instanceId }: BaseBlockProps) {
     );
   };
 
+  const handleContentProperty = () => {};
+
   return (
     <div
       ref={blockRef}
@@ -214,9 +237,48 @@ function ImageBlock({ nodeId, instanceId }: BaseBlockProps) {
         active={active}
         actions={[
           {
+            key: "add-to-library",
+            label: "Add to library",
+            icon: () => <ListPlus size={22} />,
+            onSelect: handleContentProperty,
+            line: true,
+          },
+          {
+            key: "copy-block",
+            label: "Copy (⌘+C)",
+            icon: () => <Copy size={22} />,
+            onSelect: handleContentProperty,
+          },
+          {
+            key: "duplicate-block",
+            label: "Duplicate block",
+            icon: () => <CopyPlus size={22} />,
+            onSelect: handleContentProperty,
+          },
+          {
+            key: "add-comment",
+            label: "Add a comment",
+            icon: () => <MessageSquarePlus size={22} />,
+            onSelect: handleContentProperty,
+            line: true,
+          },
+          {
+            key: "content-property",
+            label: "Properties",
+            icon: () => <SlidersHorizontal size={22} />,
+            onSelect: handleContentProperty,
+          },
+          {
+            key: "restriction",
+            label: "Restrict users from editing and/or removing this block",
+            icon: () => <LockKeyholeOpen size={22} />,
+            onSelect: handleContentProperty,
+            line: true,
+          },
+          {
             key: "delete",
             label: "Delete",
-            icon: <Trash2 size={18} />,
+            icon: () => <Trash2 size={22} />,
             danger: true,
             onSelect: handleDelete,
           },

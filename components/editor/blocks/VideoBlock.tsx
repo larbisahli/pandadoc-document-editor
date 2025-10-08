@@ -1,6 +1,24 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { BaseBlockProps } from "../canvas/blocks/BlockRegistry";
-import { Trash2, Upload, Youtube as YoutubeIcon } from "lucide-react";
+import {
+  Copy,
+  CopyPlus,
+  ListPlus,
+  LockKeyholeOpen,
+  MessageSquarePlus,
+  SlidersHorizontal,
+  Trash2,
+  Upload,
+  YoutubeIcon,
+} from "lucide-react";
 import clsx from "clsx";
 import { useClickOutside } from "../hooks/useClickOutside";
 import BorderWrapper from "./BorderWrapper";
@@ -10,19 +28,19 @@ import { ActionsTooltip } from "@/components/ui/ActionsTooltip";
 import { usePage } from "../canvas/context/PageContext";
 import YouTube, { YouTubeProps } from "react-youtube";
 import { deleteBlockRef } from "@/lib/features/thunks/documentThunks";
-import { selectPendingFocusInstanceId } from "@/lib/features/ui/uiSlice";
 import { setActiveInstance } from "@/lib/features/rich-editor-ui/richEditorUiSlice";
+import { isFreshSince } from "@/utils";
 
 function VideoBlock({ nodeId, instanceId }: BaseBlockProps) {
   const { pageId } = usePage();
 
   const instance = useAppSelector((state) => selectInstance(state, instanceId));
-  const pendingFocusId = useAppSelector(selectPendingFocusInstanceId);
 
   const dispatch = useAppDispatch();
 
   const blockRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(false);
+  const [, startTransition] = useTransition();
 
   const onOutside = useCallback(() => {
     setActive(false);
@@ -36,11 +54,13 @@ function VideoBlock({ nodeId, instanceId }: BaseBlockProps) {
 
   useClickOutside(blockRef, onOutside, { enabled: active, ignoreSelectors });
 
+  // Focus once when freshly dropped
   useEffect(() => {
-    if (pendingFocusId === instanceId) {
+    if (!isFreshSince(instance?.createdAt)) return;
+    startTransition(() => {
       setActive(true);
-    }
-  }, [instanceId, pendingFocusId]);
+    });
+  }, [instance?.createdAt]);
 
   const videoId = "69bkCjl4jkQ";
   const autoplay = 0;
@@ -59,6 +79,8 @@ function VideoBlock({ nodeId, instanceId }: BaseBlockProps) {
     // access to player in all event handlers via event.target
     // event.target.pauseVideo();
   };
+
+  const handleContentProperty = () => {};
 
   return (
     <div
@@ -99,9 +121,48 @@ function VideoBlock({ nodeId, instanceId }: BaseBlockProps) {
         active={active}
         actions={[
           {
+            key: "add-to-library",
+            label: "Add to library",
+            icon: () => <ListPlus size={22} />,
+            onSelect: handleContentProperty,
+            line: true,
+          },
+          {
+            key: "copy-block",
+            label: "Copy (⌘+C)",
+            icon: () => <Copy size={22} />,
+            onSelect: handleContentProperty,
+          },
+          {
+            key: "duplicate-block",
+            label: "Duplicate block",
+            icon: () => <CopyPlus size={22} />,
+            onSelect: handleContentProperty,
+          },
+          {
+            key: "add-comment",
+            label: "Add a comment",
+            icon: () => <MessageSquarePlus size={22} />,
+            onSelect: handleContentProperty,
+            line: true,
+          },
+          {
+            key: "content-property",
+            label: "Properties",
+            icon: () => <SlidersHorizontal size={22} />,
+            onSelect: handleContentProperty,
+          },
+          {
+            key: "restriction",
+            label: "Restrict users from editing and/or removing this block",
+            icon: () => <LockKeyholeOpen size={22} />,
+            onSelect: handleContentProperty,
+            line: true,
+          },
+          {
             key: "delete",
             label: "Delete",
-            icon: <Trash2 size={18} />,
+            icon: () => <Trash2 size={22} />,
             danger: true,
             onSelect: handleDelete,
           },

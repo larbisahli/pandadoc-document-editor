@@ -7,6 +7,7 @@ import { Templates } from "@/interfaces/enum";
 import { OverlayItem } from "@/interfaces/overlay";
 import { InstanceType } from "@/interfaces/instance";
 import { createAction } from "@reduxjs/toolkit";
+import { nowUnixMs } from "@/utils";
 
 interface InsertFieldFlowType {
   pageId: PageId;
@@ -53,6 +54,8 @@ export const insertFieldFlow =
         ...instance!,
         id: instanceId,
         recipientId: selectedRecipientId,
+        createdAt: nowUnixMs(),
+        updatedAt: nowUnixMs(),
       },
       overlay: {
         ...overlay!,

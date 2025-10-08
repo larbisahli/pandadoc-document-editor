@@ -1,5 +1,5 @@
 import DocumentCanvas from "@/components/editor/canvas/DocumentCanvas";
 
-export default async function PrintPage() {
+export default function PrintPage() {
   return <DocumentCanvas />;
 }

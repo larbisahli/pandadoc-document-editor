@@ -1,3 +1,5 @@
+import { UnixMs } from "@/interfaces/instance";
+
 /**
  * Clamp a number between a minimum and maximum value.
  *
@@ -25,3 +27,16 @@ export function hasTransferType(e: React.DragEvent, type: string): boolean {
   }
   return false;
 }
+
+export const nowUnixMs = (): UnixMs => Date.now() as UnixMs;
+
+export const FOCUS_FRESH_WINDOW_MS = 1500 as const;
+
+export const isFreshSince = (
+  addedAt: UnixMs | undefined,
+  windowMs: number = FOCUS_FRESH_WINDOW_MS,
+  now: UnixMs = nowUnixMs(),
+): boolean => {
+  if (!addedAt) return false;
+  return now - addedAt <= windowMs;
+};

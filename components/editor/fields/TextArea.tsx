@@ -5,11 +5,24 @@ import {
 } from "@/lib/features/instance/instanceSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import clsx from "clsx";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { BaseFieldProps } from "../canvas/overlays/FieldRegistry";
 import { useClickOutside } from "../hooks/useClickOutside";
 import { generateAvatarColors } from "@/utils/colors";
 import { selectRecipientsById } from "@/lib/features/recipient/recipientSlice";
+import { ActionsTooltip } from "@/components/ui/ActionsTooltip";
+import { Copy, CopyPlus, SlidersHorizontal, Trash2 } from "lucide-react";
+import { setActiveInstance } from "@/lib/features/rich-editor-ui/richEditorUiSlice";
+import { isFreshSince } from "@/utils";
 
 function TextArea({ overlayId, instanceId }: BaseFieldProps) {
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -17,25 +30,38 @@ function TextArea({ overlayId, instanceId }: BaseFieldProps) {
 
   const instance = useAppSelector((state) => selectInstance(state, instanceId));
 
+  const dispatch = useAppDispatch();
+
   const byId = useAppSelector(selectRecipientsById);
   const fieldRecipient = instance?.recipientId
     ? byId[instance.recipientId]
     : undefined;
+
+  const content = ((instance.data as TextDataType).content || "") as string;
+
+  const [value, setValue] = useState<string>(content);
+  const [active, setActive] = useState(false);
+  const [, startTransition] = useTransition();
 
   const color = useMemo(
     () => generateAvatarColors(fieldRecipient?.color, 0.9),
     [fieldRecipient?.color],
   );
 
-  const dispatch = useAppDispatch();
+  const onOutside = useCallback(() => {
+    setActive(false);
+    dispatch(setActiveInstance(null));
+  }, [dispatch]);
 
-  const [active, setActive] = useState(false);
-  useClickOutside(fieldRef, () => setActive(false));
+  useClickOutside(fieldRef, onOutside, { enabled: active });
 
-  const content = (instance.data as TextDataType).content || "";
-
-  const [isActive, setIsActive] = useState(false);
-  const [value, setValue] = useState<string>(content);
+  // Focus once when freshly dropped
+  useEffect(() => {
+    if (!isFreshSince(instance?.createdAt)) return;
+    startTransition(() => {
+      setActive(true);
+    });
+  }, [instance?.createdAt]);
 
   const onCommit = useCallback(
     (value: string) => {
@@ -60,13 +86,12 @@ function TextArea({ overlayId, instanceId }: BaseFieldProps) {
   }, [value, content, onCommit]);
 
   useEffect(() => {
-    if (isActive && inputRef.current) {
+    if (active && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [isActive]);
+  }, [active]);
 
   const handleOnclick = () => {
-    setIsActive(true);
     handleResizePoint("visible");
     setActive(true);
   };
@@ -76,11 +101,16 @@ function TextArea({ overlayId, instanceId }: BaseFieldProps) {
     if (ele) ele.style.visibility = visibility;
   };
 
+  const handleDelete = () => {
+    // dispatch(deleteBlockRef({ pageId, nodeId, instanceId }));
+  };
+
+  const handleContentProperty = () => {};
+
   return (
     <div
       ref={fieldRef}
       onClick={handleOnclick}
-      onMouseLeave={() => setIsActive(false)}
       onBlur={() => handleResizePoint("")}
       style={{
         borderColor: color.ringHex,
@@ -98,10 +128,59 @@ function TextArea({ overlayId, instanceId }: BaseFieldProps) {
         onChange={(e) => setValue(e.target.value)}
         className={clsx(
           "absolute inset-0 resize-none overflow-hidden p-[6px] text-sm text-black outline-none",
-          !isActive && "pointer-events-none",
+          !active && "pointer-events-none",
         )}
       />
       {!active && !value && <div className="p-1 text-sm">Enter value</div>}
+      <ActionsTooltip
+        active={active}
+        actions={[
+          {
+            key: "recipient",
+            label: "Who needs to fill this out?",
+            icon: () => <div className="text-gray-200">14</div>,
+            onSelect: handleContentProperty,
+            line: true,
+          },
+          {
+            key: "recipient",
+            label: "Who needs to fill this out?",
+            icon: () => (
+              <div className="flex items-center justify-center">
+                <div className="mr-1 h-2 w-2 rounded-full bg-amber-600"></div>
+                Sender
+              </div>
+            ),
+            onSelect: handleContentProperty,
+            line: true,
+          },
+          {
+            key: "copy-block",
+            label: "Copy (⌘+C)",
+            icon: () => <Copy size={22} />,
+            onSelect: handleContentProperty,
+          },
+          {
+            key: "duplicate-block",
+            label: "Duplicate block",
+            icon: () => <CopyPlus size={22} />,
+            onSelect: handleContentProperty,
+          },
+          {
+            key: "content-property",
+            label: "Properties",
+            icon: () => <SlidersHorizontal size={22} />,
+            onSelect: handleContentProperty,
+          },
+          {
+            key: "delete",
+            label: "Delete",
+            icon: () => <Trash2 size={22} />,
+            danger: true,
+            onSelect: handleDelete,
+          },
+        ]}
+      />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useEffect, useId, useRef, memo, useState } from "react";
 import clsx from "clsx";
+import Tooltip from "./Tooltip";
 
 type Placement = "bottom" | "top";
 type Align = "start" | "center" | "end";
@@ -8,10 +9,11 @@ export type ActionItem = {
   key: string;
   label: string;
   onSelect: () => void;
-  icon?: React.ReactNode;
+  icon: (props?: unknown) => React.ReactNode;
   danger?: boolean;
   disabled?: boolean;
   shortcut?: string;
+  line?: boolean;
 };
 
 type ActionsTooltipProps = {
@@ -60,14 +62,14 @@ export function ActionsTooltip({
       role="menu"
       className={clsx(
         "absolute bg-transparent",
-        "top-[-30px] left-1/2 -translate-x-1/2 -translate-y-1/2",
+        "top-[-35px] left-1/2 -translate-x-1/2 -translate-y-1/2",
       )}
       style={{ zIndex: 999999 }}
     >
       <div
         ref={panelRef}
         className={clsx(
-          "bg-[#414247] shadow-md outline-none",
+          "rounded-[2px] bg-[#414247] shadow-md outline-none",
           "will-change-opacity origin-bottom will-change-transform",
           "transition duration-200 ease-out",
           open
@@ -97,24 +99,30 @@ const MenuList = memo(function MenuList({
 
 const MenuItem = memo(function MenuItem({ action }: { action: ActionItem }) {
   const handle = () => {
-    console.log({ action });
     if (action.disabled) return;
     action.onSelect();
   };
 
   return (
-    <button
-      type="button"
-      role="menuitem"
-      onClick={handle}
-      disabled={action.disabled}
-      className={clsx(
-        "flex w-full items-center gap-2 p-1 text-left text-sm",
-        action.danger &&
-          "text-[#e5e5e5] hover:bg-gray-500/40 hover:text-red-600",
-      )}
+    <Tooltip
+      className="flex items-center justify-center"
+      content={action.label}
+      placement="bottom"
     >
-      <span className="shrink-0">{action.icon}</span>
-    </button>
+      <button
+        type="button"
+        role="menuitem"
+        onClick={handle}
+        disabled={action.disabled}
+        className={clsx(
+          "flex w-full items-center gap-2 rounded-[2px] p-1 text-left text-sm text-[#fafafa] outline-none hover:bg-gray-500/50",
+          action.danger &&
+            "text-[#e5e5e5] hover:bg-gray-500/40 hover:text-red-600",
+        )}
+      >
+        <span className="shrink-0">{action?.icon()}</span>
+      </button>
+      {action.line && <div className="mx-1 h-[20px] w-[1px] bg-gray-400" />}
+    </Tooltip>
   );
 });

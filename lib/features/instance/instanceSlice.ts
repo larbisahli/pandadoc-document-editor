@@ -16,7 +16,7 @@ import {
 
 type InstanceSliceState = Normalized<InstanceType>;
 
-const EMPTY_DOC: JSONContent = {
+export const EMPTY_DOC: JSONContent = {
   type: "doc",
   content: [{ type: "paragraph" }],
 };

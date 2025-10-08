@@ -8,6 +8,7 @@ import { overlaySlice } from "./features/overlay/overlaySlice";
 import { RecipientSlice } from "./features/recipient/recipientSlice";
 import { editorUiSlice } from "./features/rich-editor-ui/richEditorUiSlice";
 import { uiSlice } from "./features/ui/uiSlice";
+import { focusListener } from "./features/listener/focusListener";
 
 // `combineSlices` automatically combines the reducers using
 const rootReducer = combineSlices(

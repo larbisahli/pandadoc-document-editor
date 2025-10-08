@@ -37,7 +37,7 @@ export const defaultTemplates = {
     kind: FieldKind.TextArea,
     propsSchema: {
       width: 171,
-      height: 91,
+      height: 33,
       minWidth: 25,
       minHeight: 15,
       resizeWidth: true,
