@@ -56,11 +56,7 @@ function LayoutRenderer({ nodeId }: LayoutRendererProps) {
 
     case NodeKind.BlockRef: {
       const leaf = node as BlockRefNode;
-      return (
-        <DocBlock nodeId={leaf.id}>
-          <BlockFactory nodeId={leaf.id} instanceId={leaf.instanceId} />
-        </DocBlock>
-      );
+      return <BlockFactory nodeId={leaf.id} instanceId={leaf.instanceId} />;
     }
 
     default:

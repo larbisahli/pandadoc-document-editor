@@ -6,10 +6,13 @@ import { RootState } from "@/lib/store";
 import { createSelector, PayloadAction } from "@reduxjs/toolkit";
 import { Templates } from "@/interfaces/enum";
 import type { JSONContent } from "@tiptap/core";
-import { dropApplied } from "../thunks/layoutThunks";
-import { insertFieldCommitted } from "../thunks/overlayThunks";
+import { dropAppliedAction } from "../thunks/layoutThunks";
 import {
-  addBlankPage,
+  deleteFieldAction,
+  insertFieldCommittedAction,
+} from "../thunks/overlayThunks";
+import {
+  addBlankPageAction,
   deleteBlockRefAction,
   deletePageAction,
 } from "../thunks/documentThunks";
@@ -62,16 +65,16 @@ export const instancesSlice = createAppSlice({
   }),
   extraReducers: (builder) => {
     builder
-      .addCase(dropApplied, (state, action) => {
+      .addCase(dropAppliedAction, (state, action) => {
         const instance = action.payload.payload.data.instance;
         const instanceId = instance!.id as InstanceId;
         state.byId[instanceId] = instance as InstanceType;
       })
-      .addCase(insertFieldCommitted, (state, action) => {
+      .addCase(insertFieldCommittedAction, (state, action) => {
         const { instance } = action.payload;
         state.byId[instance.id] = instance;
       })
-      .addCase(addBlankPage, (state, action) => {
+      .addCase(addBlankPageAction, (state, action) => {
         const event = action.payload;
         state.byId[event.instanceId] = {
           id: event.instanceId,
@@ -90,6 +93,10 @@ export const instancesSlice = createAppSlice({
         for (const id of instanceIds) {
           delete state.byId[id];
         }
+      })
+      .addCase(deleteFieldAction, (state, action) => {
+        const { instanceId } = action.payload;
+        delete state.byId[instanceId];
       });
   },
   selectors: {

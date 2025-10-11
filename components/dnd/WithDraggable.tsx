@@ -147,8 +147,8 @@ function WithDraggable({
       if (inside !== lastRef.current.inside) {
         lastRef.current.inside = inside;
         if (inside) {
-          ghost.style.outline = "1px solid #22c55e";
-          ghost.style.background = "#22c55e";
+          ghost.style.outline = "1px solid var(--color-dnd-enter)";
+          ghost.style.background = "var(--color-dnd-enter)";
         } else {
           ghost.style.outline = "1px solid transparent";
           ghost.style.background = "transparent";

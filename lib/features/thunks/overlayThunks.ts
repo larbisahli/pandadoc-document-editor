@@ -1,4 +1,4 @@
-import { OverlayId, PageId } from "@/interfaces/common";
+import { InstanceId, OverlayId, PageId } from "@/interfaces/common";
 import { AppDispatch, RootState } from "@/lib/store";
 import { newInstanceId, newOverlayId } from "@/utils/ids";
 
@@ -28,11 +28,19 @@ export interface UpdateFieldSizeType {
   height: number;
 }
 
-export const insertFieldCommitted = createAction<InsertFieldPayload>(
-  "document/insertFieldCommitted",
+export interface deleteFieldType {
+  overlayId: OverlayId;
+  instanceId: InstanceId;
+}
+
+export const insertFieldCommittedAction = createAction<InsertFieldPayload>(
+  "document/insertFieldCommittedAction",
 );
-export const updateFieldSize = createAction<UpdateFieldSizeType>(
-  "overlay/updateFieldSize",
+export const updateFieldSizeAction = createAction<UpdateFieldSizeType>(
+  "overlay/updateFieldSizeAction",
+);
+export const deleteFieldAction = createAction<deleteFieldType>(
+  "overlay/deleteFieldAction",
 );
 
 export const insertFieldFlow =
@@ -64,11 +72,17 @@ export const insertFieldFlow =
       },
     };
 
-    dispatch(insertFieldCommitted(payload));
+    dispatch(insertFieldCommittedAction(payload));
   };
 
 export const updateFieldSizeFlow =
   (args: UpdateFieldSizeType) =>
   (dispatch: AppDispatch, getState: () => RootState) => {
-    dispatch(updateFieldSize(args));
+    dispatch(updateFieldSizeAction(args));
+  };
+
+export const deleteField =
+  (args: deleteFieldType) =>
+  (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(deleteFieldAction(args));
   };

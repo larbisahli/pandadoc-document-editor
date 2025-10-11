@@ -8,6 +8,7 @@ export const BLOCK_KINDS = [
   BlockKind.Image,
   BlockKind.Video,
   BlockKind.TableOfContents,
+  BlockKind.Table,
 ] as const;
 
 export const isFieldKind = (v: unknown): v is BlockKind =>
@@ -31,23 +32,62 @@ const ImageBlockLoader = () => import("@/components/editor/blocks/ImageBlock");
 const VideoBlockLoader = () => import("@/components/editor/blocks/VideoBlock");
 const TableOfContentsBlockLoader = () =>
   import("@/components/editor/blocks/TableContentBlock");
+const TableBlockLoader = () => import("@/components/editor/blocks/TableBlock");
 
-export const TextBlock = dynamic(TextBlockLoader);
-export const ImageBlock = dynamic(ImageBlockLoader);
-export const VideoBlock = dynamic(VideoBlockLoader);
-export const TableOfContentsBlock = dynamic(TableOfContentsBlockLoader);
+export const TextBlock = dynamic(TextBlockLoader, {
+  loading: () => (
+    <div
+      className="h-20 w-full animate-pulse rounded-sm bg-gray-200"
+      aria-hidden
+    />
+  ),
+});
+export const ImageBlock = dynamic(ImageBlockLoader, {
+  loading: () => (
+    <div
+      className="h-40 w-full animate-pulse rounded-sm bg-gray-200"
+      aria-hidden
+    />
+  ),
+});
+export const VideoBlock = dynamic(VideoBlockLoader, {
+  loading: () => (
+    <div
+      className="h-40 w-full animate-pulse rounded-sm bg-gray-200"
+      aria-hidden
+    />
+  ),
+});
+export const TableOfContentsBlock = dynamic(TableOfContentsBlockLoader, {
+  loading: () => (
+    <div
+      className="h-40 w-full animate-pulse rounded-sm bg-gray-200"
+      aria-hidden
+    />
+  ),
+});
+export const TableBlock = dynamic(TableBlockLoader, {
+  loading: () => (
+    <div
+      className="h-40 w-full animate-pulse rounded-sm bg-gray-200"
+      aria-hidden
+    />
+  ),
+});
 
 // warm the chunk on drag
 export const preloadTextBlock = () => TextBlockLoader();
 export const preloadImageBlock = () => ImageBlockLoader();
 export const preloadVideoBlock = () => VideoBlockLoader();
 export const preloadTableOfContentsBlock = () => TableOfContentsBlockLoader();
+export const preloadTableBlock = () => TableBlockLoader();
 
 type RegistryKind =
   | BlockKind.Text
   | BlockKind.Image
   | BlockKind.Video
-  | BlockKind.TableOfContents;
+  | BlockKind.TableOfContents
+  | BlockKind.Table;
 
 /* The registry (static map) */
 const STATIC_REGISTRY: Record<RegistryKind, AnyBlockComponent> = {
@@ -55,6 +95,7 @@ const STATIC_REGISTRY: Record<RegistryKind, AnyBlockComponent> = {
   [BlockKind.Image]: ImageBlock,
   [BlockKind.Video]: VideoBlock,
   [BlockKind.TableOfContents]: TableOfContentsBlock,
+  [BlockKind.Table]: TableBlock,
 };
 
 /* Runtime registry (extensible) */

@@ -1,4 +1,4 @@
-import { DropBlockOverlayWrapper } from "@/dnd";
+import { DropBlockOverlayWrapper } from "@/components/dnd";
 import { NodeId } from "@/interfaces/common";
 import React, { memo, useCallback } from "react";
 import { usePage } from "../../context/PageContext";

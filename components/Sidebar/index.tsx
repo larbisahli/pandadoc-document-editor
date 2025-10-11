@@ -57,7 +57,7 @@ const SidebarComponent = () => {
   );
 
   const sidePanelContainer = clsx(
-    "absolute top-0 right-0 bottom-0 z-[1] overflow-auto",
+    "absolute top-0 right-0 bottom-0 z-[1] overflow-x-hidden",
     "border-primary border-l bg-white h-full w-[282px]",
     { hidden: !displayPanel },
   );

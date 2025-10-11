@@ -8,7 +8,7 @@ import { browserZoomLevel, clampPlacementToPageBounds } from "./helpers";
 import { OverlayId } from "@/interfaces/common";
 import { updateFiledPosition } from "@/lib/features/overlay/overlaySlice";
 import { DropPayload } from "@/interfaces/dnd";
-import { PALETTE_DATA_FORMAT } from "@/dnd";
+import { PALETTE_DATA_FORMAT } from "@/components/dnd";
 import { insertFieldFlow } from "@/lib/features/thunks/overlayThunks";
 
 function OverlayLayer() {

@@ -4,7 +4,11 @@ import { OverlayItem } from "@/interfaces/overlay";
 import { createAppSlice } from "@/lib/createAppSlice";
 import { RootState } from "@/lib/store";
 import { createSelector, type PayloadAction } from "@reduxjs/toolkit";
-import { insertFieldCommitted, updateFieldSize } from "../thunks/overlayThunks";
+import {
+  deleteFieldAction,
+  insertFieldCommittedAction,
+  updateFieldSizeAction,
+} from "../thunks/overlayThunks";
 import { deletePageAction } from "../thunks/documentThunks";
 
 type OverlaySliceState = Normalized<OverlayItem>;
@@ -38,11 +42,11 @@ export const overlaySlice = createAppSlice({
   }),
   extraReducers: (builder) => {
     builder
-      .addCase(insertFieldCommitted, (state, { payload }) => {
+      .addCase(insertFieldCommittedAction, (state, { payload }) => {
         const { overlay } = payload;
         state.byId[overlay.id] = overlay;
       })
-      .addCase(updateFieldSize, (state, { payload }) => {
+      .addCase(updateFieldSizeAction, (state, { payload }) => {
         const { overlay, width, height } = payload;
         state.byId[overlay.id].style = {
           ...state.byId[overlay.id].style,
@@ -55,6 +59,10 @@ export const overlaySlice = createAppSlice({
         for (const id of overlayIds) {
           delete state.byId[id];
         }
+      })
+      .addCase(deleteFieldAction, (state, action) => {
+        const { overlayId } = action.payload;
+        delete state.byId[overlayId];
       });
   },
 });

@@ -28,6 +28,7 @@ import { deleteBlockRef } from "@/lib/features/thunks/documentThunks";
 import { setActiveInstance } from "@/lib/features/rich-editor-ui/richEditorUiSlice";
 import { isFreshSince } from "@/utils";
 
+// https://github.com/TanStack/table
 function TableContentBlock({ nodeId, instanceId }: BaseBlockProps) {
   const blockRef = useRef<HTMLDivElement>(null);
 

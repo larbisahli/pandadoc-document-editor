@@ -1,4 +1,4 @@
-import { DropBlockOverlayWrapper } from "@/dnd";
+import { DropBlockOverlayWrapper } from "@/components/dnd";
 import { NodeId } from "@/interfaces/common";
 import { DropEvent, DropPayload } from "@/interfaces/dnd";
 import { DropSide } from "@/interfaces/enum";

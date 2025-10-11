@@ -42,7 +42,7 @@ export interface FillableFieldType {
   dragPayload: DropPayload;
   dragImagePreview: React.FC<{ width: number; height: number }>;
   templateId: Templates;
-  handleComponentPreload: () => void;
+  componentPreload: () => void;
 }
 
 export const fillableFields: FillableFieldType[] = [
@@ -51,7 +51,7 @@ export const fillableFields: FillableFieldType[] = [
     label: "Text field",
     icon: (props) => <LetterText {...props} />,
     dragImagePreview: TextImagePreview,
-    handleComponentPreload: preloadTextAreaField,
+    componentPreload: preloadTextAreaField,
     templateId: Templates.Textarea,
     dragPayload: {
       kind: TemplateTypes.Field,
@@ -81,7 +81,7 @@ export const fillableFields: FillableFieldType[] = [
     label: "Signature",
     icon: (props) => <PencilLine {...props} size={16} />,
     dragImagePreview: SignatureImagePreview,
-    handleComponentPreload: preloadSignatureField,
+    componentPreload: preloadSignatureField,
     templateId: Templates.Signature,
     dragPayload: {
       kind: TemplateTypes.Field,
@@ -111,7 +111,7 @@ export const fillableFields: FillableFieldType[] = [
     label: "Initials",
     icon: (props) => <LetterText {...props} />,
     dragImagePreview: InitialsImagePreview,
-    handleComponentPreload: preloadInitialsField,
+    componentPreload: preloadInitialsField,
     templateId: Templates.Initials,
     dragPayload: {
       kind: TemplateTypes.Field,
@@ -141,7 +141,7 @@ export const fillableFields: FillableFieldType[] = [
     label: "Date",
     icon: (props) => <CalendarDays {...props} />,
     dragImagePreview: DateImagePreview,
-    handleComponentPreload: preloadDateField,
+    componentPreload: preloadDateField,
     templateId: Templates.Date,
     dragPayload: {
       kind: TemplateTypes.Field,
@@ -171,7 +171,7 @@ export const fillableFields: FillableFieldType[] = [
     label: "Checkbox",
     icon: (props) => <SquareCheck {...props} />,
     dragImagePreview: CheckboxImagePreview,
-    handleComponentPreload: preloadCheckboxField,
+    componentPreload: preloadCheckboxField,
     templateId: Templates.Checkbox,
     dragPayload: {
       kind: TemplateTypes.Field,
@@ -201,7 +201,7 @@ export const fillableFields: FillableFieldType[] = [
     label: "Radio buttons",
     icon: (props) => <CircleDot {...props} />,
     dragImagePreview: RadioImagePreview,
-    handleComponentPreload: preloadRadioField,
+    componentPreload: preloadRadioField,
     templateId: Templates.Radio,
     dragPayload: {
       kind: TemplateTypes.Field,
@@ -231,7 +231,7 @@ export const fillableFields: FillableFieldType[] = [
     label: "Dropdown",
     icon: (props) => <PanelTopOpen {...props} />,
     dragImagePreview: DropdownImagePreview,
-    handleComponentPreload: preloadDropdownField,
+    componentPreload: preloadDropdownField,
     templateId: Templates.Dropdown,
     dragPayload: {
       kind: TemplateTypes.Field,
@@ -261,7 +261,7 @@ export const fillableFields: FillableFieldType[] = [
     label: "Collect files",
     icon: (props) => <Upload {...props} />,
     dragImagePreview: CollectFilesImagePreview,
-    handleComponentPreload: preloadCollectFilesField,
+    componentPreload: preloadCollectFilesField,
     templateId: Templates.CollectFiles,
     dragPayload: {
       kind: TemplateTypes.Field,
@@ -291,7 +291,7 @@ export const fillableFields: FillableFieldType[] = [
     label: "Stamp",
     icon: (props) => <Stamp {...props} />,
     dragImagePreview: StampImagePreview,
-    handleComponentPreload: preloadStampField,
+    componentPreload: preloadStampField,
     templateId: Templates.Stamp,
     dragPayload: {
       kind: TemplateTypes.Field,

@@ -17,7 +17,7 @@ function FieldFactory({ overlayId }: FieldRendererProps) {
     selectOverlayById(state, overlayId),
   );
   const instance = useAppSelector((state) =>
-    selectInstance(state, overlay.instanceId),
+    selectInstance(state, overlay?.instanceId),
   );
   const template = useAppSelector((state) =>
     selectTemplate(state, instance?.templateId),
@@ -25,7 +25,7 @@ function FieldFactory({ overlayId }: FieldRendererProps) {
 
   if (!template?.kind) return null;
 
-  const Component = FIELD_COMPONENTS[template.kind];
+  const Component = FIELD_COMPONENTS[template?.kind];
 
   if (!Component) {
     return null;

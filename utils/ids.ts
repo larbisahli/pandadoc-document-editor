@@ -12,7 +12,7 @@ const generateRandomId = (n: number) => {
   );
 };
 
-function randomBase36(length = 12): string {
+export function randomBase36(length = 12): string {
   const alphabet = "0123456789abcdefghijklmnopqrstuvwxyz";
   const nums = generateRandomId(length);
   let out = "";

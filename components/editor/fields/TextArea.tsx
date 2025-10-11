@@ -23,6 +23,7 @@ import { ActionsTooltip } from "@/components/ui/ActionsTooltip";
 import { Copy, CopyPlus, SlidersHorizontal, Trash2 } from "lucide-react";
 import { setActiveInstance } from "@/lib/features/rich-editor-ui/richEditorUiSlice";
 import { isFreshSince } from "@/utils";
+import { deleteField } from "@/lib/features/thunks/overlayThunks";
 
 function TextArea({ overlayId, instanceId }: BaseFieldProps) {
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -102,7 +103,12 @@ function TextArea({ overlayId, instanceId }: BaseFieldProps) {
   };
 
   const handleDelete = () => {
-    // dispatch(deleteBlockRef({ pageId, nodeId, instanceId }));
+    dispatch(
+      deleteField({
+        overlayId,
+        instanceId,
+      }),
+    );
   };
 
   const handleContentProperty = () => {};
@@ -136,7 +142,7 @@ function TextArea({ overlayId, instanceId }: BaseFieldProps) {
         active={active}
         actions={[
           {
-            key: "recipient",
+            key: "font",
             label: "Who needs to fill this out?",
             icon: () => <div className="text-gray-200">14</div>,
             onSelect: handleContentProperty,

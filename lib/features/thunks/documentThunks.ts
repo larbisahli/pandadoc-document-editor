@@ -25,8 +25,8 @@ export interface DeletePageRefType {
   overlayIds: string[];
 }
 
-export const addBlankPage = createAction<AddBlankPageType>(
-  "document/addBlankPage",
+export const addBlankPageAction = createAction<AddBlankPageType>(
+  "document/addBlankPageAction",
 );
 export const deleteBlockRefAction = createAction<DeleteBlockRefType>(
   "document/deleteBlockRefAction",
@@ -50,7 +50,7 @@ export const insertBlankPage =
       beforePageId: !event.isLast && event.targetPageId,
       afterPageId: event.isLast && event.targetPageId,
     };
-    dispatch(addBlankPage(payload));
+    dispatch(addBlankPageAction(payload));
   };
 
 export const deleteBlockRef =

@@ -1,13 +1,12 @@
 import clsx from "clsx";
 import { GripVertical } from "lucide-react";
 import { ContentBlockType } from "./Blocks";
-import React, { useCallback, useState } from "react";
-import { WithDraggable } from "@/dnd";
+import React, { useCallback, useEffect, useState } from "react";
+import { WithDraggable } from "@/components/dnd";
 import { DropSide, TemplateTypes } from "@/interfaces/enum";
 import { DropEvent } from "@/interfaces/dnd";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { selectVisiblePageId } from "@/lib/features/layout/layoutSlice";
-import { NodeId } from "@/interfaces/common";
 import { dropCommitted } from "@/lib/features/thunks/layoutThunks";
 
 interface BlockTileProps {
@@ -20,6 +19,13 @@ const BlockTile = ({ block }: BlockTileProps) => {
 
   const activePageId = useAppSelector(selectVisiblePageId);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    // Preload lazy component so we don't see lagging on drop
+    requestIdleCallback(() => {
+      void block?.componentPreload?.();
+    });
+  }, [block]);
 
   const getDragPayload = useCallback(
     () => block.dragPayload,

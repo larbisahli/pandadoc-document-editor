@@ -3,7 +3,7 @@ import { selectRowItemLayoutStyle } from "@/lib/features/layout/layoutSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import React, { memo, useCallback } from "react";
 import { usePage } from "../../context/PageContext";
-import { DropBlockOverlayWrapper } from "@/dnd";
+import { DropBlockOverlayWrapper } from "@/components/dnd";
 import { DropSide } from "@/interfaces/enum";
 import { DropEvent, DropPayload } from "@/interfaces/dnd";
 import { dropCommitted } from "@/lib/features/thunks/layoutThunks";

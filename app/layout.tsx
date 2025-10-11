@@ -79,7 +79,7 @@ async function getBootstrapFromAPI() {
           },
         },
       },
-    };
+    } as unknown as Promise<RootState>;
   return res.json() as Promise<RootState>;
 }
 

@@ -1,3 +1,10 @@
+import {
+  preloadImageBlock,
+  preloadTableBlock,
+  preloadTableOfContentsBlock,
+  preloadTextBlock,
+  preloadVideoBlock,
+} from "@/components/editor/canvas/blocks/BlockRegistry";
 import { DropPayload } from "@/interfaces/dnd";
 import { BlockKind, Templates, TemplateTypes } from "@/interfaces/enum";
 import {
@@ -6,6 +13,7 @@ import {
   LucideProps,
   ScissorsLineDashed,
   SquarePlay,
+  Table,
   TableOfContents,
 } from "lucide-react";
 import React from "react";
@@ -15,6 +23,7 @@ export interface ContentBlockType {
   label: string;
   icon: (props: LucideProps) => React.JSX.Element;
   dragPayload: DropPayload;
+  componentPreload?: () => void;
 }
 
 export const contentBlocks: ContentBlockType[] = [
@@ -22,6 +31,7 @@ export const contentBlocks: ContentBlockType[] = [
     id: "block-text",
     label: "Text",
     icon: (props) => <LetterText {...props} />,
+    componentPreload: preloadTextBlock,
     dragPayload: {
       kind: TemplateTypes.Block,
       data: {
@@ -43,6 +53,7 @@ export const contentBlocks: ContentBlockType[] = [
     id: "block-image",
     label: "Image",
     icon: (props) => <ImageIcon {...props} />,
+    componentPreload: preloadImageBlock,
     dragPayload: {
       kind: TemplateTypes.Block,
       data: {
@@ -64,6 +75,7 @@ export const contentBlocks: ContentBlockType[] = [
     id: "block-video",
     label: "Video",
     icon: (props) => <SquarePlay {...props} />,
+    componentPreload: preloadVideoBlock,
     dragPayload: {
       kind: TemplateTypes.Block,
       data: {
@@ -85,6 +97,7 @@ export const contentBlocks: ContentBlockType[] = [
     id: "block-table-content",
     label: "Table of contents",
     icon: (props) => <TableOfContents {...props} />,
+    componentPreload: preloadTableOfContentsBlock,
     dragPayload: {
       kind: TemplateTypes.Block,
       data: {
@@ -98,6 +111,28 @@ export const contentBlocks: ContentBlockType[] = [
           id: Templates.TableOfContents,
           type: TemplateTypes.Block,
           kind: BlockKind.TableOfContents,
+        },
+      },
+    },
+  },
+  {
+    id: "block-table",
+    label: "Table",
+    icon: (props) => <Table {...props} />,
+    componentPreload: preloadTableBlock,
+    dragPayload: {
+      kind: TemplateTypes.Block,
+      data: {
+        instance: {
+          templateId: Templates.Table,
+          data: {
+            content: "Page break",
+          },
+        },
+        template: {
+          id: Templates.Table,
+          type: TemplateTypes.Block,
+          kind: BlockKind.Table,
         },
       },
     },

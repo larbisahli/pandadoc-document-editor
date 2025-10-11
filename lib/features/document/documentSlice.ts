@@ -3,7 +3,7 @@ import { DocumentMeta } from "@/interfaces/document";
 import { createAppSlice } from "@/lib/createAppSlice";
 import { RootState } from "@/lib/store";
 import { createSelector, type PayloadAction } from "@reduxjs/toolkit";
-import { addBlankPage, deletePageAction } from "../thunks/documentThunks";
+import { addBlankPageAction, deletePageAction } from "../thunks/documentThunks";
 
 type DocumentSliceState = DocumentMeta;
 
@@ -26,7 +26,7 @@ export const documentSlice = createAppSlice({
   }),
   extraReducers: (builder) => {
     builder
-      .addCase(addBlankPage, (state, action) => {
+      .addCase(addBlankPageAction, (state, action) => {
         const { pageId, beforePageId, afterPageId } = action.payload;
         let index = state.pageIds.length;
         if (beforePageId) {

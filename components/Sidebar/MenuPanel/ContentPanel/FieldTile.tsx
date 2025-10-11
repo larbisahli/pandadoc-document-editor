@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { GripVertical } from "lucide-react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FillableFieldType } from "./Fields";
-import { WithDraggable } from "@/dnd";
+import { WithDraggable } from "@/components/dnd";
 import { Templates, TemplateTypes } from "@/interfaces/enum";
 import { useAppSelector } from "@/lib/hooks";
 import { selectTemplate } from "@/lib/features/template/templateSlice";
@@ -35,7 +35,7 @@ const FieldTile = ({ field, templateId }: FieldTileProps) => {
   useEffect(() => {
     // Preload lazy component so we don't see lagging on drop
     requestIdleCallback(() => {
-      void field?.handleComponentPreload?.();
+      void field?.componentPreload?.();
     });
   }, [field]);
 

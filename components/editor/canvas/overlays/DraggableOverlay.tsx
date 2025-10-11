@@ -3,7 +3,7 @@
 import React, { memo, useEffect, useLayoutEffect, useRef } from "react";
 import { browserZoomLevel, makeDragImageFrom } from "./helpers";
 import { OverlayId } from "@/interfaces/common";
-import { FIELD_DATA_FORMAT } from "@/dnd";
+import { FIELD_DATA_FORMAT } from "@/components/dnd";
 import { usePage } from "../context/PageContext";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { selectPageOverlayIds } from "@/lib/features/layout/layoutSlice";
@@ -66,58 +66,9 @@ function DraggableOverlay({ overlayId, children }: DraggableOverlayProps) {
 
   const pageSize = useElementSizesById(pageId, {
     throttle: 200,
-    onChanges: ({ height }) => {
-      // ** Adaptation of field's offsetY when the page height shrinks (block ref deletion) **
-      const prev = prevHRef.current;
-      prevHRef.current = height;
-
-      // shrink-only
-      if (prev == null || height >= prev) return;
-
-      // current top position
-      const y = position?.offsetY ?? 0;
-      // field height
-      const fieldHeight = style?.height ?? 0;
-
-      // bottom distance under the previous height
-      const bottomDist = Math.max(0, prev - (y + fieldHeight));
-
-      // how much the page shrank
-      const shrink = prev - height;
-      // bottom distance under the previous height
-      const prevBottomDist = Math.max(
-        0,
-        prev - (y + fieldHeight) - MIN_BOTTOM_GAP,
-      );
-
-      // TODO WORK ON SAFEGUARD MORE (deletion case)
-      // ✅ safeguard: if we still have enough space at the bottom, do nothing
-      if (prevBottomDist > shrink) return;
-
-      // new offsetY that preserves the same bottom distance under the new height
-      const newOffsetY = height - fieldHeight - bottomDist;
-
-      // clamp to [0, h - fh]
-      const clampedY = Math.max(
-        0,
-        Math.min(newOffsetY, Math.max(0, height - fieldHeight)),
-      );
-
-      if (clampedY !== y) {
-        dispatch(
-          updateFiledPosition({
-            overlayId,
-            offsetX: position?.offsetX ?? 0,
-            offsetY: clampedY,
-          }),
-        );
-      }
-    },
     onChange: ({ height }) => {
       const prev = prevHRef.current;
       prevHRef.current = height;
-
-      console.log(">>>>>", { height }, prev == null || height >= prev);
 
       // only when page height shrinks
       if (prev == null || height >= prev) return;

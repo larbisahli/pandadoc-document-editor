@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { setActiveInstance } from "@/lib/features/rich-editor-ui/richEditorUiSlice";
 import { isFreshSince } from "@/utils";
+import { deleteField } from "@/lib/features/thunks/overlayThunks";
 
 // https://github.com/uiwjs/react-signature
 
@@ -63,7 +64,12 @@ function Signature({ overlayId, instanceId }: BaseFieldProps) {
   );
 
   const handleDelete = () => {
-    // dispatch(deleteBlockRef({ pageId, nodeId, instanceId }));
+    dispatch(
+      deleteField({
+        overlayId,
+        instanceId,
+      }),
+    );
   };
 
   const handleContentProperty = () => {};

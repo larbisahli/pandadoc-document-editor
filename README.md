@@ -13,11 +13,4 @@ This project was created as part of my preparation for **system design and front
 
 <!-- TODO -->
 
-- Block hover drop lines get close to edge problem
-
-- add filed by click (middle)
-- move thunk and action types
-- useClickOutside in all blocks and fields
-- editor slice more types
-- fix root container not found (adding to blank page)
-- clean up junk code from editor
+- Make block/field tooltip absolute portal

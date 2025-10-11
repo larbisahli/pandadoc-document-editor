@@ -1,4 +1,4 @@
-import { PALETTE_DATA_FORMAT } from "@/dnd";
+import { PALETTE_DATA_FORMAT } from "@/components/dnd";
 import { DropEvent, DropPayload } from "@/interfaces/dnd";
 import { DropSide, TemplateTypes } from "@/interfaces/enum";
 import { selectVisiblePageId } from "@/lib/features/layout/layoutSlice";

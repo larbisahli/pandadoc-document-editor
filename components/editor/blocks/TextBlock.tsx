@@ -1,4 +1,6 @@
+"use client";
 import React, {
+  memo,
   useCallback,
   useEffect,
   useMemo,
@@ -260,7 +262,7 @@ function TextBlock({ nodeId, instanceId }: BaseBlockProps) {
         requestEditorFocus();
       }}
       onFocus={onActivate}
-      className="group relatives"
+      className="group relative"
     >
       <BorderWrapper active={active}>
         <div className="relative">
@@ -322,4 +324,4 @@ function TextBlock({ nodeId, instanceId }: BaseBlockProps) {
   );
 }
 
-export default TextBlock;
+export default memo(TextBlock);

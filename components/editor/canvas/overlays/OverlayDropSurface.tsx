@@ -6,7 +6,7 @@ import { clientToCanvas } from "./helpers";
 import clsx from "clsx";
 import { OverlayId } from "@/interfaces/common";
 import { usePage } from "../context/PageContext";
-import { FIELD_DATA_FORMAT } from "@/dnd";
+import { FIELD_DATA_FORMAT } from "@/components/dnd";
 import { snapFinalPosition } from "@/utils/helpers/alignmentGuides";
 
 type OverlayDropSurfaceProps = {

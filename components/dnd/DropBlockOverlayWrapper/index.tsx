@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React from "react";
 import EdgeBlockHighlight from "./EdgeBlockHighlight";
 import clsx from "clsx";
 import { DropPayload } from "@/interfaces/dnd";
@@ -233,11 +233,11 @@ function DropBlockOverlayWrapper({
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDropHandle}
-      className={clsx("relative w-full", className)}
+      className={clsx("relative h-fit w-full p-[3px]", className)}
       data-node-type={dataNodeType}
       style={style}
     >
-      {children}
+      <div className="relative box-content">{children}</div>
       {/* Block highlight overlay */}
       {isDragging && <EdgeBlockHighlight side={activeSide} />}
     </div>

@@ -5,7 +5,7 @@ import { FieldTemplateType, TemplateType } from "@/interfaces/template";
 import { createAppSlice } from "@/lib/createAppSlice";
 import { RootState } from "@/lib/store";
 import { createSelector } from "@reduxjs/toolkit";
-import { updateFieldSize } from "../thunks/overlayThunks";
+import { updateFieldSizeAction } from "../thunks/overlayThunks";
 
 type TemplateSliceState = Normalized<TemplateType>;
 
@@ -22,7 +22,7 @@ export const templatesSlice = createAppSlice({
     selectTemplatesById: (state) => state.byId,
   },
   extraReducers: (builder) => {
-    builder.addCase(updateFieldSize, (state, { payload }) => {
+    builder.addCase(updateFieldSizeAction, (state, { payload }) => {
       const { template, width, height } = payload;
       (state.byId[template.id] as FieldTemplateType).propsSchema.width = width;
       (state.byId[template.id] as FieldTemplateType).propsSchema.height =

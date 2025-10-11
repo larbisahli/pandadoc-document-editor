@@ -1,5 +1,17 @@
+import {
+  CheckboxImagePreview,
+  CollectFilesImagePreview,
+  DateImagePreview,
+  DropdownImagePreview,
+  InitialsImagePreview,
+  RadioImagePreview,
+  SignatureImagePreview,
+  StampImagePreview,
+  TextImagePreview,
+} from "@/components/sidebar/MenuPanel/ContentPanel/FieldPreviews";
+import { defaultTemplates } from "@/core/templates";
 import { InstanceId, OverlayId } from "@/interfaces/common";
-import { FieldKind } from "@/interfaces/enum";
+import { FieldKind, Templates } from "@/interfaces/enum";
 import dynamic from "next/dynamic";
 import React, { ComponentType } from "react";
 
@@ -42,15 +54,87 @@ const CollectFilesLoader = () =>
   import("@/components/editor/fields/CollectFiles");
 const RadioLoader = () => import("@/components/editor/fields/Radio");
 
-export const TextArea = dynamic(TextAreaLoader);
-export const Initials = dynamic(InitialsLoader);
-export const Signature = dynamic(SignatureLoader);
-export const Stamp = dynamic(StampLoader);
-export const Checkbox = dynamic(CheckboxLoader);
-export const Date = dynamic(DateLoader);
-export const Dropdown = dynamic(DropdownLoader);
-export const CollectFiles = dynamic(CollectFilesLoader);
-export const Radio = dynamic(RadioLoader);
+export const TextArea = dynamic(TextAreaLoader, {
+  loading: () => (
+    <TextImagePreview
+      width={defaultTemplates[Templates.Textarea].propsSchema?.width}
+      height={defaultTemplates[Templates.Textarea].propsSchema?.height}
+      isFallback
+    />
+  ),
+});
+export const Initials = dynamic(InitialsLoader, {
+  loading: () => (
+    <InitialsImagePreview
+      width={defaultTemplates[Templates.Initials].propsSchema?.width}
+      height={defaultTemplates[Templates.Initials].propsSchema?.height}
+      isFallback
+    />
+  ),
+});
+export const Signature = dynamic(SignatureLoader, {
+  loading: () => (
+    <SignatureImagePreview
+      width={defaultTemplates[Templates.Signature].propsSchema?.width}
+      height={defaultTemplates[Templates.Signature].propsSchema?.height}
+      isFallback
+    />
+  ),
+});
+export const Stamp = dynamic(StampLoader, {
+  loading: () => (
+    <StampImagePreview
+      width={defaultTemplates[Templates.Stamp].propsSchema?.width}
+      height={defaultTemplates[Templates.Stamp].propsSchema?.height}
+      isFallback
+    />
+  ),
+});
+export const Checkbox = dynamic(CheckboxLoader, {
+  loading: () => (
+    <CheckboxImagePreview
+      width={defaultTemplates[Templates.Checkbox].propsSchema?.width}
+      height={defaultTemplates[Templates.Checkbox].propsSchema?.height}
+      isFallback
+    />
+  ),
+});
+export const Date = dynamic(DateLoader, {
+  loading: () => (
+    <DateImagePreview
+      width={defaultTemplates[Templates.Date].propsSchema?.width}
+      height={defaultTemplates[Templates.Date].propsSchema?.height}
+      isFallback
+    />
+  ),
+});
+export const Dropdown = dynamic(DropdownLoader, {
+  loading: () => (
+    <DropdownImagePreview
+      width={defaultTemplates[Templates.Dropdown].propsSchema?.width}
+      height={defaultTemplates[Templates.Dropdown].propsSchema?.height}
+      isFallback
+    />
+  ),
+});
+export const CollectFiles = dynamic(CollectFilesLoader, {
+  loading: () => (
+    <CollectFilesImagePreview
+      width={defaultTemplates[Templates.CollectFiles].propsSchema?.width}
+      height={defaultTemplates[Templates.CollectFiles].propsSchema?.height}
+      isFallback
+    />
+  ),
+});
+export const Radio = dynamic(RadioLoader, {
+  loading: () => (
+    <RadioImagePreview
+      width={defaultTemplates[Templates.Radio].propsSchema?.width}
+      height={defaultTemplates[Templates.Radio].propsSchema?.height}
+      isFallback
+    />
+  ),
+});
 
 // warm the chunk on drag
 export const preloadTextAreaField = () => TextAreaLoader();

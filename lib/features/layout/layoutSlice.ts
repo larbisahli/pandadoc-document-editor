@@ -6,10 +6,10 @@ import { RootState } from "@/lib/store";
 import { createSelector, type PayloadAction } from "@reduxjs/toolkit";
 import { applyDrop } from "./layout-apply-drop";
 import { detachFromParent } from "./helpers";
-import { insertFieldCommitted } from "../thunks/overlayThunks";
-import { dropApplied } from "../thunks/layoutThunks";
+import { insertFieldCommittedAction } from "../thunks/overlayThunks";
+import { dropAppliedAction } from "../thunks/layoutThunks";
 import {
-  addBlankPage,
+  addBlankPageAction,
   deleteBlockRefAction,
   deletePageAction,
 } from "../thunks/documentThunks";
@@ -80,19 +80,19 @@ export const layoutSlice = createAppSlice({
   }),
   extraReducers: (builder) => {
     builder
-      .addCase(insertFieldCommitted, (state, { payload }) => {
+      .addCase(insertFieldCommittedAction, (state, { payload }) => {
         const { pageId, overlay } = payload;
         const page = state.pages[pageId];
         if (page) {
           page.overlayIds.push(overlay.id);
         }
       })
-      .addCase(dropApplied, (state, action) => {
+      .addCase(dropAppliedAction, (state, action) => {
         const dropEvent = action.payload;
         const page = state.pages[dropEvent.pageId];
         applyDrop(page.byId, dropEvent, page.rootId);
       })
-      .addCase(addBlankPage, (state, action) => {
+      .addCase(addBlankPageAction, (state, action) => {
         const event = action.payload;
         state.pages[event.pageId] = {
           rootId: event?.rootId,

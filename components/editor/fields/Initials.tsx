@@ -18,6 +18,7 @@ import { ActionsTooltip } from "@/components/ui/ActionsTooltip";
 import { Copy, CopyPlus, SlidersHorizontal, Trash2 } from "lucide-react";
 import { setActiveInstance } from "@/lib/features/rich-editor-ui/richEditorUiSlice";
 import { isFreshSince } from "@/utils";
+import { deleteField } from "@/lib/features/thunks/overlayThunks";
 
 function Initials({ overlayId, instanceId }: BaseFieldProps) {
   const fieldRef = useRef<HTMLDivElement>(null);
@@ -55,7 +56,12 @@ function Initials({ overlayId, instanceId }: BaseFieldProps) {
   );
 
   const handleDelete = () => {
-    // dispatch(deleteBlockRef({ pageId, nodeId, instanceId }));
+    dispatch(
+      deleteField({
+        overlayId,
+        instanceId,
+      }),
+    );
   };
 
   const handleContentProperty = () => {};

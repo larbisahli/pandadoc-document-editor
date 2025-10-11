@@ -4,7 +4,9 @@ import { newInstanceId } from "@/utils/ids";
 import { createAction } from "@reduxjs/toolkit";
 import { nowUnixMs } from "@/utils";
 
-export const dropApplied = createAction<DropEvent>("layout/dropApplied");
+export const dropAppliedAction = createAction<DropEvent>(
+  "layout/dropAppliedAction",
+);
 
 export const dropCommitted =
   (dropEvent: DropEvent) =>
@@ -30,5 +32,5 @@ export const dropCommitted =
         },
       },
     } as DropEvent;
-    dispatch(dropApplied(payload));
+    dispatch(dropAppliedAction(payload));
   };

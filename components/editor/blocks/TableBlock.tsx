@@ -1,3 +1,4 @@
+"use client";
 import {
   memo,
   useCallback,
@@ -7,36 +8,39 @@ import {
   useState,
   useTransition,
 } from "react";
-import { BaseFieldProps } from "../canvas/overlays/FieldRegistry";
+import { BaseBlockProps } from "../canvas/blocks/BlockRegistry";
+import { useClickOutside } from "../hooks/useClickOutside";
+import clsx from "clsx";
+import BorderWrapper from "./BorderWrapper";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { selectInstance } from "@/lib/features/instance/instanceSlice";
-import { useClickOutside } from "../hooks/useClickOutside";
-import { generateAvatarColors } from "@/utils/colors";
-import { selectRecipientsById } from "@/lib/features/recipient/recipientSlice";
-import clsx from "clsx";
 import { ActionsTooltip } from "@/components/ui/ActionsTooltip";
 import {
-  CalendarDays,
   Copy,
   CopyPlus,
+  ListPlus,
+  LockKeyholeOpen,
+  MessageSquarePlus,
   SlidersHorizontal,
   Trash2,
 } from "lucide-react";
+import { usePage } from "../canvas/context/PageContext";
+import { deleteBlockRef } from "@/lib/features/thunks/documentThunks";
 import { setActiveInstance } from "@/lib/features/rich-editor-ui/richEditorUiSlice";
 import { isFreshSince } from "@/utils";
-import { deleteField } from "@/lib/features/thunks/overlayThunks";
+import * as React from "react";
+import DynamicEditableTable from "./PricingTable";
 
-function Date({ overlayId, instanceId }: BaseFieldProps) {
-  const fieldRef = useRef<HTMLDivElement>(null);
+// https://github.com/TanStack/table
+// https://www.npmjs.com/package/react-table
+function TableBlock({ nodeId, instanceId }: BaseBlockProps) {
+  const blockRef = useRef<HTMLDivElement>(null);
+
+  const { pageId } = usePage();
 
   const instance = useAppSelector((state) => selectInstance(state, instanceId));
 
   const dispatch = useAppDispatch();
-
-  const byId = useAppSelector(selectRecipientsById);
-  const fieldRecipient = instance?.recipientId
-    ? byId[instance.recipientId]
-    : undefined;
 
   const [active, setActive] = useState(false);
   const [, startTransition] = useTransition();
@@ -46,7 +50,12 @@ function Date({ overlayId, instanceId }: BaseFieldProps) {
     dispatch(setActiveInstance(null));
   }, [dispatch]);
 
-  useClickOutside(fieldRef, onOutside, { enabled: active });
+  const ignoreSelectors = useMemo(
+    () => ["[data-rich-editor-toolbar]", "#richEditorToolbar"],
+    [],
+  );
+
+  useClickOutside(blockRef, onOutside, { enabled: active, ignoreSelectors });
 
   // Focus once when freshly dropped
   useEffect(() => {
@@ -56,15 +65,11 @@ function Date({ overlayId, instanceId }: BaseFieldProps) {
     });
   }, [instance?.createdAt]);
 
-  const color = useMemo(
-    () => generateAvatarColors(fieldRecipient?.color, 0.9),
-    [fieldRecipient?.color],
-  );
-
   const handleDelete = () => {
     dispatch(
-      deleteField({
-        overlayId,
+      deleteBlockRef({
+        pageId,
+        nodeId,
         instanceId,
       }),
     );
@@ -74,27 +79,27 @@ function Date({ overlayId, instanceId }: BaseFieldProps) {
 
   return (
     <div
-      ref={fieldRef}
+      ref={blockRef}
+      className="group relative"
       onClick={() => setActive(true)}
-      style={{
-        background: color.bgRgba,
-        borderColor: color.ringHex,
-        color: color.textHex,
-      }}
-      className={clsx(
-        "relative flex h-full w-full items-center justify-between rounded-[2px] border p-1 text-sm font-medium",
-        active && "z-50 ring-1 ring-current! ring-inset",
-      )}
     >
-      <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-        MM / DD / YYYY
-      </span>
-      <div className="h-[18px] w-[18px] text-gray-600">
-        <CalendarDays size={18} />
-      </div>
+      <BorderWrapper active={active}>
+        <div
+          className={clsx("flex flex-col", !active && "pointer-events-none")}
+        >
+          <DynamicEditableTable />
+        </div>
+      </BorderWrapper>
       <ActionsTooltip
         active={active}
         actions={[
+          {
+            key: "add-to-library",
+            label: "Add to library",
+            icon: () => <ListPlus size={22} />,
+            onSelect: handleContentProperty,
+            line: true,
+          },
           {
             key: "copy-block",
             label: "Copy (⌘+C)",
@@ -108,10 +113,24 @@ function Date({ overlayId, instanceId }: BaseFieldProps) {
             onSelect: handleContentProperty,
           },
           {
+            key: "add-comment",
+            label: "Add a comment",
+            icon: () => <MessageSquarePlus size={22} />,
+            onSelect: handleContentProperty,
+            line: true,
+          },
+          {
             key: "content-property",
             label: "Properties",
             icon: () => <SlidersHorizontal size={22} />,
             onSelect: handleContentProperty,
+          },
+          {
+            key: "restriction",
+            label: "Restrict users from editing and/or removing this block",
+            icon: () => <LockKeyholeOpen size={22} />,
+            onSelect: handleContentProperty,
+            line: true,
           },
           {
             key: "delete",
@@ -126,4 +145,4 @@ function Date({ overlayId, instanceId }: BaseFieldProps) {
   );
 }
 
-export default memo(Date);
+export default memo(TableBlock);

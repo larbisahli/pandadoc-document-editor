@@ -24,6 +24,7 @@ export enum BlockKind {
   Video = "video",
   TableOfContents = "table_of_contents",
   PageBreak = "page_break",
+  Table = "table",
 }
 
 // Field Template Kinds
@@ -45,6 +46,7 @@ export enum Templates {
   Image = "tpl-image",
   Video = "tpl-video",
   PageBreak = "tpl-page-break",
+  Table = "tpl-table",
   Signature = "tpl-signature",
   Initials = "tpl-initials",
   Checkbox = "tpl-checkbox",

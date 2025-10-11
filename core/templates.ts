@@ -31,6 +31,11 @@ export const defaultTemplates = {
     type: TemplateTypes.Block,
     kind: BlockKind.TableOfContents,
   },
+  [Templates.Table]: {
+    id: Templates.Table,
+    type: TemplateTypes.Block,
+    kind: BlockKind.Table,
+  },
   [Templates.Textarea]: {
     id: Templates.Textarea,
     type: TemplateTypes.Field,
