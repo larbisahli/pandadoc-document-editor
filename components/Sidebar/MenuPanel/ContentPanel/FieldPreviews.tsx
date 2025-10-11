@@ -10,26 +10,17 @@ import React from "react";
 export const TextImagePreview = ({
   width,
   height,
-  isFallback = false,
 }: {
   width: number;
   height: number;
-  isFallback?: boolean;
 }) => (
   <div
     className="ghost pointer-events-none absolute inset-0 rounded-[2px]"
     style={{
       boxShadow: "0 8px 24px rgba(0,0,0,.2)",
+      opacity: 0.001, // must be in DOM and near-zero opacity
       width,
       height,
-      ...(isFallback
-        ? {
-            background: "var(--color-dnd-enter)",
-            outline: "1px solid var(--color-dnd-enter)",
-          }
-        : {
-            opacity: 0.001, // must be in DOM and near-zero opacity
-          }),
     }}
   >
     <div className="h-full w-full bg-white p-1 opacity-70">Enter value</div>
@@ -49,16 +40,9 @@ export const SignatureImagePreview = ({
     className="ghost pointer-events-none absolute inset-0 rounded-[2px]"
     style={{
       boxShadow: "0 8px 24px rgba(0,0,0,.2)",
+      opacity: 0.001, // must be in DOM and near-zero opacity
       width,
       height,
-      ...(isFallback
-        ? {
-            background: "var(--color-dnd-enter)",
-            outline: "1px solid var(--color-dnd-enter)",
-          }
-        : {
-            opacity: 0.001, // must be in DOM and near-zero opacity
-          }),
     }}
   >
     <div className="flex h-full w-full items-center justify-center bg-white text-sm font-semibold text-gray-800 opacity-70">
@@ -81,16 +65,9 @@ export const InitialsImagePreview = ({
     className="ghost pointer-events-none absolute inset-0 rounded-[2px]"
     style={{
       boxShadow: "0 8px 24px rgba(0,0,0,.2)",
+      opacity: 0.001, // must be in DOM and near-zero opacity
       width,
       height,
-      ...(isFallback
-        ? {
-            background: "var(--color-dnd-enter)",
-            outline: "1px solid var(--color-dnd-enter)",
-          }
-        : {
-            opacity: 0.001, // must be in DOM and near-zero opacity
-          }),
     }}
   >
     <div className="flex h-full w-full items-center justify-center bg-white font-medium text-gray-800 opacity-70">
@@ -112,16 +89,9 @@ export const CheckboxImagePreview = ({
     className="ghost pointer-events-none absolute inset-0 flex items-center justify-center rounded-[2px] border border-gray-50 bg-white! p-1"
     style={{
       boxShadow: "0 8px 24px rgba(0,0,0,.2)",
+      opacity: 0.001, // must be in DOM and near-zero opacity
       width,
       height,
-      ...(isFallback
-        ? {
-            background: "var(--color-dnd-enter)",
-            outline: "1px solid var(--color-dnd-enter)",
-          }
-        : {
-            opacity: 0.001, // must be in DOM and near-zero opacity
-          }),
     }}
   >
     <div className="h-full w-full border border-gray-900 bg-white"></div>
@@ -141,16 +111,9 @@ export const DateImagePreview = ({
     className="ghost pointer-events-none absolute inset-0 rounded-[1px] border border-gray-50"
     style={{
       boxShadow: "0 8px 24px rgba(0,0,0,.2)",
+      opacity: 0.001, // must be in DOM and near-zero opacity
       width,
       height,
-      ...(isFallback
-        ? {
-            background: "var(--color-dnd-enter)",
-            outline: "1px solid var(--color-dnd-enter)",
-          }
-        : {
-            opacity: 0.001, // must be in DOM and near-zero opacity
-          }),
     }}
   >
     <div className="flex h-full w-full items-center justify-between bg-white text-gray-800 opacity-70">
@@ -173,16 +136,9 @@ export const StampImagePreview = ({
     className="ghost pointer-events-none absolute inset-0 rounded-[2px]"
     style={{
       boxShadow: "0 8px 24px rgba(0,0,0,.2)",
+      opacity: 0.001, // must be in DOM and near-zero opacity
       width,
       height,
-      ...(isFallback
-        ? {
-            background: "var(--color-dnd-enter)",
-            outline: "1px solid var(--color-dnd-enter)",
-          }
-        : {
-            opacity: 0.001, // must be in DOM and near-zero opacity
-          }),
     }}
   >
     <div className="flex h-full w-full items-center justify-center bg-white text-sm font-semibold text-gray-800 opacity-70">
@@ -205,16 +161,9 @@ export const DropdownImagePreview = ({
     className="ghost pointer-events-none absolute inset-0 rounded-[2px]"
     style={{
       boxShadow: "0 8px 24px rgba(0,0,0,.2)",
+      opacity: 0.001, // must be in DOM and near-zero opacity
       width,
       height,
-      ...(isFallback
-        ? {
-            background: "var(--color-dnd-enter)",
-            outline: "1px solid var(--color-dnd-enter)",
-          }
-        : {
-            opacity: 0.001, // must be in DOM and near-zero opacity
-          }),
     }}
   >
     <div className="flex h-full w-full items-center justify-between bg-white text-sm text-gray-800 opacity-70">
@@ -237,16 +186,9 @@ export const CollectFilesImagePreview = ({
     className="ghost pointer-events-none absolute inset-0 rounded-[2px]"
     style={{
       boxShadow: "0 8px 24px rgba(0,0,0,.2)",
+      opacity: 0.001, // must be in DOM and near-zero opacity
       width,
       height,
-      ...(isFallback
-        ? {
-            background: "var(--color-dnd-enter)",
-            outline: "1px solid var(--color-dnd-enter)",
-          }
-        : {
-            opacity: 0.001, // must be in DOM and near-zero opacity
-          }),
     }}
   >
     <div className="flex h-full w-full items-center justify-center bg-white text-sm text-gray-800 opacity-70">
@@ -259,26 +201,17 @@ export const CollectFilesImagePreview = ({
 export const RadioImagePreview = ({
   width,
   height,
-  isFallback = false,
 }: {
   width: number;
   height: number;
-  isFallback?: boolean;
 }) => (
   <div
     className="ghost pointer-events-none absolute inset-0 rounded-[2px]"
     style={{
       boxShadow: "0 8px 24px rgba(0,0,0,.2)",
+      opacity: 0.001, // must be in DOM and near-zero opacity
       width,
       height,
-      ...(isFallback
-        ? {
-            background: "var(--color-dnd-enter)",
-            outline: "1px solid var(--color-dnd-enter)",
-          }
-        : {
-            opacity: 0.001, // must be in DOM and near-zero opacity
-          }),
     }}
   >
     <div className="flex h-full w-full flex-col items-center justify-center bg-white text-sm text-gray-800 opacity-70">

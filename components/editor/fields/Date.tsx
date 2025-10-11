@@ -26,6 +26,7 @@ import { setActiveInstance } from "@/lib/features/rich-editor-ui/richEditorUiSli
 import { isFreshSince } from "@/utils";
 import { deleteField } from "@/lib/features/thunks/overlayThunks";
 
+// http://react-dates.github.io/react-dates/?path=/story/singledatepicker-sdp--default
 function Date({ overlayId, instanceId }: BaseFieldProps) {
   const fieldRef = useRef<HTMLDivElement>(null);
 
