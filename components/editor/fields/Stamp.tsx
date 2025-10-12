@@ -25,6 +25,7 @@ import {
 import { setActiveInstance } from "@/lib/features/rich-editor-ui/richEditorUiSlice";
 import { isFreshSince } from "@/utils";
 import { deleteField } from "@/lib/features/thunks/overlayThunks";
+import ActionsTooltipPortalWrapper from "@/components/ui/ActionsTooltip/ActionsTooltipPortalWrapper";
 
 function Stamp({ overlayId, instanceId }: BaseFieldProps) {
   const fieldRef = useRef<HTMLDivElement>(null);
@@ -90,36 +91,58 @@ function Stamp({ overlayId, instanceId }: BaseFieldProps) {
         <StampIcon className="mr-1" />
         Stamp
       </div>
-      <ActionsTooltip
-        active={active}
-        actions={[
-          {
-            key: "copy-block",
-            label: "Copy (⌘+C)",
-            icon: () => <Copy size={22} />,
-            onSelect: handleContentProperty,
-          },
-          {
-            key: "duplicate-block",
-            label: "Duplicate block",
-            icon: () => <CopyPlus size={22} />,
-            onSelect: handleContentProperty,
-          },
-          {
-            key: "content-property",
-            label: "Properties",
-            icon: () => <SlidersHorizontal size={22} />,
-            onSelect: handleContentProperty,
-          },
-          {
-            key: "delete",
-            label: "Delete",
-            icon: () => <Trash2 size={22} />,
-            danger: true,
-            onSelect: handleDelete,
-          },
-        ]}
-      />
+      <ActionsTooltipPortalWrapper
+        nodeId={overlayId}
+        open={active}
+        anchorRef={fieldRef}
+        offset={10}
+      >
+        <ActionsTooltip
+          active={active}
+          actions={[
+            {
+              key: "recipient",
+              label: "Who needs to fill this out?",
+              icon: () => (
+                <div className="flex items-center justify-center">
+                  <div
+                    style={{ background: color.ringHex }}
+                    className="mr-1 h-2 w-2 rounded-full"
+                  ></div>
+                  Sender
+                </div>
+              ),
+              onSelect: handleContentProperty,
+              line: true,
+            },
+            {
+              key: "copy-block",
+              label: "Copy (⌘+C)",
+              icon: () => <Copy size={22} />,
+              onSelect: handleContentProperty,
+            },
+            {
+              key: "duplicate-block",
+              label: "Duplicate block",
+              icon: () => <CopyPlus size={22} />,
+              onSelect: handleContentProperty,
+            },
+            {
+              key: "content-property",
+              label: "Properties",
+              icon: () => <SlidersHorizontal size={22} />,
+              onSelect: handleContentProperty,
+            },
+            {
+              key: "delete",
+              label: "Delete",
+              icon: () => <Trash2 size={22} />,
+              danger: true,
+              onSelect: handleDelete,
+            },
+          ]}
+        />
+      </ActionsTooltipPortalWrapper>
     </div>
   );
 }

@@ -7,9 +7,10 @@ import {
   Ellipsis,
   FileDown,
   Folder,
+  Loader,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Tooltip from "../ui/Tooltip";
 import GithubIcon from "../ui/icons/github";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
@@ -18,13 +19,14 @@ import {
   updateDocTitle,
 } from "@/lib/features/document/documentSlice";
 import { useDebounceCallback } from "@/hooks/useDebounceCallback";
-import { exportPdf } from "../ui/download-pdf";
 
 const Header = () => {
   const ref = useRef<HTMLDivElement>(null);
 
   const title = useAppSelector(selectDocTitle);
   const dispatch = useAppDispatch();
+
+  const [loading, setLoading] = useState(false);
 
   // Keep UI in sync with external store updates
   useEffect(() => {
@@ -43,6 +45,23 @@ const Header = () => {
       debouncedUpdate(ref.current.innerText);
     }
   };
+
+  async function exportPdf() {
+    setLoading(true);
+    const resp = await fetch("/api/export-pdf");
+    if (!resp.ok) {
+      setLoading(false);
+      throw new Error("Export failed");
+    }
+    const blob = await resp.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "agreement.pdf";
+    a.click();
+    URL.revokeObjectURL(url);
+    setLoading(false);
+  }
 
   return (
     <nav className="border-primary flex h-15 items-center justify-between border-b">
@@ -92,7 +111,11 @@ const Header = () => {
             <span className="flex items-center text-sm font-medium">
               Export
             </span>
-            <FileDown className="ml-2" size={20} />
+            {loading ? (
+              <Loader className="ml-2 animate-spin" size={20} />
+            ) : (
+              <FileDown className="ml-2" size={20} />
+            )}
           </button>
           <button className="hover:bg-hover text-muted ml-3 flex items-center rounded-[4px] px-1 py-[5px]">
             <Ellipsis className="rotate-90" size={20} />

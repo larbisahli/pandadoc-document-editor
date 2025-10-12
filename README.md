@@ -14,3 +14,5 @@ This project was created as part of my preparation for **system design and front
 <!-- TODO -->
 
 - Make block/field tooltip absolute portal
+- document Preview mode
+- Resize images

@@ -30,6 +30,7 @@ import YouTube, { YouTubeProps } from "react-youtube";
 import { deleteBlockRef } from "@/lib/features/thunks/documentThunks";
 import { setActiveInstance } from "@/lib/features/rich-editor-ui/richEditorUiSlice";
 import { isFreshSince } from "@/utils";
+import ActionsTooltipPortalWrapper from "@/components/ui/ActionsTooltip/ActionsTooltipPortalWrapper";
 
 function VideoBlock({ nodeId, instanceId }: BaseBlockProps) {
   const { pageId } = usePage();
@@ -117,57 +118,63 @@ function VideoBlock({ nodeId, instanceId }: BaseBlockProps) {
           </div>
         )}
       </BorderWrapper>
-      <ActionsTooltip
-        active={active}
-        actions={[
-          {
-            key: "add-to-library",
-            label: "Add to library",
-            icon: () => <ListPlus size={22} />,
-            onSelect: handleContentProperty,
-            line: true,
-          },
-          {
-            key: "copy-block",
-            label: "Copy (⌘+C)",
-            icon: () => <Copy size={22} />,
-            onSelect: handleContentProperty,
-          },
-          {
-            key: "duplicate-block",
-            label: "Duplicate block",
-            icon: () => <CopyPlus size={22} />,
-            onSelect: handleContentProperty,
-          },
-          {
-            key: "add-comment",
-            label: "Add a comment",
-            icon: () => <MessageSquarePlus size={22} />,
-            onSelect: handleContentProperty,
-            line: true,
-          },
-          {
-            key: "content-property",
-            label: "Properties",
-            icon: () => <SlidersHorizontal size={22} />,
-            onSelect: handleContentProperty,
-          },
-          {
-            key: "restriction",
-            label: "Restrict users from editing and/or removing this block",
-            icon: () => <LockKeyholeOpen size={22} />,
-            onSelect: handleContentProperty,
-            line: true,
-          },
-          {
-            key: "delete",
-            label: "Delete",
-            icon: () => <Trash2 size={22} />,
-            danger: true,
-            onSelect: handleDelete,
-          },
-        ]}
-      />
+      <ActionsTooltipPortalWrapper
+        open={active}
+        anchorRef={blockRef}
+        offset={20}
+      >
+        <ActionsTooltip
+          active={active}
+          actions={[
+            {
+              key: "add-to-library",
+              label: "Add to library",
+              icon: () => <ListPlus size={22} />,
+              onSelect: handleContentProperty,
+              line: true,
+            },
+            {
+              key: "copy-block",
+              label: "Copy (⌘+C)",
+              icon: () => <Copy size={22} />,
+              onSelect: handleContentProperty,
+            },
+            {
+              key: "duplicate-block",
+              label: "Duplicate block",
+              icon: () => <CopyPlus size={22} />,
+              onSelect: handleContentProperty,
+            },
+            {
+              key: "add-comment",
+              label: "Add a comment",
+              icon: () => <MessageSquarePlus size={22} />,
+              onSelect: handleContentProperty,
+              line: true,
+            },
+            {
+              key: "content-property",
+              label: "Properties",
+              icon: () => <SlidersHorizontal size={22} />,
+              onSelect: handleContentProperty,
+            },
+            {
+              key: "restriction",
+              label: "Restrict users from editing and/or removing this block",
+              icon: () => <LockKeyholeOpen size={22} />,
+              onSelect: handleContentProperty,
+              line: true,
+            },
+            {
+              key: "delete",
+              label: "Delete",
+              icon: () => <Trash2 size={22} />,
+              danger: true,
+              onSelect: handleDelete,
+            },
+          ]}
+        />
+      </ActionsTooltipPortalWrapper>
     </div>
   );
 }

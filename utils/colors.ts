@@ -160,17 +160,16 @@ function circularHueDist(a: number, b: number) {
   return d > 180 ? 360 - d : d;
 }
 
-// Generate a new unique user color
-const userColor = generateUniqueUserColor(["#f3eaff", "#ffe3e0"]);
-// => "#e7f9f0"
+// // Generate a new unique user color
+// const userColor = generateUniqueUserColor(["#f3eaff", "#ffe3e0"]);
+// // => "#e7f9f0"
 
-// Turn that color into avatar styles
-const avatar = generateAvatarColors(userColor, 0.3);
-console.log(avatar);
-/*
-{
-  bgRgba: "rgba(231, 249, 240, 0.3)",
-  textHex: "#1b7d4a",
-  ringHex: "#92d3af"
-}
-*/
+// // Turn that color into avatar styles
+// const avatar = generateAvatarColors(userColor, 0.3);
+// /*
+// {
+//   bgRgba: "rgba(231, 249, 240, 0.3)",
+//   textHex: "#1b7d4a",
+//   ringHex: "#92d3af"
+// }
+// */
