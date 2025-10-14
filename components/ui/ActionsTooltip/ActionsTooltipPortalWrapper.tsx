@@ -166,7 +166,7 @@ export function useFloating(
       { width, height },
       {
         offset: options?.offset ?? 8,
-        stopTop: padTop + 90,
+        stopTop: padTop + 37,
       },
     );
 
@@ -249,7 +249,6 @@ export default function ActionsTooltipPortalWrapper({
   });
 
   React.useEffect(() => {
-    console.log(">>>>SSS", open && !dragging);
     if (open && !dragging) {
       // Use setTimeout to not race the else statement
       setTimeout(() => {

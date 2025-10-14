@@ -46,7 +46,12 @@ export async function GET(req: Request) {
       format: "A4",
       printBackground: true,
       waitForFonts: true,
-      margin: { top: "16mm", right: "16mm", bottom: "16mm", left: "16mm" },
+      margin: { top: "18mm", right: "14mm", bottom: "18mm", left: "14mm" },
+      footerTemplate: `
+    <div style="font-size:8pt;width:100%;text-align:center;">
+      Page <span class="pageNumber"></span> of <span class="totalPages"></span>
+    </div>`,
+      displayHeaderFooter: true,
     });
 
     await page.close();

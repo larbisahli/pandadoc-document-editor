@@ -73,7 +73,11 @@ function ImageBlock({ nodeId, instanceId }: BaseBlockProps) {
   }, [dispatch]);
 
   const ignoreSelectors = useMemo(
-    () => ["[data-rich-editor-toolbar]", "#richEditorToolbar"],
+    () => [
+      "[data-actions-toolbar]",
+      "[data-rich-editor-toolbar]",
+      "#richEditorToolbar",
+    ],
     [],
   );
 

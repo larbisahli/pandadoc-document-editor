@@ -41,24 +41,105 @@ body {
 
 /* -----< PDF PRINT >----- */
 
+@page {
+  size: A4;
+  /* or: 210mm 297mm, or: Letter */
+  margin: 12mm 14mm 16mm;
+  /* top right bottom left */
+}
+
 @media print {
-  @page {
-    size: A4;
-    margin: 16mm;
-  }
+  /* Page background & dark-mode reset */
   html,
   body {
-    margin: 0;
-    padding: 0;
-    background: white;
+    background: #fff !important;
+    color: #000 !important;
   }
+
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Hide nav/controls, show print-only blocks */
+  .no-print,
+  nav,
+  header.site,
+  footer.site {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  /* Typography */
+  body {
+    font:
+      12pt/1.35 system-ui,
+      -apple-system,
+      Segoe UI,
+      Roboto,
+      "Helvetica Neue",
+      Arial,
+      sans-serif;
+  }
+
+  /* Force breaks where needed */
+  .page-break {
+    break-before: page;
+  }
+
+  .page-break-after {
+    break-after: page;
+  }
+
+  /* Keep-component-together */
+  .avoid-break {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Remove animations/transitions that jitter in print layout */
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  /* Fixed header/footer repeat on each page (Chrome) */
+  .print-header,
+  .print-footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    color: #555;
+  }
+
+  .print-header {
+    top: 0;
+  }
+
+  .print-footer {
+    bottom: 0;
+  }
+
+  body {
+    margin-top: 24mm;
+    margin-bottom: 18mm;
+  }
+
+  /* reserve space so content doesn't overlap */
 }
+
 /* ---------- */
 
 /* Helpers for pagination and layout control in PDFs */
 .page-break {
   break-before: page;
 }
+
 .avoid-break {
   break-inside: avoid;
 }
@@ -107,6 +188,7 @@ button {
   line-height: 2.5rem;
   margin: 0.75rem 0 0.5rem;
 }
+
 .re-h2 {
   font-weight: 700;
   letter-spacing: -0.005em;
@@ -114,12 +196,14 @@ button {
   line-height: 2rem;
   margin: 0.6rem 0 0.4rem;
 }
+
 .re-h3 {
   font-weight: 700;
   font-size: 1.25rem;
   line-height: 1.75rem;
   margin: 0.5rem 0 0.35rem;
 }
+
 .re-quote {
   border-left: 3px solid #e5e7eb;
   padding-left: 0.75rem;
@@ -130,12 +214,15 @@ button {
 .re-align-left {
   text-align: left;
 }
+
 .re-align-center {
   text-align: center;
 }
+
 .re-align-right {
   text-align: right;
 }
+
 .re-align-justify {
   text-align: justify;
 }
@@ -156,7 +243,8 @@ button {
 /* Global CSS (e.g., globals.css) */
 .tiptap ul {
   list-style: disc;
-  padding-left: 1.5rem; /* indent bullets */
+  padding-left: 1.5rem;
+  /* indent bullets */
   margin: 0.5rem 0;
 }
 
@@ -174,12 +262,15 @@ button {
 .tiptap ul ul {
   list-style: circle;
 }
+
 .tiptap ul ul ul {
   list-style: square;
 }
+
 .tiptap ol ol {
   list-style: lower-alpha;
 }
+
 .tiptap ol ol ol {
   list-style: lower-roman;
 }
@@ -189,18 +280,22 @@ button {
   font-size: 2rem;
   font-weight: bold;
 }
+
 .tiptap h2 {
   font-size: 1.75rem;
   font-weight: bold;
 }
+
 .tiptap h3 {
   font-size: 1.5rem;
   font-weight: bold;
 }
+
 .tiptap h4 {
   font-size: 1.25rem;
   font-weight: 600;
 }
+
 .tiptap h5 {
   font-size: 1.1rem;
   font-weight: 600;
@@ -229,9 +324,11 @@ button {
 .tiptap .ProseMirror:focus {
   outline: none;
 }
+
 .tiptap .ProseMirror:focus-visible {
   outline: none;
 }
+
 .tiptap .ProseMirror-focused {
   outline: none;
 }
@@ -267,7 +364,8 @@ button {
   pointer-events: none;
   transition:
     opacity 160ms ease,
-    transform 160ms cubic-bezier(0.22, 0.61, 0.36, 1); /* springy-ish */
+    transform 160ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  /* springy-ish */
 }
 
 /* When open: fade in + rise up slightly */

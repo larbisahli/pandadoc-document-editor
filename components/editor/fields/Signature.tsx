@@ -49,7 +49,9 @@ function Signature({ overlayId, instanceId }: BaseFieldProps) {
     dispatch(setActiveInstance(null));
   }, [dispatch]);
 
-  useClickOutside(fieldRef, onOutside, { enabled: active });
+  const ignoreSelectors = useMemo(() => ["[data-actions-toolbar]"], []);
+
+  useClickOutside(fieldRef, onOutside, { enabled: active, ignoreSelectors });
 
   // Focus once when freshly dropped
   useEffect(() => {

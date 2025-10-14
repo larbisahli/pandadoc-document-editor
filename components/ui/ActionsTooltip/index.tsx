@@ -32,7 +32,7 @@ export function ActionsTooltip({
   const panelRef = useRef<HTMLDivElement>(null);
   const menuId = useId();
   return (
-    <div id={menuId} role="menu">
+    <div data-actions-toolbar id={menuId} role="menu">
       <div
         ref={panelRef}
         className={clsx(

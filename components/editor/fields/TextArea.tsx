@@ -49,12 +49,14 @@ function TextArea({ overlayId, instanceId }: BaseFieldProps) {
     [fieldRecipient?.color],
   );
 
+  const ignoreSelectors = useMemo(() => ["[data-actions-toolbar]"], []);
+
   const onOutside = useCallback(() => {
     setActive(false);
     dispatch(setActiveInstance(null));
   }, [dispatch]);
 
-  useClickOutside(fieldRef, onOutside, { enabled: active });
+  useClickOutside(fieldRef, onOutside, { enabled: active, ignoreSelectors });
 
   // Focus once when freshly dropped
   useEffect(() => {

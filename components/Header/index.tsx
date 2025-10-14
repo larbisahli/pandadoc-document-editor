@@ -5,6 +5,7 @@ import {
   Check,
   CircleQuestionMark,
   Ellipsis,
+  Eye,
   FileDown,
   Folder,
   Loader,
@@ -117,6 +118,16 @@ const Header = () => {
               <FileDown className="ml-2" size={20} />
             )}
           </button>
+          <Link
+            href="/pdf/print"
+            target="_blank"
+            className="bg-green-primary mx-2 flex items-center rounded-[4px] px-3 py-[5px] text-white"
+          >
+            <span className="flex items-center text-sm font-medium">
+              Preview
+            </span>
+            <Eye className="ml-2" size={20} />
+          </Link>
           <button className="hover:bg-hover text-muted ml-3 flex items-center rounded-[4px] px-1 py-[5px]">
             <Ellipsis className="rotate-90" size={20} />
           </button>
