@@ -21,13 +21,10 @@ function ImageBlock({ instanceId }: BaseBlockProps) {
         role="button"
         tabIndex={0}
         className={clsx(
-          "relative flex w-full cursor-pointer items-center justify-center overflow-hidden bg-[#f7f7f7] text-[#767676]",
+          "relative flex w-full items-center justify-center overflow-hidden bg-[#f7f7f7] text-[#767676]",
           !data?.url && "min-h-[64px]",
         )}
         aria-label="Click to upload an image"
-        // style={
-        //   previewUrl && heightPx ? { height: `${heightPx}px` } : undefined
-        // }
       >
         {!data?.url ? (
           <>
