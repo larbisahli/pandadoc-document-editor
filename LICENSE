@@ -1,17 +1,21 @@
-Copyright (c) 2025 Larbi Sahli. All rights reserved.
+MIT License
 
-This software and associated documentation files (the "Software") are the exclusive property of Larbi Sahli ("Author").
+Copyright (c) 2025 Larbi Sahli.
 
-Permission is not granted to any person or organization to use, copy, modify, merge, publish, distribute, sublicense, sell, 
-or create derivative works of the Software, in whole or in part, without the prior written consent of the Author.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-You may view and reference the source code for educational or portfolio purposes only, 
-but any reuse or redistribution of the Software or any substantial portion thereof is strictly prohibited.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-To obtain permission, please contact: larbisahli1905@gmail.com
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, 
-AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, 
-OR OTHER LIABILITY ARISING FROM, OUT OF, 
-OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
