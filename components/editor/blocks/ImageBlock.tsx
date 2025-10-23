@@ -228,6 +228,7 @@ function ImageBlock({ nodeId, instanceId }: BaseBlockProps) {
           ) : (
             <Image
               src={previewUrl}
+              priority
               alt="Selected image preview"
               width={data.width}
               height={data.height}

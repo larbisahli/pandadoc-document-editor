@@ -3,6 +3,7 @@ export const doc = {
     id: "doc_aabwbtdbgk5c",
     title: "Simple invoice",
     pageIds: [
+      "page_3l760taf1cbt",
       "page_n261uo3yzqhq",
       "page_pzg7vrq1bm5x",
       "page_x9muubasxgv0",
@@ -734,11 +735,551 @@ export const doc = {
         },
         overlayIds: [],
       },
+      page_3l760taf1cbt: {
+        rootId: 'node_6lebao3vgrvd',
+        byId: {
+          node_6lebao3vgrvd: {
+            id: 'node_6lebao3vgrvd',
+            parentId: null,
+            kind: 'container',
+            direction: 'column',
+            children: [
+              'node_with7dkuvsr0',
+              'node_pjqdxo6kmtri',
+              'node_5j347z63djp2',
+              'node_9o4cwggdufuu',
+              'node_7ojerl72cuyb',
+              "node_ps6nlgn5jfrk"
+            ],
+            layoutStyle: {}
+          },
+          node_pjqdxo6kmtri: {
+            id: 'node_pjqdxo6kmtri',
+            kind: 'blockRef',
+            parentId: 'node_6lebao3vgrvd',
+            instanceId: 'inst_2xu1nx2ewlb1',
+            layoutStyle: {}
+          },
+          node_5j347z63djp2: {
+            id: 'node_5j347z63djp2',
+            kind: 'blockRef',
+            parentId: 'node_6lebao3vgrvd',
+            instanceId: 'inst_ondu793ts2hb',
+            layoutStyle: {}
+          },
+          node_9o4cwggdufuu: {
+            id: 'node_9o4cwggdufuu',
+            kind: 'blockRef',
+            parentId: 'node_6lebao3vgrvd',
+            instanceId: 'inst_xb1cbskfmq8j',
+            layoutStyle: {}
+          },
+          node_7ojerl72cuyb: {
+            id: 'node_7ojerl72cuyb',
+            kind: 'blockRef',
+            parentId: 'node_6lebao3vgrvd',
+            instanceId: 'inst_ob5ewew5a1u2',
+            layoutStyle: {}
+          },
+          node_with7dkuvsr0: {
+            id: 'node_with7dkuvsr0',
+            kind: 'blockRef',
+            parentId: 'node_6lebao3vgrvd',
+            instanceId: 'inst_jeast2rwluqf',
+            layoutStyle: {}
+          },
+          node_ps6nlgn5jfrk: {
+            id: 'node_ps6nlgn5jfrk',
+            kind: 'blockRef',
+            parentId: 'node_6lebao3vgrvd',
+            instanceId: 'inst_as1576d0rira',
+            layoutStyle: {}
+          }
+        },
+        overlayIds: []
+      }
     },
     visiblePageId: "page_n261uo3yzqhq",
   },
   instances: {
     byId: {
+      inst_as1576d0rira: {
+        templateId: 'tpl-text',
+        data: {
+          content: {
+            type: 'doc',
+            content: [
+              {
+                type: 'paragraph',
+                attrs: {
+                  textAlign: null
+                },
+                content: [
+                  {
+                    type: 'text',
+                    marks: [
+                      {
+                        type: 'textStyle',
+                        attrs: {
+                          color: null,
+                          fontFamily: null,
+                          fontSize: '14px'
+                        }
+                      }
+                    ],
+                    text: 'made by '
+                  },
+                  {
+                    type: 'text',
+                    marks: [
+                      {
+                        type: 'link',
+                        attrs: {
+                          href: 'https://www.linkedin.com/in/larbisahli/',
+                          target: '_blank',
+                          rel: 'noopener noreferrer nofollow',
+                          'class': 'editor-link'
+                        }
+                      },
+                      {
+                        type: 'textStyle',
+                        attrs: {
+                          color: null,
+                          fontFamily: null,
+                          fontSize: '14px'
+                        }
+                      },
+                      {
+                        type: 'bold'
+                      }
+                    ],
+                    text: 'larbi sahli'
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        id: 'inst_as1576d0rira',
+        createdAt: 1760449634898,
+        updatedAt: 1760449634898
+      },
+      inst_2xu1nx2ewlb1: {
+        templateId: 'tpl-text',
+        data: {
+          content: {
+            type: 'doc',
+            content: [
+              {
+                type: 'paragraph',
+                attrs: {
+                  textAlign: null
+                },
+                content: [
+                  {
+                    type: 'text',
+                    text: 'This project is a '
+                  },
+                  {
+                    type: 'text',
+                    marks: [
+                      {
+                        type: 'bold'
+                      }
+                    ],
+                    text: 'demo document editor inspired by PandaDoc’s platform'
+                  },
+                  {
+                    type: 'text',
+                    text: ', built to showcase modern front-end architecture, drag-and-drop interactions, and real-time editing patterns. It is not an official PandaDoc product, but a '
+                  },
+                  {
+                    type: 'text',
+                    marks: [
+                      {
+                        type: 'bold'
+                      }
+                    ],
+                    text: 'personal project for learning and portfolio purposes'
+                  },
+                  {
+                    type: 'text',
+                    text: '.'
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        id: 'inst_2xu1nx2ewlb1',
+        createdAt: 1760447806054,
+        updatedAt: 1760447806054
+      },
+      inst_ondu793ts2hb: {
+        templateId: 'tpl-image',
+        data: {
+          url: '/editor-diagram.png',
+          name: 'editor-diagram.png',
+          type: 'image/png',
+          size: 96566,
+          width: 1154,
+          height: 742,
+          aspectRatio: 1.5552560646900269
+        },
+        id: 'inst_ondu793ts2hb',
+        createdAt: 1760447856940,
+        updatedAt: 1760447856940
+      },
+      inst_xb1cbskfmq8j: {
+        templateId: 'tpl-text',
+        data: {
+          content: {
+            type: 'doc',
+            content: [
+              {
+                type: 'paragraph',
+                attrs: {
+                  textAlign: null
+                },
+                content: [
+                  {
+                    type: 'text',
+                    text: 'This project was created as part of my preparation for '
+                  },
+                  {
+                    type: 'text',
+                    marks: [
+                      {
+                        type: 'bold'
+                      }
+                    ],
+                    text: 'system design and front-end interviews at PandaDoc'
+                  },
+                  {
+                    type: 'text',
+                    text: '.'
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        id: 'inst_xb1cbskfmq8j',
+        createdAt: 1760447865156,
+        updatedAt: 1760447865156
+      },
+      inst_ob5ewew5a1u2: {
+        templateId: 'tpl-text',
+        data: {
+          content: {
+            type: 'doc',
+            content: [
+              {
+                type: 'paragraph',
+                attrs: {
+                  textAlign: null
+                },
+                content: [
+                  {
+                    type: 'text',
+                    marks: [
+                      {
+                        type: 'textStyle',
+                        attrs: {
+                          color: null,
+                          fontFamily: null,
+                          fontSize: '18px'
+                        }
+                      },
+                      {
+                        type: 'bold'
+                      }
+                    ],
+                    text: 'This project is still in progress, the upcoming features include:'
+                  }
+                ]
+              },
+              {
+                type: 'bulletList',
+                content: [
+                  {
+                    type: 'listItem',
+                    content: [
+                      {
+                        type: 'paragraph',
+                        attrs: {
+                          textAlign: null
+                        },
+                        content: [
+                          {
+                            type: 'text',
+                            marks: [
+                              {
+                                type: 'bold'
+                              }
+                            ],
+                            text: 'Functional input fields'
+                          },
+                          {
+                            type: 'text',
+                            text: ': enable users to fill and interact directly with text, signature, and checkbox fields.'
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    type: 'listItem',
+                    content: [
+                      {
+                        type: 'paragraph',
+                        attrs: {
+                          textAlign: null
+                        },
+                        content: [
+                          {
+                            type: 'text',
+                            marks: [
+                              {
+                                type: 'bold'
+                              }
+                            ],
+                            text: 'Table and page-break support'
+                          },
+                          {
+                            type: 'text',
+                            text: ': fully functional tables and smart page-breaking for export-ready layouts.'
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    type: 'listItem',
+                    content: [
+                      {
+                        type: 'paragraph',
+                        attrs: {
+                          textAlign: null
+                        },
+                        content: [
+                          {
+                            type: 'text',
+                            marks: [
+                              {
+                                type: 'bold'
+                              }
+                            ],
+                            text: 'Resizable image blocks'
+                          },
+                          {
+                            type: 'text',
+                            text: ': drag to resize and maintain responsive alignment.'
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    type: 'listItem',
+                    content: [
+                      {
+                        type: 'paragraph',
+                        attrs: {
+                          textAlign: null
+                        },
+                        content: [
+                          {
+                            type: 'text',
+                            marks: [
+                              {
+                                type: 'bold'
+                              }
+                            ],
+                            text: 'Recipient management'
+                          },
+                          {
+                            type: 'text',
+                            text: ': assign fields and permissions to multiple signers or viewers.'
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    type: 'listItem',
+                    content: [
+                      {
+                        type: 'paragraph',
+                        attrs: {
+                          textAlign: null
+                        },
+                        content: [
+                          {
+                            type: 'text',
+                            marks: [
+                              {
+                                type: 'bold'
+                              }
+                            ],
+                            text: 'Undo/redo powered by an event-sourced action log'
+                          },
+                          {
+                            type: 'text',
+                            text: ': robust, replayable edit history with time-travel capability.'
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    type: 'listItem',
+                    content: [
+                      {
+                        type: 'paragraph',
+                        attrs: {
+                          textAlign: null
+                        },
+                        content: [
+                          {
+                            type: 'text',
+                            marks: [
+                              {
+                                type: 'bold'
+                              }
+                            ],
+                            text: 'Real-time multi-user collaboration'
+                          },
+                          {
+                            type: 'text',
+                            text: ': simultaneous editing, presence indicators, and conflict-free synchronization.'
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    type: 'listItem',
+                    content: [
+                      {
+                        type: 'paragraph',
+                        attrs: {
+                          textAlign: null
+                        },
+                        content: [
+                          {
+                            type: 'text',
+                            marks: [
+                              {
+                                type: 'bold'
+                              }
+                            ],
+                            text: 'AI-assisted document generation'
+                          },
+                          {
+                            type: 'text',
+                            text: ': automatically create contract templates or content based on context and user input.'
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    type: 'listItem',
+                    content: [
+                      {
+                        type: 'paragraph',
+                        attrs: {
+                          textAlign: null
+                        },
+                        content: [
+                          {
+                            type: 'text',
+                            marks: [
+                              {
+                                type: 'bold'
+                              }
+                            ],
+                            text: 'Export and persistence'
+                          },
+                          {
+                            type: 'text',
+                            text: ': export edited documents to PDF and store structured document data securely in the database for later retrieval and versioning.'
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                type: 'paragraph',
+                attrs: {
+                  textAlign: null
+                }
+              }
+            ]
+          }
+        },
+        id: 'inst_ob5ewew5a1u2',
+        createdAt: 1760448047955,
+        updatedAt: 1760448047955
+      },
+      inst_jeast2rwluqf: {
+        templateId: 'tpl-text',
+        data: {
+          content: {
+            type: 'doc',
+            content: [
+              {
+                type: 'paragraph',
+                attrs: {
+                  textAlign: 'center'
+                },
+                content: [
+                  {
+                    type: 'text',
+                    marks: [
+                      {
+                        type: 'textStyle',
+                        attrs: {
+                          color: 'rgb(112, 25, 200)',
+                          fontFamily: '',
+                          fontSize: '24px'
+                        }
+                      },
+                      {
+                        type: 'bold'
+                      }
+                    ],
+                    text: 'PandaDoc-Style Document Editor '
+                  },
+                  {
+                    type: 'text',
+                    marks: [
+                      {
+                        type: 'textStyle',
+                        attrs: {
+                          color: '#7019c8',
+                          fontFamily: null,
+                          fontSize: '24px'
+                        }
+                      },
+                      {
+                        type: 'bold'
+                      }
+                    ],
+                    text: 'Built for Learning and Experimentation'
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        id: 'inst_jeast2rwluqf',
+        createdAt: 1760448853695,
+        updatedAt: 1760448853695
+      },
       inst_z0w6lgm234iq: {
         id: "inst_z0w6lgm234iq",
         templateId: "tpl-text",
