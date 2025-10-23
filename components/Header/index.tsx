@@ -144,7 +144,7 @@ const Header = () => {
         <Link
           aria-label="GitHub repository"
           target="_blank"
-          href="https://github.com/larbisahli"
+          href="https://github.com/larbisahli/pandadoc-document-editor"
         >
           <GithubIcon
             className="size-6 fill-black hover:fill-black/60"
